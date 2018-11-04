@@ -5,6 +5,7 @@ let app = express();
 const port = 8000;
 
 app.use('/static', express.static('dist'));
+app.use('/assets', express.static('assets'));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../', 'index.html'));
