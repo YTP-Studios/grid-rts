@@ -22,6 +22,7 @@
   "homepage": "https://github.com/YTP-Studios/grid-rts#readme",
   "dependencies": {
     "express": "^4.16.4",
+    "mongoose": "^5.3.9",
     "pixi.js": "^4.8.2",
     "webpack": "^4.24.0",
     "webpack-node-externals": "^1.7.2"
