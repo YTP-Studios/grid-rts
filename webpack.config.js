@@ -21,4 +21,5 @@ module.exports = [{
     node: {
         __dirname: false,
     },
+    externals: [nodeExternals()],
 }]
