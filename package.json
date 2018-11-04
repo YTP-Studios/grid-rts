@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server/app.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,12 @@
   "bugs": {
     "url": "https://github.com/YTP-Studios/grid-rts/issues"
   },
-  "homepage": "https://github.com/YTP-Studios/grid-rts#readme"
+  "homepage": "https://github.com/YTP-Studios/grid-rts#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "webpack": "^4.24.0"
+  },
+  "devDependencies": {
+    "webpack-cli": "^3.1.2"
+  }
 }
