@@ -16,7 +16,6 @@ PIXI.loader
   .load(setup);
 
 let machineTurret;
-let mousePosition;
 
 function setup() {
     machineTurret = new PIXI.Sprite(PIXI.loader.resources["assets/machineTurret.png"].texture);
@@ -27,24 +26,37 @@ function setup() {
 }
 
 function gameLoop(delta){
-    var mouseposition = app.renderer.plugins.interaction.mouse.global;
-    console.log(mouseposition.x)
-    goToPos(machineTurret, mouseposition);
+    let mouseposition = app.renderer.plugins.interaction.mouse.global;
+    moveUnitToPoint(machineTurret, mouseposition);
 }
 
-function goToPos(machineTurret, mouseposition) {
-    if (machineTurret.x > mouseposition.x) {
-        machineTurret.x -= 1;
-    } else {
-        machineTurret.x += 1;
+function moveUnitToPoint(unit, mouseposition) {
+    unit.pivot.x = unit.width/2;
+    unit.pivot.y = unit.height/2;
+    let vertical_distance = mouseposition.y - unit.y;
+    let horizontal_distance = mouseposition.x - unit.x
+    let angle = Math.atan2(vertical_distance, horizontal_distance) + Math.PI/2 //sprite faces upwards on default so an offset of 90 degrees is needed
+
+    unit.rotation = angle;
+
+    if (!isTouchingMouse(machineTurret, mouseposition)) {
+        if (unit.x > mouseposition.x) {
+            unit.x -= 1;
+        } else {
+            unit.x += 1;
+        }
+        if (unit.y > mouseposition.y) {
+            unit.y -= 1;
+        } else {
+            unit.y += 1;
+        }
     }
-    if (machineTurret.y > mouseposition.y) {
-      machineTurret.y -= 1;
-    } else {
-        machineTurret.y += 1;
-  }
 }
 
+function isTouchingMouse(unit, mouseposition) {
+    return mouseposition.x <= unit.x + unit.width/2 && mouseposition.x >= unit.x - unit.width/2      
+        && mouseposition.y <= unit.y + unit.height/2 && mouseposition.y >= unit.y - unit.height/2
+}
 
 function play(delta) {
 }
