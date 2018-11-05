@@ -1,7 +1,11 @@
 import * as PIXI from 'pixi.js'
+
+let horizontal_velocity = 0;
+let vertical_velocity = 0;
+
 let app = new PIXI.Application({ 
-    width: 256,
-    height: 256,
+    width: 800,
+    height: 600,
     antialias: true,
     transparent: false,
     resolution: 1,
@@ -41,14 +45,26 @@ function moveUnitToPoint(unit, mouseposition) {
 
     if (!isTouchingMouse(machineTurret, mouseposition)) {
         if (unit.x > mouseposition.x) {
-            unit.x -= 1;
+            unit.x += horizontal_velocity;
+            if (horizontal_velocity > -2) {
+                horizontal_velocity -= 0.05;
+            }
         } else {
-            unit.x += 1;
+            unit.x += horizontal_velocity;
+            if (horizontal_velocity < 2) {
+                horizontal_velocity += 0.05;
+            }
         }
         if (unit.y > mouseposition.y) {
-            unit.y -= 1;
+            unit.y += vertical_velocity;
+            if (vertical_velocity > -2) {
+                vertical_velocity -= 0.05;
+            }
         } else {
-            unit.y += 1;
+            unit.y += vertical_velocity;
+            if (vertical_velocity < 2) {
+                vertical_velocity += 0.05;
+            }
         }
     }
 }
