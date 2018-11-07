@@ -1,3 +1,4 @@
+const UNIT_SPEED = 2.0;
 
 export default class Unit {
 
@@ -15,28 +16,17 @@ export default class Unit {
             this.targetPos.y <= this.y + this.size / 2 &&
             this.targetPos.y >= this.y - this.size / 2;
         if (!atDestination) {
-            if (this.x > this.targetPos.x) {
-                this.x += this.velocity.x;
-                if (this.velocity.x > -2) {
-                    this.velocity.x -= 0.05;
-                }
-            } else {
-                this.x += this.velocity.x;
-                if (this.velocity.x < 2) {
-                    this.velocity.x += 0.05;
-                }
-            }
-            if (this.y > this.targetPos.y) {
-                this.y += this.velocity.y;
-                if (this.velocity.y > -2) {
-                    this.velocity.y -= 0.05;
-                }
-            } else {
-                this.y += this.velocity.y;
-                if (this.velocity.y < 2) {
-                    this.velocity.y += 0.05;
-                }
-            }
+            const dx = this.targetPos.x - this.x;
+            const dy = this.targetPos.y - this.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const dx_normalized = dx / dist;
+            const dy_normalized = dy / dist;
+
+            this.velocity.x = dx_normalized * UNIT_SPEED;
+            this.velocity.y = dy_normalized * UNIT_SPEED;
+
+            this.x += this.velocity.x * delta;
+            this.y += this.velocity.y * delta;
         }
 
     }
