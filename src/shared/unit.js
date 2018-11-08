@@ -1,22 +1,21 @@
 import * as Vectors from '../shared/vectors';
-
-const UNIT_SPEED = 2.0;
+import * as Constants from '../shared/constants';
 
 export default class Unit {
 
-    constructor(x = 0, y = 0, size = 0) {
+    constructor(x = 0, y = 0, size = 0, team = Constants.NEUTRAL) {
         this.x = x;
         this.y = y;
         this.size = size;
         this.targetPos = { x, y };
         this.velocity = { x: 0, y: 0 };
-
+        this.team = team;
     }
 
     update(delta) {
         if (!this.atDestination()) {
             const displacement = Vectors.difference(this.targetPos, this)
-            this.velocity = Vectors.scaleTo(displacement, UNIT_SPEED);
+            this.velocity = Vectors.scaleTo(displacement, Constants.UNIT_SPEED);
 
             this.x += this.velocity.x * delta;
             this.y += this.velocity.y * delta;

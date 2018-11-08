@@ -1,11 +1,9 @@
 import * as PIXI from 'pixi.js'
 import { ClientUnit } from './client_unit';
 import * as Vectors from '../shared/vectors';
+import * as Constants from '../shared/constants';
 
-/**
- * The factor by which the collision adjustment is reduced.
- */
-const COLLISION_LENIENCY = 0.3;
+const PLAYER_TEAM = Constants.RED_TEAM;
 
 let app = new PIXI.Application({
     width: 800,
@@ -26,8 +24,8 @@ let units = [];
 
 function setup() {
     units = [
-        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
-        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500, Constants.RED_TEAM),
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500, Constants.RED_TEAM),
         new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
         new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
         new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
@@ -44,7 +42,7 @@ function setup() {
     app.ticker.add(delta => gameLoop(delta));
     app.renderer.plugins.interaction.on('mousedown', (event) => {
         let mouseposition = app.renderer.plugins.interaction.mouse.global;
-        units.forEach((unit) => {
+        units.filter((unit) => unit.team === PLAYER_TEAM).forEach((unit) => {
             unit.targetPos.x = mouseposition.x;
             unit.targetPos.y = mouseposition.y;
         });
@@ -64,7 +62,7 @@ function resolveCollisions() {
             const combinedSize = a.size + b.size;
             const dist = Vectors.dist(a, b);
             if (dist < combinedSize) {
-                const offset = (combinedSize - dist) / 2 * COLLISION_LENIENCY;
+                const offset = (combinedSize - dist) / 2 * Constants.COLLISION_LENIENCY;
                 positions[i] = Vectors.sum(positions[i], Vectors.scaleTo(Vectors.difference(a, b), offset));
                 positions[j] = Vectors.sum(positions[j], Vectors.scaleTo(Vectors.difference(b, a), offset));
             }

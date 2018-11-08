@@ -1,11 +1,12 @@
 import Unit from "../shared/unit";
+import * as Constants from '../shared/constants';
 
 const UNIT_SIZE = 32;
 
 export class ClientUnit extends Unit {
 
-    constructor(container, x = 0, y = 0) {
-        super(x, y, UNIT_SIZE);
+    constructor(container, x = 0, y = 0, team = Constants.NEUTRAL) {
+        super(x, y, UNIT_SIZE, team);
         let machineTurretSprite = new PIXI.Sprite(PIXI.loader.resources["assets/machineTurret.png"].texture);
         machineTurretSprite.pivot.x = machineTurretSprite.width / 2;
         machineTurretSprite.pivot.y = machineTurretSprite.height / 2;
