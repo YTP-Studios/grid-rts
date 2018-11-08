@@ -7,8 +7,7 @@ export class ClientUnit extends Unit {
 
     constructor(container, x = 0, y = 0, team = Constants.NEUTRAL, color = Constants.NEUTRAL_COLOR) {
         super(x, y, UNIT_SIZE, team, color);
-        // let machineTurretSprite = new PIXI.Sprite(PIXI.loader.resources["assets/machineTurret.png"].texture);
-        let machineTurretSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+        let machineTurretSprite = new PIXI.Sprite(PIXI.loader.resources["assets/machineTurret.png"].texture);
         machineTurretSprite.pivot.x = machineTurretSprite.width / 2;
         machineTurretSprite.pivot.y = machineTurretSprite.height / 2;
         this.sprite = machineTurretSprite;

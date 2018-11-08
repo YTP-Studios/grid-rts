@@ -3,7 +3,7 @@ import * as Constants from '../shared/constants';
 
 export default class Unit {
 
-    constructor(x = 0, y = 0, size = 0, team = Constants.NEUTRAL, color = Constants.NEUTRAL) {
+    constructor(x = 0, y = 0, size = 0, team = Constants.NEUTRAL, color = Constants.NEUTRAL_COLOR) {
         this.x = x;
         this.y = y;
         this.size = size;
