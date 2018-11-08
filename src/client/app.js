@@ -24,13 +24,10 @@ let units = [];
 
 function setup() {
     units = [
-        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500, Constants.RED_TEAM),
-        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500, Constants.RED_TEAM),
-        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
-        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
-        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
-        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
-        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500, 
+            Constants.RED_TEAM, Constants.RED_TEAM_COLOR),
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500, 
+            Constants.RED_TEAM, Constants.RED_TEAM_COLOR),
         new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
         new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
         new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
