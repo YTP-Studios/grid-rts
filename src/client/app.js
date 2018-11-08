@@ -1,5 +1,11 @@
 import * as PIXI from 'pixi.js'
 import { ClientUnit } from './client_unit';
+import * as Vectors from '../shared/vectors';
+
+/**
+ * The factor by which the collision adjustment is reduced.
+ */
+const COLLISION_LENIENCY = 0.3;
 
 let app = new PIXI.Application({
     width: 800,
@@ -20,8 +26,19 @@ let units = [];
 
 function setup() {
     units = [
-        new ClientUnit(app.stage, 69, 69),
-        new ClientUnit(app.stage, 120, 120),
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
     ];
 
     app.ticker.add(delta => gameLoop(delta));
@@ -36,4 +53,25 @@ function setup() {
 
 function gameLoop(delta) {
     units.forEach((unit) => unit.update(delta));
+    resolveCollisions();
+}
+
+function resolveCollisions() {
+    let positions = units.map(({ x, y }) => ({ x, y }));
+    for (let i = 0; i < units.length; i++) {
+        for (let j = i + 1; j < units.length; j++) {
+            let a = units[i], b = units[j];
+            const combinedSize = a.size + b.size;
+            const dist = Vectors.dist(a, b);
+            if (dist < combinedSize) {
+                const offset = (combinedSize - dist) / 2 * COLLISION_LENIENCY;
+                positions[i] = Vectors.sum(positions[i], Vectors.scaleTo(Vectors.difference(a, b), offset));
+                positions[j] = Vectors.sum(positions[j], Vectors.scaleTo(Vectors.difference(b, a), offset));
+            }
+
+        }
+    }
+    for (let i in units) {
+        Vectors.copyTo(positions[i], units[i]);
+    }
 }
