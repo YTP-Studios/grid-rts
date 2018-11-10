@@ -14,3 +14,5 @@ export const RED_TEAM_COLOR = 0xFF0000;
 export const BLUE_TEAM_COLOR = 0x0000FF;
 
 export const UNIT_SPEED = 2.0;
+
+export const UNIT_RANGE = 300;

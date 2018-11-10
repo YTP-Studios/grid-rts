@@ -3,7 +3,7 @@ import { ClientUnit } from './client_unit';
 import * as Vectors from '../shared/vectors';
 import * as Constants from '../shared/constants';
 
-const PLAYER_TEAM = Constants.RED_TEAM;
+const PLAYER_TEAM = Constants.BLUE_TEAM;
 
 let app = new PIXI.Application({
     width: 800,
@@ -21,20 +21,20 @@ PIXI.loader
     .load(setup);
 
 let units = [];
+let lasers = [];
 
 function setup() {
     units = [
         new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500, 
-            Constants.RED_TEAM, Constants.RED_TEAM_COLOR),
+            Constants.BLUE_TEAM, Constants.BLUE_TEAM_COLOR),
         new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500, 
-            Constants.RED_TEAM, Constants.RED_TEAM_COLOR),
-        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
-        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
-        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
-        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
-        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
-        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
+            Constants.BLUE_TEAM, Constants.BLUE_TEAM_COLOR),
+        new ClientUnit(app.stage, 50, 50),
+        new ClientUnit(app.stage, 500, 500),
+
     ];
+
+    createLasers();
 
     app.ticker.add(delta => gameLoop(delta));
     app.renderer.plugins.interaction.on('mousedown', (event) => {
@@ -49,6 +49,7 @@ function setup() {
 function gameLoop(delta) {
     units.forEach((unit) => unit.update(delta));
     resolveCollisions();
+    resolveAttacks();
 }
 
 function resolveCollisions() {
@@ -60,13 +61,53 @@ function resolveCollisions() {
             const dist = Vectors.dist(a, b);
             if (dist < combinedSize) {
                 const offset = (combinedSize - dist) / 2 * Constants.COLLISION_LENIENCY;
-                positions[i] = Vectors.sum(positions[i], Vectors.scaleTo(Vectors.difference(a, b), offset));
-                positions[j] = Vectors.sum(positions[j], Vectors.scaleTo(Vectors.difference(b, a), offset));
+                positions[i] = Vectors.sum(positions[i], Vectors.scaleTo(
+                    Vectors.difference(a, b), offset));
+                positions[j] = Vectors.sum(positions[j], Vectors.scaleTo(
+                    Vectors.difference(b, a), offset));
             }
-
         }
     }
     for (let i in units) {
         Vectors.copyTo(positions[i], units[i]);
     }
+}
+
+function resolveAttacks() {
+    for (let i = 0; i < units.length; i++) {
+        let a = units[i];
+        let minDist = Number.MAX_VALUE;
+        for (let j = 0; j < units.length; j++) {
+            if (i == j) continue;
+            let b = units[j];
+            const dist = Vectors.dist(a, b);
+            if (dist < minDist && a.canAttackUnit(b, dist)) {
+                minDist = dist;
+                a.nearestEnemy.x = b.x;
+                a.nearestEnemy.y = b.y;
+                a.isAttacking = true;
+                drawLaser(a, a.nearestEnemy, i);
+            }
+        }
+        if (minDist == Number.MAX_VALUE) {
+            a.isAttacking = false;
+            lasers[i].clear();
+        }
+    }
+}
+
+function createLasers() {
+    for (let _ in units) {
+        let newLaser = new PIXI.Graphics;
+        app.stage.addChild(newLaser);
+        newLaser.lineStyle(10, 0xffffff);
+        lasers.push(newLaser);
+    }
+}
+function drawLaser(unit, nearestEnemy, index) {
+    lasers[index].clear();
+    lasers[index].lineStyle(10, 0xffffff);
+    lasers[index].position.set(0, 0);   
+    lasers[index].moveTo(unit.x, unit.y);
+    lasers[index].lineTo(nearestEnemy.x, nearestEnemy.y);
 }
