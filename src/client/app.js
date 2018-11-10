@@ -2,6 +2,9 @@ import * as PIXI from 'pixi.js'
 import { ClientUnit } from './client_unit';
 import * as Vectors from '../shared/vectors';
 import * as Constants from '../shared/constants';
+import ClientConduit from './client_conduit';
+import GameMap from '../shared/game_map';
+import ClientMap from './client_map';
 
 const PLAYER_TEAM = Constants.RED_TEAM;
 
@@ -11,6 +14,7 @@ let app = new PIXI.Application({
     antialias: true,
     transparent: false,
     resolution: 1,
+    backgroundColor: 0x3B3B3B,
     //backgroundColor: 0xFFC0CB
 });
 
@@ -18,15 +22,19 @@ document.body.appendChild(app.view);
 
 PIXI.loader
     .add("assets/machineTurret.png")
+    .add("assets/conduit-edge.png")
+    .add("assets/conduit-center.png")
     .load(setup);
 
 let units = [];
+let map;
 
 function setup() {
+    map = ClientMap.fromString(app.stage, Constants.DEFAULT_MAP);
     units = [
-        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500, 
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500,
             Constants.RED_TEAM, Constants.RED_TEAM_COLOR),
-        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500, 
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500,
             Constants.RED_TEAM, Constants.RED_TEAM_COLOR),
         new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
         new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500),
@@ -47,6 +55,7 @@ function setup() {
 }
 
 function gameLoop(delta) {
+    map.update(delta);
     units.forEach((unit) => unit.update(delta));
     resolveCollisions();
 }
