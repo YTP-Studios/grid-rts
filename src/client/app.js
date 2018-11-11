@@ -87,7 +87,7 @@ function resolveAttacks() {
             if (i == j) continue;
             let b = units[j];
             const dist = Vectors.dist(a, b);
-            if (dist < minDist && a.canAttackUnit(b, dist)) {
+            if (dist < minDist && a.canAttackUnit(b)) {
                 minDist = dist;
                 a.nearestEnemy.x = b.x;
                 a.nearestEnemy.y = b.y;

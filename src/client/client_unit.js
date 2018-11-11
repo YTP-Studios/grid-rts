@@ -39,7 +39,7 @@ export class ClientUnit extends Unit {
 
     drawLaser(nearestEnemy) {
         this.laser.clear();
-        this.laser.lineStyle(10, 0xffffff);
+        this.laser.lineStyle(10, this.color);
         this.laser.position.set(0, 0);
         this.laser.moveTo(this.x, this.y);
         this.laser.lineTo(nearestEnemy.x, nearestEnemy.y);

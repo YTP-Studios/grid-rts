@@ -32,7 +32,8 @@ export default class Unit {
         return Vectors.dist(this, this.targetPos) <= this.size;
     }
 
-    canAttackUnit(unit, dist) {
+    canAttackUnit(unit) {
+        let dist = Vectors.dist(this, unit);
         return this.team != unit.team && dist < Constants.UNIT_RANGE;
     }
 
