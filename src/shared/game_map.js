@@ -5,7 +5,7 @@ export default class GameMap {
     }
 
     update(delta) {
-        this.buildings.forEach(arr => arr.forEach(b => b.update(delta, this)));
+        this.buildings.forEach(arr => arr.forEach(b => b && b.update(delta, this)));
     }
 
     getBuilding(row, col) {
