@@ -5,6 +5,8 @@
  */
 export const COLLISION_LENIENCY = 0.3;
 
+export const CAMERA_SPEED = 4;
+
 export const UNIT_SPEED = 2.0;
 export const UNIT_RANGE = 300;
 export const UNIT_BODY_SIZE = 32;
