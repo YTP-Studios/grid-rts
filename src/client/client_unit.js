@@ -13,8 +13,13 @@ export class ClientUnit extends Unit {
         machineTurretSprite.pivot.y = machineTurretSprite.height / 2;
         this.sprite = machineTurretSprite;
         this.sprite.tint = this.color;
-        this.isAttacking = isAttacking;
         container.addChild(this.sprite);
+
+        let laser = new PIXI.Graphics;
+        laser.lineStyle(10, this.color);
+        this.laser = laser;
+        this.isAttacking = isAttacking;
+        container.addChild(this.laser);
     }
 
     update(delta) {
@@ -32,4 +37,11 @@ export class ClientUnit extends Unit {
         this.sprite.rotation = angle;
     }
 
+    drawLaser(nearestEnemy) {
+        this.laser.clear();
+        this.laser.lineStyle(10, 0xffffff);
+        this.laser.position.set(0, 0);
+        this.laser.moveTo(this.x, this.y);
+        this.laser.lineTo(nearestEnemy.x, nearestEnemy.y);
+    }
 }

@@ -27,7 +27,6 @@ PIXI.loader
     .load(setup);
 
 let units = [];
-let lasers = [];
 let map;
 
 function setup() {
@@ -41,8 +40,6 @@ function setup() {
         new ClientUnit(app.stage, 500, 500),
 
     ];
-
-    createLasers();
 
     app.ticker.add(delta => gameLoop(delta));
     app.renderer.plugins.interaction.on('mousedown', (event) => {
@@ -95,28 +92,12 @@ function resolveAttacks() {
                 a.nearestEnemy.x = b.x;
                 a.nearestEnemy.y = b.y;
                 a.isAttacking = true;
-                drawLaser(a, a.nearestEnemy, i);
+                a.attack(a.nearestEnemy);
             }
         }
         if (minDist == Number.MAX_VALUE) {
             a.isAttacking = false;
-            lasers[i].clear();
+            a.laser.clear();
         }
     }
-}
-
-function createLasers() {
-    for (let _ in units) {
-        let newLaser = new PIXI.Graphics;
-        app.stage.addChild(newLaser);
-        newLaser.lineStyle(10, 0xffffff);
-        lasers.push(newLaser);
-    }
-}
-function drawLaser(unit, nearestEnemy, index) {
-    lasers[index].clear();
-    lasers[index].lineStyle(10, 0xffffff);
-    lasers[index].position.set(0, 0);
-    lasers[index].moveTo(unit.x, unit.y);
-    lasers[index].lineTo(nearestEnemy.x, nearestEnemy.y);
 }

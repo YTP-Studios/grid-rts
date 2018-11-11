@@ -35,4 +35,8 @@ export default class Unit {
     canAttackUnit(unit, dist) {
         return this.team != unit.team && dist < Constants.UNIT_RANGE;
     }
+
+    attack(nearestEnemy) {
+        this.drawLaser(nearestEnemy);
+    }
 }
