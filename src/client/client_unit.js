@@ -1,12 +1,12 @@
 import Unit from "../shared/unit";
 import * as Constants from '../shared/constants';
 import * as Vectors from '../shared/vectors';
+import { TEAM_COLOURS, NEUTRAL } from "../shared/teams";
 
 export class ClientUnit extends Unit {
 
-    constructor(container, x = 0, y = 0, team = Constants.NEUTRAL,
-        color = Constants.NEUTRAL_COLOR, isAttacking = false) {
-        super(x, y, Constants.UNIT_BODY_SIZE, team, color);
+    constructor(container, x = 0, y = 0, team = NEUTRAL, isAttacking = false) {
+        super(x, y, Constants.UNIT_BODY_SIZE, team);
         let machineTurretSprite = new PIXI.Sprite(PIXI.loader.resources["assets/basic-unit-body.png"].texture);
         machineTurretSprite.pivot.x = machineTurretSprite.width / 2;
         machineTurretSprite.pivot.y = machineTurretSprite.height / 2;
@@ -14,11 +14,11 @@ export class ClientUnit extends Unit {
         machineTurretSprite.height = Constants.UNIT_BODY_SIZE * 4;
 
         this.sprite = machineTurretSprite;
-        this.sprite.tint = this.color;
+        this.sprite.tint = TEAM_COLOURS[this.team];
         container.addChild(this.sprite);
 
         let laser = new PIXI.Graphics;
-        laser.lineStyle(10, this.color);
+        laser.lineStyle(10, TEAM_COLOURS[this.team]);
         this.laser = laser;
         this.isAttacking = isAttacking;
         container.addChild(this.laser);
@@ -46,7 +46,7 @@ export class ClientUnit extends Unit {
 
     drawLaser(nearestEnemy) {
         this.laser.clear();
-        this.laser.lineStyle(10, this.color);
+        this.laser.lineStyle(10, TEAM_COLOURS[this.team]);
         this.laser.position.set(0, 0);
         const direction = Vectors.difference(nearestEnemy, this);
         const offset = Vectors.scaleTo(direction, Constants.UNIT_TURRET_LENGTH);

@@ -1,6 +1,7 @@
 import Conduit from "../shared/conduit";
-import { NEUTRAL_COLOR, BLUE_TEAM_COLOR, RED_TEAM_COLOR, GRID_SCALE } from "../shared/constants";
+import { GRID_SCALE } from "../shared/constants";
 import * as PIXI from 'pixi.js'
+import { NEUTRAL_COLOR, TEAM_COLOURS } from "../shared/teams";
 
 
 export default class ClientConduit extends Conduit {
@@ -11,7 +12,7 @@ export default class ClientConduit extends Conduit {
         let centerTexture = PIXI.loader.resources["assets/conduit-center.png"].texture;
 
         this.centerSprite = new PIXI.Sprite(centerTexture);
-        this.centerSprite.tint = [NEUTRAL_COLOR, BLUE_TEAM_COLOR, RED_TEAM_COLOR][team];
+        this.centerSprite.tint = TEAM_COLOURS[team];
         this.centerSprite.pivot.x = centerTexture.width / 2;
         this.centerSprite.pivot.y = centerTexture.height / 2;
         this.centerSprite.width = GRID_SCALE;
@@ -51,7 +52,7 @@ export default class ClientConduit extends Conduit {
         const checkColour = (row, col, sprite) => {
             let building = map.getBuilding(row, col);
             if (building != null && building.team == this.team) {
-                sprite.tint = [NEUTRAL_COLOR, BLUE_TEAM_COLOR, RED_TEAM_COLOR][this.team];
+                sprite.tint = TEAM_COLOURS[this.team];
             }
         }
         const { row, col } = this;
