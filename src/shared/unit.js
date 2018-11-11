@@ -8,6 +8,7 @@ export default class Unit {
         this.y = y;
         this.size = size;
         this.targetPos = { x, y };
+        this.nearestEnemy = { x, y }; 
         this.velocity = { x: 0, y: 0 };
         this.team = team;
         this.color = color;
@@ -23,10 +24,20 @@ export default class Unit {
         } else {
             Vectors.copyTo(this, this.targetPos);
         }
+        
 
     }
 
     atDestination() {
         return Vectors.dist(this, this.targetPos) <= this.size;
+    }
+
+    canAttackUnit(unit) {
+        let dist = Vectors.dist(this, unit);
+        return this.team != unit.team && dist < Constants.UNIT_RANGE;
+    }
+
+    attack(nearestEnemy) {
+        this.drawLaser(nearestEnemy);
     }
 }
