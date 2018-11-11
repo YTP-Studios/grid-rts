@@ -21,7 +21,7 @@ let app = new PIXI.Application({
 document.body.appendChild(app.view);
 
 PIXI.loader
-    .add("assets/machineTurret.png")
+    .add("assets/basic-unit-body.png")
     .add("assets/conduit-edge.png")
     .add("assets/conduit-center.png")
     .load(setup);

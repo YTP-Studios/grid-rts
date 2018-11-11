@@ -2,16 +2,17 @@ import Unit from "../shared/unit";
 import * as Constants from '../shared/constants';
 import * as Vectors from '../shared/vectors';
 
-const UNIT_SIZE = 32;
-
 export class ClientUnit extends Unit {
 
     constructor(container, x = 0, y = 0, team = Constants.NEUTRAL,
         color = Constants.NEUTRAL_COLOR, isAttacking = false) {
-        super(x, y, UNIT_SIZE, team, color);
-        let machineTurretSprite = new PIXI.Sprite(PIXI.loader.resources["assets/machineTurret.png"].texture);
+        super(x, y, Constants.UNIT_BODY_SIZE, team, color);
+        let machineTurretSprite = new PIXI.Sprite(PIXI.loader.resources["assets/basic-unit-body.png"].texture);
         machineTurretSprite.pivot.x = machineTurretSprite.width / 2;
         machineTurretSprite.pivot.y = machineTurretSprite.height / 2;
+        machineTurretSprite.width = Constants.UNIT_BODY_SIZE * 4;
+        machineTurretSprite.height = Constants.UNIT_BODY_SIZE * 4;
+
         this.sprite = machineTurretSprite;
         this.sprite.tint = this.color;
         container.addChild(this.sprite);
@@ -48,10 +49,11 @@ export class ClientUnit extends Unit {
         this.laser.lineStyle(10, this.color);
         this.laser.position.set(0, 0);
         const direction = Vectors.difference(nearestEnemy, this);
-        const startPos = Vectors.sum(this, Vectors.scaleTo(direction, this.size));
+        const offset = Vectors.scaleTo(direction, Constants.UNIT_TURRET_LENGTH);
+        const startPos = Vectors.sum(Vectors.sum(this, Vectors.scaleTo(direction, this.size)), offset);
         const endPos = Vectors.difference(nearestEnemy, Vectors.scaleTo(direction, nearestEnemy.size));
-
         this.laser.moveTo(startPos.x, startPos.y);
         this.laser.lineTo(endPos.x, endPos.y);
+        this.laser.blendMode = PIXI.BLEND_MODES.ADD;
     }
 }
