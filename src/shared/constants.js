@@ -17,6 +17,10 @@ export const UNIT_SPEED = 2.0;
 export const UNIT_RANGE = 300;
 export const UNIT_BODY_SIZE = 32;
 export const UNIT_TURRET_LENGTH = 24;
+export const UNIT_HEALTH = 69;
+
+export const LASER_DAMAGE = 0.5;
+
 export const GRID_SCALE = 64;
 
 export const DEFAULT_MAP = `.................................

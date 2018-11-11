@@ -7,6 +7,7 @@ export class ClientUnit extends Unit {
     constructor(container, x = 0, y = 0, team = Constants.NEUTRAL,
         color = Constants.NEUTRAL_COLOR, isAttacking = false) {
         super(x, y, Constants.UNIT_BODY_SIZE, team, color);
+        this.container = container;
         let machineTurretSprite = new PIXI.Sprite(PIXI.loader.resources["assets/basic-unit-body.png"].texture);
         machineTurretSprite.pivot.x = machineTurretSprite.width / 2;
         machineTurretSprite.pivot.y = machineTurretSprite.height / 2;
@@ -15,13 +16,13 @@ export class ClientUnit extends Unit {
 
         this.sprite = machineTurretSprite;
         this.sprite.tint = this.color;
-        container.addChild(this.sprite);
+        this.container.addChild(this.sprite);
 
         let laser = new PIXI.Graphics;
         laser.lineStyle(10, this.color);
         this.laser = laser;
         this.isAttacking = isAttacking;
-        container.addChild(this.laser);
+        this.container.addChild(this.laser);
     }
 
     update(delta) {
@@ -37,6 +38,10 @@ export class ClientUnit extends Unit {
             angle = Math.atan2(vertical_distance, horizontal_distance) + Math.PI / 2; //sprite faces upwards on default so an offset of 90 degrees is needed
         }
         this.sprite.rotation = angle;
+
+        if (this.health < 0) {
+            this.deleteUnitSprites();
+        }
     }
 
     attack(nearestEnemy) {
@@ -60,5 +65,10 @@ export class ClientUnit extends Unit {
     stopAttacking() {
         super.stopAttacking();
         this.laser.clear();
+    }
+
+    deleteUnitSprites() {
+        this.container.removeChild(this.sprite);
+        this.container.removeChild(this.laser);
     }
 }

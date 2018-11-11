@@ -56,6 +56,7 @@ function gameLoop(delta) {
     units.forEach((unit) => unit.update(delta));
     resolveCollisions();
     resolveAttacks();
+    units = units.filter(unit => unit.enabled);
 }
 
 function resolveCollisions() {

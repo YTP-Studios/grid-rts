@@ -1,9 +1,9 @@
 import * as Vectors from '../shared/vectors';
 import * as Constants from '../shared/constants';
-
 export default class Unit {
 
-    constructor(x = 0, y = 0, size = 0, team = Constants.NEUTRAL, color = Constants.NEUTRAL_COLOR) {
+    constructor(x = 0, y = 0, size = 0, team = Constants.NEUTRAL, 
+        color = Constants.NEUTRAL_COLOR, health = Constants.UNIT_HEALTH, enabled = true) {
         this.x = x;
         this.y = y;
         this.size = size;
@@ -12,6 +12,8 @@ export default class Unit {
         this.velocity = { x: 0, y: 0 };
         this.team = team;
         this.color = color;
+        this.health = Constants.UNIT_HEALTH;
+        this.enabled = enabled;
     }
 
     update(delta) {
@@ -24,8 +26,9 @@ export default class Unit {
         } else {
             Vectors.copyTo(this, this.targetPos);
         }
-
-
+        if (this.health < 0) {
+            this.enabled = false;
+        }
     }
 
     atDestination() {
@@ -39,6 +42,7 @@ export default class Unit {
 
     attack(nearestEnemy) {
         this.nearestEnemy = nearestEnemy;
+        this.nearestEnemy.health -= Constants.LASER_DAMAGE;
     }
 
     stopAttacking() {
