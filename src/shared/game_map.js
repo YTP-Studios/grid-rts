@@ -8,9 +8,9 @@ export default class GameMap {
         this.buildings.forEach(arr => arr.forEach(b => b.update(delta, this)));
     }
 
-    getBuilding(i, j) {
-        if (i < 0 || i >= this.buildings.length) return null;
-        if (j < 0 || j >= this.buildings[i].length) return null;
-        return this.buildings[i][j];
+    getBuilding(row, col) {
+        if (row < 0 || row >= this.buildings.length) return null;
+        if (col < 0 || col >= this.buildings[row].length) return null;
+        return this.buildings[row][col];
     }
 }

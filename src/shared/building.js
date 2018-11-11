@@ -6,15 +6,15 @@ import { GRID_SCALE } from "./constants";
 export default class Building {
 
     get x() {
-        return this.i * GRID_SCALE;
+        return this.col * GRID_SCALE;
     }
     get y() {
-        return this.j * GRID_SCALE;
+        return this.row * GRID_SCALE;
     }
 
-    constructor(i, j, team) {
-        this.i = i;
-        this.j = j;
+    constructor(row, col, team) {
+        this.row = row;
+        this.col = col;
         this.team = team;
     }
 

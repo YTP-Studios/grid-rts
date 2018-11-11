@@ -16,7 +16,8 @@ export const BLUE_TEAM_COLOR = 0x3697FF;
 export const UNIT_SPEED = 2.0;
 
 export const UNIT_RANGE = 300;
-export const GRID_SCALE = 128;
+
+export const GRID_SCALE = 64;
 
 export const DEFAULT_MAP = `.................................
 ..1.............1................
