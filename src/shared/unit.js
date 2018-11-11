@@ -40,4 +40,8 @@ export default class Unit {
     attack(nearestEnemy) {
         this.nearestEnemy = nearestEnemy;
     }
+
+    stopAttacking() {
+        this.isAttacking = false;
+    }
 }

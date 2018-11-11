@@ -94,8 +94,7 @@ function resolveAttacks() {
             }
         }
         if (minDist == Number.MAX_VALUE) {
-            a.isAttacking = false;
-            a.laser.clear();
+            a.stopAttacking();
         } else {
             a.isAttacking = true;
             a.attack(nearestEnemy);

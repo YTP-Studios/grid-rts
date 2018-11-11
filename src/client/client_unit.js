@@ -56,4 +56,9 @@ export class ClientUnit extends Unit {
         this.laser.lineTo(endPos.x, endPos.y);
         this.laser.blendMode = PIXI.BLEND_MODES.ADD;
     }
+
+    stopAttacking() {
+        super.stopAttacking();
+        this.laser.clear();
+    }
 }
