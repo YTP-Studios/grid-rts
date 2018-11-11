@@ -2,11 +2,10 @@ import * as PIXI from 'pixi.js'
 import { ClientUnit } from './client_unit';
 import * as Vectors from '../shared/vectors';
 import * as Constants from '../shared/constants';
-import ClientConduit from './client_conduit';
-import GameMap from '../shared/game_map';
 import ClientMap from './client_map';
+import { BLUE_TEAM } from '../shared/teams';
 
-const PLAYER_TEAM = Constants.BLUE_TEAM;
+const PLAYER_TEAM = BLUE_TEAM;
 
 let app = new PIXI.Application({
     width: 800,
@@ -33,16 +32,16 @@ function setup() {
     map = ClientMap.fromString(app.stage, Constants.DEFAULT_MAP);
     units = [
         new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500,
-            Constants.BLUE_TEAM, Constants.BLUE_TEAM_COLOR),
+            BLUE_TEAM),
         new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500,
-            Constants.BLUE_TEAM, Constants.BLUE_TEAM_COLOR),
+            BLUE_TEAM),
         new ClientUnit(app.stage, 50, 50),
         new ClientUnit(app.stage, 500, 500),
 
     ];
 
     app.ticker.add(delta => gameLoop(delta));
-    app.renderer.plugins.interaction.on('mousedown', (event) => {
+    app.renderer.plugins.interaction.on('mousedown', () => {
         let mouseposition = app.renderer.plugins.interaction.mouse.global;
         units.filter((unit) => unit.team === PLAYER_TEAM).forEach((unit) => {
             unit.targetPos.x = mouseposition.x;

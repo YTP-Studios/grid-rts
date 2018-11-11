@@ -1,9 +1,11 @@
 import * as Vectors from '../shared/vectors';
 import * as Constants from '../shared/constants';
+import { NEUTRAL } from './teams';
+
 export default class Unit {
 
-    constructor(x = 0, y = 0, size = 0, team = Constants.NEUTRAL, 
-        color = Constants.NEUTRAL_COLOR, health = Constants.UNIT_HEALTH, enabled = true) {
+    constructor(x = 0, y = 0, size = 0, team = NEUTRAL,
+        health = Constants.UNIT_HEALTH, enabled = true) {
         this.x = x;
         this.y = y;
         this.size = size;
@@ -11,7 +13,6 @@ export default class Unit {
         this.nearestEnemy = { x, y };
         this.velocity = { x: 0, y: 0 };
         this.team = team;
-        this.color = color;
         this.health = Constants.UNIT_HEALTH;
         this.enabled = enabled;
     }
