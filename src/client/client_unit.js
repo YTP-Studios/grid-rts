@@ -1,11 +1,12 @@
 import Unit from "../shared/unit";
 import * as Constants from '../shared/constants';
+import * as Vectors from '../shared/vectors';
 
 const UNIT_SIZE = 32;
 
 export class ClientUnit extends Unit {
 
-    constructor(container, x = 0, y = 0, team = Constants.NEUTRAL, 
+    constructor(container, x = 0, y = 0, team = Constants.NEUTRAL,
         color = Constants.NEUTRAL_COLOR, isAttacking = false) {
         super(x, y, UNIT_SIZE, team, color);
         let machineTurretSprite = new PIXI.Sprite(PIXI.loader.resources["assets/machineTurret.png"].texture);
@@ -30,18 +31,27 @@ export class ClientUnit extends Unit {
         let horizontal_distance = this.targetPos.x - this.x;
         let angle;
         if (this.isAttacking) {
-            angle = Math.atan2(this.nearestEnemy.y - this.y, this.nearestEnemy.x - this.x) + Math.PI/2;
+            angle = Math.atan2(this.nearestEnemy.y - this.y, this.nearestEnemy.x - this.x) + Math.PI / 2;
         } else {
-            angle = Math.atan2(vertical_distance, horizontal_distance) + Math.PI/2; //sprite faces upwards on default so an offset of 90 degrees is needed
+            angle = Math.atan2(vertical_distance, horizontal_distance) + Math.PI / 2; //sprite faces upwards on default so an offset of 90 degrees is needed
         }
         this.sprite.rotation = angle;
+    }
+
+    attack(nearestEnemy) {
+        super.attack(nearestEnemy);
+        this.drawLaser(nearestEnemy);
     }
 
     drawLaser(nearestEnemy) {
         this.laser.clear();
         this.laser.lineStyle(10, this.color);
         this.laser.position.set(0, 0);
-        this.laser.moveTo(this.x, this.y);
-        this.laser.lineTo(nearestEnemy.x, nearestEnemy.y);
+        const direction = Vectors.difference(nearestEnemy, this);
+        const startPos = Vectors.sum(this, Vectors.scaleTo(direction, this.size));
+        const endPos = Vectors.difference(nearestEnemy, Vectors.scaleTo(direction, nearestEnemy.size));
+
+        this.laser.moveTo(startPos.x, startPos.y);
+        this.laser.lineTo(endPos.x, endPos.y);
     }
 }

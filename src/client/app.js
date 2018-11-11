@@ -83,21 +83,22 @@ function resolveAttacks() {
     for (let i = 0; i < units.length; i++) {
         let a = units[i];
         let minDist = Number.MAX_VALUE;
+        let nearestEnemy;
         for (let j = 0; j < units.length; j++) {
             if (i == j) continue;
             let b = units[j];
             const dist = Vectors.dist(a, b);
             if (dist < minDist && a.canAttackUnit(b)) {
                 minDist = dist;
-                a.nearestEnemy.x = b.x;
-                a.nearestEnemy.y = b.y;
-                a.isAttacking = true;
-                a.attack(a.nearestEnemy);
+                nearestEnemy = b;
             }
         }
         if (minDist == Number.MAX_VALUE) {
             a.isAttacking = false;
             a.laser.clear();
+        } else {
+            a.isAttacking = true;
+            a.attack(nearestEnemy);
         }
     }
 }

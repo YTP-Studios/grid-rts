@@ -8,7 +8,7 @@ export default class Unit {
         this.y = y;
         this.size = size;
         this.targetPos = { x, y };
-        this.nearestEnemy = { x, y }; 
+        this.nearestEnemy = { x, y };
         this.velocity = { x: 0, y: 0 };
         this.team = team;
         this.color = color;
@@ -24,7 +24,7 @@ export default class Unit {
         } else {
             Vectors.copyTo(this, this.targetPos);
         }
-        
+
 
     }
 
@@ -38,6 +38,6 @@ export default class Unit {
     }
 
     attack(nearestEnemy) {
-        this.drawLaser(nearestEnemy);
+        this.nearestEnemy = nearestEnemy;
     }
 }
