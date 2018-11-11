@@ -82,7 +82,7 @@ function resolveCollisions() {
 function resolveAttacks() {
     for (let i = 0; i < units.length; i++) {
         let a = units[i];
-        let minDist = Number.MAX_VALUE;
+        let minDist = Infinity;
         let nearestEnemy;
         for (let j = 0; j < units.length; j++) {
             if (i == j) continue;
@@ -93,7 +93,7 @@ function resolveAttacks() {
                 nearestEnemy = b;
             }
         }
-        if (minDist == Number.MAX_VALUE) {
+        if (minDist === Infinity) {
             a.stopAttacking();
         } else {
             a.isAttacking = true;
