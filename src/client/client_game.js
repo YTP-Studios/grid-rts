@@ -10,18 +10,7 @@ import Game from '../shared/game';
 const PLAYER_TEAM = BLUE_TEAM;
 
 export default class ClientGame extends Game {
-    load() {
-        this.app = new PIXI.Application({
-            width: 800,
-            height: 600,
-            antialias: true,
-            transparent: false,
-            resolution: 1,
-            backgroundColor: 0x3B3B3B,
-            //backgroundColor: 0xFFC0CB
-        });
-
-        document.body.appendChild(this.app.view);
+    static loadAssets() {
         return new Promise(resolve =>
             PIXI.loader
                 .add("assets/basic-unit-body.png")
@@ -33,6 +22,18 @@ export default class ClientGame extends Game {
     }
 
     init() {
+        this.app = new PIXI.Application({
+            width: 800,
+            height: 600,
+            antialias: true,
+            transparent: false,
+            resolution: 1,
+            backgroundColor: 0x3B3B3B,
+            //backgroundColor: 0xFFC0CB
+        });
+
+        document.body.appendChild(this.app.view);
+
         let upKey = keyboard("ArrowUp");
         let downKey = keyboard("ArrowDown");
         let leftKey = keyboard("ArrowLeft");
