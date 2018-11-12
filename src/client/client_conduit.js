@@ -51,7 +51,10 @@ export default class ClientConduit extends Conduit {
         super.update(delta, map);
         const checkColour = (row, col, sprite) => {
             let building = map.getBuilding(row, col);
-            if (building != null && building.team == this.team) {
+            if (building == null) {
+                sprite.visible = false;
+            } else if (building.team == this.team) {
+                sprite.visible = true;
                 sprite.tint = TEAM_COLOURS[this.team];
             }
         }

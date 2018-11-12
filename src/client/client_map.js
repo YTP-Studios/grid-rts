@@ -15,8 +15,10 @@ export default class ClientMap extends GameMap {
                 return new ClientConduit(container, row, col, 1);
             case '2':
                 return new ClientConduit(container, row, col, 2);
-            default:
+            case '.':
                 return new ClientConduit(container, row, col, 0);
+            default:
+                return null;
         }
     }
 
