@@ -3,7 +3,7 @@ import { ClientUnit } from './client_unit';
 import * as Vectors from '../shared/vectors';
 import * as Constants from '../shared/constants';
 import ClientMap from './client_map';
-import { BLUE_TEAM } from '../shared/teams';
+import { BLUE_TEAM, RED_TEAM } from '../shared/teams';
 
 const PLAYER_TEAM = BLUE_TEAM;
 
@@ -37,6 +37,11 @@ function setup() {
             BLUE_TEAM),
         new ClientUnit(app.stage, 50, 50),
         new ClientUnit(app.stage, 500, 500),
+
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500,
+            RED_TEAM),
+        new ClientUnit(app.stage, Math.random() * 500, Math.random() * 500,
+            RED_TEAM),
 
     ];
 
