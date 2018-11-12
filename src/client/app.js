@@ -21,6 +21,7 @@ document.body.appendChild(app.view);
 
 PIXI.loader
     .add("assets/basic-unit-body.png")
+    .add("assets/basic-unit-core.png")
     .add("assets/conduit-edge.png")
     .add("assets/conduit-center.png")
     .load(setup);

@@ -2,27 +2,32 @@ import Unit from "../shared/unit";
 import * as Constants from '../shared/constants';
 import * as Vectors from '../shared/vectors';
 import { TEAM_COLOURS, NEUTRAL } from "../shared/teams";
+import { createCenteredSprite } from "./sprite-utils";
 
 export class ClientUnit extends Unit {
 
-    constructor(container, x = 0, y = 0, team = NEUTRAL, isAttacking = false) {
+    constructor(parentContainer, x = 0, y = 0, team = NEUTRAL, isAttacking = false) {
         super(x, y, Constants.UNIT_BODY_SIZE, team);
-        this.container = container;
-        let machineTurretSprite = new PIXI.Sprite(PIXI.loader.resources["assets/basic-unit-body.png"].texture);
-        machineTurretSprite.pivot.x = machineTurretSprite.width / 2;
-        machineTurretSprite.pivot.y = machineTurretSprite.height / 2;
-        machineTurretSprite.width = Constants.UNIT_BODY_SIZE * 4;
-        machineTurretSprite.height = Constants.UNIT_BODY_SIZE * 4;
+        this.parentContainer = parentContainer;
 
-        this.sprite = machineTurretSprite;
-        this.sprite.tint = TEAM_COLOURS[this.team];
-        this.container.addChild(this.sprite);
+        let spriteContainer = new PIXI.Container();
+        spriteContainer.pivot.x = spriteContainer.width / 2;
+        spriteContainer.pivot.y = spriteContainer.height / 2;
+        this.sprite = spriteContainer;
+        this.parentContainer.addChild(this.sprite);
+
+        this.basicUnitSprite = createCenteredSprite("assets/basic-unit-body.png", Constants.UNIT_BODY_SIZE * 4);
+        this.basicUnitSprite.tint = TEAM_COLOURS[this.team];
+        this.sprite.addChild(this.basicUnitSprite);
+
+        this.basicUnitCoreSprite = createCenteredSprite("assets/basic-unit-core.png", Constants.UNIT_BODY_SIZE * 4);
+        this.sprite.addChild(this.basicUnitCoreSprite);
 
         let laser = new PIXI.Graphics;
         laser.lineStyle(10, TEAM_COLOURS[this.team]);
         this.laser = laser;
         this.isAttacking = isAttacking;
-        this.container.addChild(this.laser);
+        this.parentContainer.addChild(this.laser);
     }
 
     update(delta) {
@@ -38,6 +43,7 @@ export class ClientUnit extends Unit {
             angle = Math.atan2(vertical_distance, horizontal_distance) + Math.PI / 2; //sprite faces upwards on default so an offset of 90 degrees is needed
         }
         this.sprite.rotation = angle;
+        this.scaleUnitCore();
 
         if (this.health < 0) {
             this.deleteUnitSprites();
@@ -68,7 +74,13 @@ export class ClientUnit extends Unit {
     }
 
     deleteUnitSprites() {
-        this.container.removeChild(this.sprite);
-        this.container.removeChild(this.laser);
+        this.sprite.removeChild(this.basicUnitSprite);
+        this.parentContainer.removeChild(this.laser);
+        this.parentContainer.removeChild(this.sprite);
+    }
+
+    scaleUnitCore() {
+        this.basicUnitCoreSprite.height = this.health / Constants.UNIT_HEALTH * Constants.UNIT_BODY_SIZE * 4;
+        this.basicUnitCoreSprite.width = this.health / Constants.UNIT_HEALTH * Constants.UNIT_BODY_SIZE * 4;
     }
 }
