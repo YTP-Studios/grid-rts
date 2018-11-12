@@ -13,7 +13,7 @@ export default class Unit {
         this.nearestEnemy = { x, y };
         this.velocity = { x: 0, y: 0 };
         this.team = team;
-        this.health = Constants.UNIT_HEALTH;
+        this.health = health;
         this.enabled = enabled;
     }
 

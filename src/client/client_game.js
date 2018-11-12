@@ -25,6 +25,7 @@ export default class ClientGame extends Game {
         return new Promise(resolve =>
             PIXI.loader
                 .add("assets/basic-unit-body.png")
+                .add("assets/basic-unit-core.png")
                 .add("assets/conduit-edge.png")
                 .add("assets/conduit-center.png")
                 .load(resolve));
