@@ -10,10 +10,6 @@ export default class BasicUnit extends Unit {
             super(x, y, size, team, health, range, speed);
     }
 
-    update(delta) {
-        super.update(delta);
-    }
-
     attack(nearestEnemy) {
         this.nearestEnemy = nearestEnemy;
         this.nearestEnemy.health -= Constants.LASER_DAMAGE;
