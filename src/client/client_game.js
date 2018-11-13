@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js'
-import { ClientUnit } from './client_unit';
+import { BasicClientUnit } from './basic_client_unit';
 import * as Vectors from '../shared/vectors';
 import * as Constants from '../shared/constants';
 import ClientMap from './client_map';
@@ -45,10 +45,10 @@ export default class ClientGame extends Game {
 
         let map = ClientMap.fromString(this.world, Constants.DEFAULT_MAP);
         let units = [
-            new ClientUnit(this.world, Math.random() * 500, Math.random() * 500, BLUE_TEAM),
-            new ClientUnit(this.world, Math.random() * 500, Math.random() * 500, BLUE_TEAM),
-            new ClientUnit(this.world, 50, 50),
-            new ClientUnit(this.world, 500, 500),
+            new BasicClientUnit(this.world, Math.random() * 500, Math.random() * 500, BLUE_TEAM),
+            new BasicClientUnit(this.world, Math.random() * 500, Math.random() * 500, BLUE_TEAM),
+            new BasicClientUnit(this.world, 50, 50),
+            new BasicClientUnit(this.world, 500, 500),
         ];
         super.init(map, units);
 

@@ -5,7 +5,8 @@ import { NEUTRAL } from './teams';
 export default class Unit {
 
     constructor(x = 0, y = 0, size = 0, team = NEUTRAL,
-        health = Constants.UNIT_HEALTH, enabled = true) {
+        health = Constants.UNIT_HEALTH, range = Constants.UNIT_RANGE, 
+        speed = Constants.UNIT_SPEED, enabled = true) {
         this.x = x;
         this.y = y;
         this.size = size;
@@ -14,13 +15,15 @@ export default class Unit {
         this.velocity = { x: 0, y: 0 };
         this.team = team;
         this.health = health;
+        this.range = range;
+        this.speed = speed;
         this.enabled = enabled;
     }
 
     update(delta) {
         if (!this.atDestination()) {
             const displacement = Vectors.difference(this.targetPos, this)
-            this.velocity = Vectors.scaleTo(displacement, Constants.UNIT_SPEED);
+            this.velocity = Vectors.scaleTo(displacement, this.speed);
 
             this.x += this.velocity.x * delta;
             this.y += this.velocity.y * delta;
@@ -38,12 +41,7 @@ export default class Unit {
 
     canAttackUnit(unit) {
         let dist = Vectors.dist(this, unit);
-        return this.team != unit.team && dist < Constants.UNIT_RANGE;
-    }
-
-    attack(nearestEnemy) {
-        this.nearestEnemy = nearestEnemy;
-        this.nearestEnemy.health -= Constants.LASER_DAMAGE;
+        return this.team != unit.team && dist < this.range;
     }
 
     stopAttacking() {

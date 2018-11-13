@@ -1,13 +1,14 @@
-import Unit from "../shared/unit";
+
 import * as Constants from '../shared/constants';
 import * as Vectors from '../shared/vectors';
 import { TEAM_COLOURS, NEUTRAL } from "../shared/teams";
 import { createCenteredSprite } from "./sprite-utils";
+import BasicUnit from '../shared/basic_unit';
 
-export class ClientUnit extends Unit {
+export class BasicClientUnit extends BasicUnit {
 
     constructor(parentContainer, x = 0, y = 0, team = NEUTRAL, isAttacking = false) {
-        super(x, y, Constants.UNIT_BODY_SIZE, team);
+        super(x, y, Constants.BASIC_UNIT_BODY_SIZE, team);
         this.parentContainer = parentContainer;
 
         let spriteContainer = new PIXI.Container();
@@ -16,11 +17,11 @@ export class ClientUnit extends Unit {
         this.sprite = spriteContainer;
         this.parentContainer.addChild(this.sprite);
 
-        this.basicUnitSprite = createCenteredSprite("assets/basic-unit-body.png", Constants.UNIT_BODY_SIZE * 4);
+        this.basicUnitSprite = createCenteredSprite("assets/basic-unit-body.png", Constants.BASIC_UNIT_BODY_SIZE * 4);
         this.basicUnitSprite.tint = TEAM_COLOURS[this.team];
         this.sprite.addChild(this.basicUnitSprite);
 
-        this.basicUnitCoreSprite = createCenteredSprite("assets/basic-unit-core.png", Constants.UNIT_BODY_SIZE * 4);
+        this.basicUnitCoreSprite = createCenteredSprite("assets/basic-unit-core.png", Constants.BASIC_UNIT_BODY_SIZE * 4);
         this.sprite.addChild(this.basicUnitCoreSprite);
 
         let laser = new PIXI.Graphics;
@@ -60,7 +61,7 @@ export class ClientUnit extends Unit {
         this.laser.lineStyle(10, TEAM_COLOURS[this.team]);
         this.laser.position.set(0, 0);
         const direction = Vectors.difference(nearestEnemy, this);
-        const offset = Vectors.scaleTo(direction, Constants.UNIT_TURRET_LENGTH);
+        const offset = Vectors.scaleTo(direction, Constants.BASIC_UNIT_TURRET_LENGTH);
         const startPos = Vectors.sum(Vectors.sum(this, Vectors.scaleTo(direction, this.size)), offset);
         const endPos = Vectors.difference(nearestEnemy, Vectors.scaleTo(direction, nearestEnemy.size));
         this.laser.moveTo(startPos.x, startPos.y);
@@ -80,7 +81,7 @@ export class ClientUnit extends Unit {
     }
 
     scaleUnitCore() {
-        this.basicUnitCoreSprite.height = this.health / Constants.UNIT_HEALTH * Constants.UNIT_BODY_SIZE * 4;
-        this.basicUnitCoreSprite.width = this.health / Constants.UNIT_HEALTH * Constants.UNIT_BODY_SIZE * 4;
+        this.basicUnitCoreSprite.height = this.health / Constants.BASIC_UNIT_HEALTH * Constants.BASIC_UNIT_BODY_SIZE * 4;
+        this.basicUnitCoreSprite.width = this.health / Constants.BASIC_UNIT_HEALTH * Constants.BASIC_UNIT_BODY_SIZE * 4;
     }
 }
