@@ -58,4 +58,34 @@ export default class Game {
         }
         this.units = this.units.filter(unit => unit.enabled);
     }
+
+    getState() {
+        return {
+            units: this.units.map(e => e.getState()),
+            map: this.map.getState(),
+        };
+    }
+
+    instantiate(data) { }
+
+    setState({ units: unitsData, map }) {
+        // Remove missing units
+        let toRemove = this.units.filter(unit => !unitsData.some(e => e.id != unit.id));
+        toRemove.forEach(e => e.destroy());
+        this.units = this.units.filter(unit => unitsData.some(e => e.id == unit.id));
+
+        // Update existing units
+        this.units.forEach((unit) => {
+            const data = unitsData.find(e => (e.id == unit.id));
+            unit.setState(data);
+        });
+
+        // Add new units
+        this.units = this.units.concat(unitsData
+            .filter(e => !this.units.some(unit => unit.id == e.id))
+            .map(data => this.instantiate(data)));
+
+        // Update map
+        this.map.setState(map);
+    }
 }

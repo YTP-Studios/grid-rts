@@ -68,6 +68,12 @@ export default class ClientGame extends Game {
                 Vectors.copyTo(worldPosition, unit.targetPos)
             });
         })
+
+        // // resets the state in 10s
+        // let state = this.getState();
+        // setTimeout(() => {
+        //     this.setState(state);
+        // }, 10000);
     }
 
     start() {
@@ -81,6 +87,21 @@ export default class ClientGame extends Game {
 
     updateCamera(delta) {
         Vectors.copyTo(Vectors.sum(this.world, Vectors.scale(this.world.velocity, delta)), this.world);
+    }
+
+    instantiate(data) {
+        if (data.type.startsWith("unit")) {
+            let unit;
+            switch (data.type) {
+                case "unit:basic_unit":
+                    unit = new BasicClientUnit(this.world, data.x, data.y, data.team);
+                    break;
+                default:
+                    throw new Error("Undefined unit type.");
+            }
+            unit.setState(data);
+            return unit;
+        }
     }
 
 }

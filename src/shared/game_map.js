@@ -13,4 +13,12 @@ export default class GameMap {
         if (col < 0 || col >= this.buildings[row].length) return null;
         return this.buildings[row][col];
     }
+
+    setState() {
+        // TODO: unimplemented
+    }
+
+    getState() {
+        // TODO: unimplemented
+    }
 }

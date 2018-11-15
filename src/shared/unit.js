@@ -1,12 +1,14 @@
 import * as Vectors from '../shared/vectors';
 import * as Constants from '../shared/constants';
 import { NEUTRAL } from './teams';
+import * as uuid from 'uuid/v4';
 
 export default class Unit {
 
     constructor(x = 0, y = 0, size = 0, team = NEUTRAL,
-        health = Constants.UNIT_HEALTH, range = Constants.UNIT_RANGE, 
-        speed = Constants.UNIT_SPEED, enabled = true) {
+        health, range,
+        speed, enabled = true) {
+        this.id = uuid();
         this.x = x;
         this.y = y;
         this.size = size;
@@ -46,5 +48,30 @@ export default class Unit {
 
     stopAttacking() {
         this.isAttacking = false;
+    }
+
+    destroy() { }
+
+    getState() {
+        return {
+            type: "unit",
+            id: this.id,
+            x: this.x,
+            y: this.y,
+            team: this.team,
+            health: this.health,
+            enabled: this.enabled,
+            targetPos: { ...this.targetPos },
+        };
+    }
+
+    setState({ x, y, team, health, enabled, targetPos }) {
+        this.x = Number(x);
+        this.y = Number(y);
+        this.team = Number(team);
+        this.health = Number(health);
+        this.enabled = enabled;
+        this.targetPos.x = Number(targetPos.x);
+        this.targetPos.y = Number(targetPos.y);
     }
 }

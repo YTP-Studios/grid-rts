@@ -47,7 +47,7 @@ export class BasicClientUnit extends BasicUnit {
         this.scaleUnitCore();
 
         if (this.health < 0) {
-            this.deleteUnitSprites();
+            this.destroy();
         }
     }
 
@@ -74,7 +74,7 @@ export class BasicClientUnit extends BasicUnit {
         this.laser.clear();
     }
 
-    deleteUnitSprites() {
+    destroy() {
         this.sprite.removeChild(this.basicUnitSprite);
         this.parentContainer.removeChild(this.laser);
         this.parentContainer.removeChild(this.sprite);
@@ -84,4 +84,5 @@ export class BasicClientUnit extends BasicUnit {
         this.basicUnitCoreSprite.height = this.health / Constants.BASIC_UNIT_HEALTH * Constants.BASIC_UNIT_BODY_SIZE * 4;
         this.basicUnitCoreSprite.width = this.health / Constants.BASIC_UNIT_HEALTH * Constants.BASIC_UNIT_BODY_SIZE * 4;
     }
+
 }
