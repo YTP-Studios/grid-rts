@@ -151,7 +151,7 @@ export default class ClientGame extends Game {
     }
 
     isUnitInSelectionBox(unit) {
-        return unit.x >= this.initialMousePos.x && unit.x <= this.initialMousePos.x + this.unitSelectorBox.width
-            && unit.y <= this.initialMousePos.y && unit.y >= this.initialMousePos.y - this.unitSelectorBox.height;
+        const bounds = this.unitSelectorBox.getBounds();
+        return unit.x >= bounds.x && unit.x <= bounds.x + bounds.width && unit.y >= bounds.y && unit.y <= bounds.y + bounds.height;
     }
 }
