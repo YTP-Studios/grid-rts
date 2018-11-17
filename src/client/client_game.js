@@ -6,6 +6,7 @@ import ClientMap from './client_map';
 import { BLUE_TEAM } from '../shared/teams';
 import keyboard from './keyboard';
 import Game from '../shared/game';
+import { MoveCommand, Command } from '../shared/commands';
 
 const PLAYER_TEAM = BLUE_TEAM;
 
@@ -63,17 +64,18 @@ export default class ClientGame extends Game {
 
         this.app.renderer.plugins.interaction.on('mousedown', () => {
             const mousePosition = this.app.renderer.plugins.interaction.mouse.global;
-            units.filter((unit) => unit.team === PLAYER_TEAM).forEach((unit) => {
-                const worldPosition = Vectors.difference(mousePosition, this.world)
-                Vectors.copyTo(worldPosition, unit.targetPos)
-            });
+            const unitIds = this.units.filter((unit) => unit.team === PLAYER_TEAM).map(unit => unit.id);
+            const targetPos = Vectors.difference(mousePosition, this.world)
+            const command = new MoveCommand({ targetPos, unitIds });
+
+            command.exec(this);
         })
 
-        // // resets the state in 10s
-        // let state = this.getState();
-        // setTimeout(() => {
-        //     this.setState(state);
-        // }, 10000);
+        let state = this.getState();
+        let resetKey = keyboard("r");
+        resetKey.press = () => {
+            this.setState(state);
+        };
     }
 
     start() {

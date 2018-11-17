@@ -70,7 +70,7 @@ export default class Game {
 
     setState({ units: unitsData, map }) {
         // Remove missing units
-        let toRemove = this.units.filter(unit => !unitsData.some(e => e.id != unit.id));
+        let toRemove = this.units.filter(unit => !unitsData.some(e => e.id == unit.id));
         toRemove.forEach(e => e.destroy());
         this.units = this.units.filter(unit => unitsData.some(e => e.id == unit.id));
 
