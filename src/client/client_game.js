@@ -66,7 +66,7 @@ export default class ClientGame extends Game {
         this.initialMousePos = { x: 0, y: 0 };
 
         this.unitSelectorBox = new PIXI.Graphics();
-        this.app.stage.addChild(this.unitSelectorBox);
+        this.world.addChild(this.unitSelectorBox);
 
         this.app.renderer.plugins.interaction.on('rightdown', () => {
             const mousePosition = this.app.renderer.plugins.interaction.mouse.global;
@@ -79,7 +79,7 @@ export default class ClientGame extends Game {
 
         this.app.renderer.plugins.interaction.on('mousedown', () => {
             this.isMouseDown = true;
-            const mousePosition = this.app.renderer.plugins.interaction.mouse.global;
+            const mousePosition = this.world.toLocal(this.app.renderer.plugins.interaction.mouse.global);
             this.initialMousePos.x = mousePosition.x;
             this.initialMousePos.y = mousePosition.y;
         })
@@ -111,7 +111,7 @@ export default class ClientGame extends Game {
         super.update(delta);
         this.updateCamera(delta);
         if (this.isMouseDown) {
-            const mousePosition = this.app.renderer.plugins.interaction.mouse.global;
+            const mousePosition = this.world.toLocal(this.app.renderer.plugins.interaction.mouse.global);
             this.drawUnitSelectionBox(mousePosition);
         }
     }
@@ -157,8 +157,8 @@ export default class ClientGame extends Game {
     }
 
     isUnitInSelectionBox(unit) {
-        const bounds = this.unitSelectorBox.getBounds();
-        return unit.x >= bounds.x && unit.x <= bounds.x + bounds.width 
+        const bounds = this.unitSelectorBox.getLocalBounds();
+        return unit.x >= bounds.x && unit.x <= bounds.x + bounds.width
             && unit.y >= bounds.y && unit.y <= bounds.y + bounds.height;
     }
 }
