@@ -22,7 +22,8 @@ export default class ClientGame extends Game {
 
     }
 
-    init() {
+    init(socket) {
+        this.socket = socket;
         this.app = new PIXI.Application({
             width: 800,
             height: 600,
@@ -67,15 +68,19 @@ export default class ClientGame extends Game {
             const unitIds = this.units.filter((unit) => unit.team === PLAYER_TEAM).map(unit => unit.id);
             const targetPos = Vectors.difference(mousePosition, this.world)
             const command = new MoveCommand({ targetPos, unitIds });
-
+            socket.emit("command", Command.toData(command));
             command.exec(this);
         })
 
         let state = this.getState();
-        let resetKey = keyboard("r");
+        let resetKey = keyboard("p");
         resetKey.press = () => {
-            this.setState(state);
+            this.socket.emit("reset");
         };
+
+        socket.on("game_state", (data) => {
+            this.setState(data);
+        })
     }
 
     start() {
@@ -101,6 +106,7 @@ export default class ClientGame extends Game {
                 default:
                     throw new Error("Undefined unit type.");
             }
+            unit.id = data.id;
             unit.setState(data);
             return unit;
         }
