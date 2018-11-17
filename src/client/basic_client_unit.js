@@ -9,6 +9,7 @@ export class BasicClientUnit extends BasicUnit {
 
     constructor(parentContainer, x = 0, y = 0, team = NEUTRAL) {
         super(x, y, team);
+      
         this.parentContainer = parentContainer;
 
         let spriteContainer = new PIXI.Container();

@@ -158,6 +158,7 @@ export default class ClientGame extends Game {
 
     isUnitInSelectionBox(unit) {
         const bounds = this.unitSelectorBox.getBounds();
-        return unit.x >= bounds.x && unit.x <= bounds.x + bounds.width && unit.y >= bounds.y && unit.y <= bounds.y + bounds.height;
+        return unit.x >= bounds.x && unit.x <= bounds.x + bounds.width 
+            && unit.y >= bounds.y && unit.y <= bounds.y + bounds.height;
     }
 }
