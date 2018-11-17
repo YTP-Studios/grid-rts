@@ -7,8 +7,7 @@ import { BLUE_TEAM } from '../shared/teams';
 import keyboard from './keyboard';
 import Game from '../shared/game';
 import { MoveCommand, Command } from '../shared/commands';
-
-const PLAYER_TEAM = BLUE_TEAM;
+import { RESET, GAME_STATE, COMMAND } from '../shared/game-events';
 
 export default class ClientGame extends Game {
     static loadAssets() {
@@ -65,20 +64,20 @@ export default class ClientGame extends Game {
 
         this.app.renderer.plugins.interaction.on('mousedown', () => {
             const mousePosition = this.app.renderer.plugins.interaction.mouse.global;
-            const unitIds = this.units.filter((unit) => unit.team === PLAYER_TEAM).map(unit => unit.id);
+            const unitIds = this.units.filter((unit) => unit.team === this.playerTeam).map(unit => unit.id);
             const targetPos = Vectors.difference(mousePosition, this.world)
             const command = new MoveCommand({ targetPos, unitIds });
-            socket.emit("command", Command.toData(command));
+            socket.emit(COMMAND, Command.toData(command));
             command.exec(this);
         })
 
         let state = this.getState();
         let resetKey = keyboard("p");
         resetKey.press = () => {
-            this.socket.emit("reset");
+            this.socket.emit(RESET);
         };
 
-        socket.on("game_state", (data) => {
+        socket.on(GAME_STATE, (data) => {
             this.setState(data);
         })
     }

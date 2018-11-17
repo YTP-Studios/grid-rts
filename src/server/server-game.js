@@ -2,11 +2,12 @@ import Game from '../shared/game';
 import GameMap from '../shared/game_map';
 import BasicUnit from '../shared/basic_unit';
 import { NEUTRAL, RED_TEAM, BLUE_TEAM } from '../shared/teams';
+import { GAME_STATE } from '../shared/game-events';
 
 export default class ServerGame extends Game {
-    constructor(io) {
+    constructor() {
         super();
-        this.io = io;
+        this.players = [];
     }
 
     init() {
@@ -24,6 +25,5 @@ export default class ServerGame extends Game {
 
     update(delta) {
         super.update(delta);
-        this.io.emit("game_state", this.getState());
     }
 }
