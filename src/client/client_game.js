@@ -7,8 +7,7 @@ import { BLUE_TEAM, TEAM_COLOURS } from '../shared/teams';
 import keyboard from './keyboard';
 import Game from '../shared/game';
 import { MoveCommand, Command } from '../shared/commands';
-
-const PLAYER_TEAM = BLUE_TEAM;
+import { RESET, GAME_STATE, COMMAND } from '../shared/game-events';
 
 export default class ClientGame extends Game {
     static loadAssets() {
@@ -22,7 +21,8 @@ export default class ClientGame extends Game {
 
     }
 
-    init() {
+    init(socket) {
+        this.socket = socket;
         this.app = new PIXI.Application({
             width: 800,
             height: 600,
@@ -70,9 +70,10 @@ export default class ClientGame extends Game {
 
         this.app.renderer.plugins.interaction.on('rightdown', () => {
             const mousePosition = this.app.renderer.plugins.interaction.mouse.global;
-            const unitIds = this.units.filter((unit) => unit.team === PLAYER_TEAM && unit.isSelected).map(unit => unit.id);
+            const unitIds = this.units.filter((unit) => unit.team === this.playerTeam && unit.isSelected).map(unit => unit.id);
             const targetPos = Vectors.difference(mousePosition, this.world)
             const command = new MoveCommand({ targetPos, unitIds });
+            socket.emit(COMMAND, Command.toData(command));
             command.exec(this);
         })
 
@@ -92,10 +93,14 @@ export default class ClientGame extends Game {
 
 
         let state = this.getState();
-        let resetKey = keyboard("r");
+        let resetKey = keyboard("p");
         resetKey.press = () => {
-            this.setState(state);
+            this.socket.emit(RESET);
         };
+
+        socket.on(GAME_STATE, (data) => {
+            this.setState(data);
+        })
     }
 
     start() {
@@ -125,6 +130,7 @@ export default class ClientGame extends Game {
                 default:
                     throw new Error("Undefined unit type.");
             }
+            unit.id = data.id;
             unit.setState(data);
             return unit;
         }
@@ -132,17 +138,17 @@ export default class ClientGame extends Game {
 
     drawUnitSelectionBox(mousePosition) {
         this.unitSelectorBox.clear();
-        this.unitSelectorBox.lineStyle(Constants.SELECTOR_BOX_BORDER_WIDTH, TEAM_COLOURS[PLAYER_TEAM]);
-        this.unitSelectorBox.beginFill(TEAM_COLOURS[PLAYER_TEAM], Constants.SELECTOR_BOX_OPACITY);
+        this.unitSelectorBox.lineStyle(Constants.SELECTOR_BOX_BORDER_WIDTH, TEAM_COLOURS[this.playerTeam]);
+        this.unitSelectorBox.beginFill(TEAM_COLOURS[this.playerTeam], Constants.SELECTOR_BOX_OPACITY);
         const width = -this.initialMousePos.x + mousePosition.x;
         const height = -this.initialMousePos.y + mousePosition.y;
-        this.unitSelectorBox.drawRect(this.initialMousePos.x, 
-        this.initialMousePos.y, width, height);
+        this.unitSelectorBox.drawRect(this.initialMousePos.x,
+            this.initialMousePos.y, width, height);
     }
 
     setUnitSelections() {
         for (let unit of this.units) {
-            if (this.isUnitInSelectionBox(unit) && unit.team === PLAYER_TEAM) {
+            if (this.isUnitInSelectionBox(unit) && unit.team === this.playerTeam) {
                 unit.isSelected = true;
             } else {
                 unit.isSelected = false;

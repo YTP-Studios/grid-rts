@@ -5,9 +5,7 @@ import * as uuid from 'uuid/v4';
 
 export default class Unit {
 
-    constructor(x = 0, y = 0, size = 0, team = NEUTRAL,
-        health, range,
-        speed, enabled = true) {
+    constructor(x = 0, y = 0, team = NEUTRAL, size = 0, health, range, speed, enabled = true) {
         this.id = uuid();
         this.x = x;
         this.y = y;

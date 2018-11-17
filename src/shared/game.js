@@ -73,7 +73,6 @@ export default class Game {
         let toRemove = this.units.filter(unit => !unitsData.some(e => e.id == unit.id));
         toRemove.forEach(e => e.destroy());
         this.units = this.units.filter(unit => unitsData.some(e => e.id == unit.id));
-
         // Update existing units
         this.units.forEach((unit) => {
             const data = unitsData.find(e => (e.id == unit.id));

@@ -8,7 +8,8 @@ import BasicUnit from '../shared/basic_unit';
 export class BasicClientUnit extends BasicUnit {
 
     constructor(parentContainer, x = 0, y = 0, team = NEUTRAL) {
-        super(x, y, Constants.BASIC_UNIT_BODY_SIZE, team);
+        super(x, y, team);
+      
         this.parentContainer = parentContainer;
 
         let spriteContainer = new PIXI.Container();

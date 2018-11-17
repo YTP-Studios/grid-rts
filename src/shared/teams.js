@@ -12,3 +12,9 @@ export const TEAM_COLOURS = [
 export const NEUTRAL = 0;
 export const RED_TEAM = 1;
 export const BLUE_TEAM = 2;
+
+export const TEAMS = [
+    NEUTRAL,
+    RED_TEAM,
+    BLUE_TEAM,
+];
