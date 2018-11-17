@@ -3,7 +3,7 @@ import { BasicClientUnit } from './basic_client_unit';
 import * as Vectors from '../shared/vectors';
 import * as Constants from '../shared/constants';
 import ClientMap from './client_map';
-import { BLUE_TEAM } from '../shared/teams';
+import { BLUE_TEAM, TEAM_COLOURS } from '../shared/teams';
 import keyboard from './keyboard';
 import Game from '../shared/game';
 import { MoveCommand, Command } from '../shared/commands';
@@ -30,10 +30,10 @@ export default class ClientGame extends Game {
             transparent: false,
             resolution: 1,
             backgroundColor: 0x3B3B3B,
-            //backgroundColor: 0xFFC0CB
         });
 
         document.body.appendChild(this.app.view);
+        this.app.view.oncontextmenu = () => false;
 
         let upKey = keyboard("ArrowUp");
         let downKey = keyboard("ArrowDown");
@@ -62,14 +62,35 @@ export default class ClientGame extends Game {
         rightKey.press = () => this.world.velocity.x -= Constants.CAMERA_SPEED;
         rightKey.release = () => this.world.velocity.x += Constants.CAMERA_SPEED;
 
-        this.app.renderer.plugins.interaction.on('mousedown', () => {
+        this.isMouseDown = false;
+        this.initialMousePos = { x: 0, y: 0 };
+
+        this.unitSelectorBox = new PIXI.Graphics();
+        this.app.stage.addChild(this.unitSelectorBox);
+
+        this.app.renderer.plugins.interaction.on('rightdown', () => {
             const mousePosition = this.app.renderer.plugins.interaction.mouse.global;
-            const unitIds = this.units.filter((unit) => unit.team === this.playerTeam).map(unit => unit.id);
+            const unitIds = this.units.filter((unit) => unit.team === this.playerTeam && unit.isSelected).map(unit => unit.id);
             const targetPos = Vectors.difference(mousePosition, this.world)
             const command = new MoveCommand({ targetPos, unitIds });
             socket.emit(COMMAND, Command.toData(command));
             command.exec(this);
         })
+
+        this.app.renderer.plugins.interaction.on('mousedown', () => {
+            this.isMouseDown = true;
+            const mousePosition = this.app.renderer.plugins.interaction.mouse.global;
+            this.initialMousePos.x = mousePosition.x;
+            this.initialMousePos.y = mousePosition.y;
+        })
+
+        this.app.renderer.plugins.interaction.on('mouseup', () => {
+            this.setUnitSelections();
+            this.unitSelectorBox.clear();
+            this.isMouseDown = false;
+        })
+
+
 
         let state = this.getState();
         let resetKey = keyboard("p");
@@ -89,6 +110,10 @@ export default class ClientGame extends Game {
     update(delta) {
         super.update(delta);
         this.updateCamera(delta);
+        if (this.isMouseDown) {
+            const mousePosition = this.app.renderer.plugins.interaction.mouse.global;
+            this.drawUnitSelectionBox(mousePosition);
+        }
     }
 
     updateCamera(delta) {
@@ -111,4 +136,28 @@ export default class ClientGame extends Game {
         }
     }
 
+    drawUnitSelectionBox(mousePosition) {
+        this.unitSelectorBox.clear();
+        this.unitSelectorBox.lineStyle(Constants.SELECTOR_BOX_BORDER_WIDTH, TEAM_COLOURS[this.playerTeam]);
+        this.unitSelectorBox.beginFill(TEAM_COLOURS[this.playerTeam], Constants.SELECTOR_BOX_OPACITY);
+        const width = -this.initialMousePos.x + mousePosition.x;
+        const height = -this.initialMousePos.y + mousePosition.y;
+        this.unitSelectorBox.drawRect(this.initialMousePos.x,
+            this.initialMousePos.y, width, height);
+    }
+
+    setUnitSelections() {
+        for (let unit of this.units) {
+            if (this.isUnitInSelectionBox(unit) && unit.team === this.playerTeam) {
+                unit.isSelected = true;
+            } else {
+                unit.isSelected = false;
+            }
+        }
+    }
+
+    isUnitInSelectionBox(unit) {
+        const bounds = this.unitSelectorBox.getBounds();
+        return unit.x >= bounds.x && unit.x <= bounds.x + bounds.width && unit.y >= bounds.y && unit.y <= bounds.y + bounds.height;
+    }
 }

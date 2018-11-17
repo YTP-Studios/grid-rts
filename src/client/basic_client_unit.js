@@ -7,7 +7,7 @@ import BasicUnit from '../shared/basic_unit';
 
 export class BasicClientUnit extends BasicUnit {
 
-    constructor(parentContainer, x = 0, y = 0, team = NEUTRAL, isAttacking = false) {
+    constructor(parentContainer, x = 0, y = 0, team = NEUTRAL) {
         super(x, y, team);
         this.parentContainer = parentContainer;
 
@@ -24,10 +24,12 @@ export class BasicClientUnit extends BasicUnit {
         this.basicUnitCoreSprite = createCenteredSprite("assets/basic-unit-core.png", Constants.BASIC_UNIT_BODY_SIZE * 4);
         this.sprite.addChild(this.basicUnitCoreSprite);
 
-        let laser = new PIXI.Graphics;
-        laser.lineStyle(10, TEAM_COLOURS[this.team]);
-        this.laser = laser;
-        this.isAttacking = isAttacking;
+        this.isSelected = false;
+        this.selectionCircle = new PIXI.Graphics;
+        this.parentContainer.addChild(this.selectionCircle);
+
+        this.laser = new PIXI.Graphics;
+        this.isAttacking = false;
         this.parentContainer.addChild(this.laser);
     }
 
@@ -45,6 +47,12 @@ export class BasicClientUnit extends BasicUnit {
         }
         this.sprite.rotation = angle;
         this.scaleUnitCore();
+
+        if (this.isSelected) {
+            this.drawSelectionCircle();
+        } else {
+            this.selectionCircle.clear();
+        }
 
         if (this.health < 0) {
             this.destroy();
@@ -69,6 +77,13 @@ export class BasicClientUnit extends BasicUnit {
         this.laser.blendMode = PIXI.BLEND_MODES.ADD;
     }
 
+    drawSelectionCircle() {
+        this.selectionCircle.clear();
+        this.selectionCircle.lineStyle(Constants.SELECTOR_BOX_BORDER_WIDTH, Constants.SELECTOR_CIRCLE_COLOR);
+        this.selectionCircle.beginFill(Constants.SELECTOR_CIRCLE_COLOR, Constants.SELECTOR_BOX_OPACITY);
+        this.selectionCircle.drawCircle(this.x, this.y, Constants.SELECTOR_CIRCLE_RADIUS);
+    }
+
     stopAttacking() {
         super.stopAttacking();
         this.laser.clear();
@@ -78,11 +93,14 @@ export class BasicClientUnit extends BasicUnit {
         this.sprite.removeChild(this.basicUnitSprite);
         this.parentContainer.removeChild(this.laser);
         this.parentContainer.removeChild(this.sprite);
+        this.parentContainer.removeChild(this.selectionCircle);
     }
 
     scaleUnitCore() {
         this.basicUnitCoreSprite.height = this.health / Constants.BASIC_UNIT_HEALTH * Constants.BASIC_UNIT_BODY_SIZE * 4;
         this.basicUnitCoreSprite.width = this.health / Constants.BASIC_UNIT_HEALTH * Constants.BASIC_UNIT_BODY_SIZE * 4;
     }
+
+
 
 }
