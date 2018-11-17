@@ -17,6 +17,9 @@ export default class ClientGame extends Game {
                 .add("assets/basic-unit-core.png")
                 .add("assets/conduit-edge.png")
                 .add("assets/conduit-center.png")
+                .add("assets/generator-edge.png")
+                .add("assets/generator-center.png")
+                .add("assets/generator-core.png")
                 .load(resolve));
 
     }
