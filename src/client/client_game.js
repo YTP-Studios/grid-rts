@@ -33,7 +33,7 @@ export default class ClientGame extends Game {
         });
 
         document.body.appendChild(this.app.view);
-        this.app.view.oncontextmenu = () => {return false;}
+        this.app.view.oncontextmenu = () => false;
 
         let upKey = keyboard("ArrowUp");
         let downKey = keyboard("ArrowDown");
@@ -42,7 +42,7 @@ export default class ClientGame extends Game {
 
         this.world = new PIXI.Container();
         this.world.velocity = { x: 0, y: 0 };
-        this.app.stage.addChild(this.world);;
+        this.app.stage.addChild(this.world);
 
         let map = ClientMap.fromString(this.world, Constants.DEFAULT_MAP);
         let units = [
