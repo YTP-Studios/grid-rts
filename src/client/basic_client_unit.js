@@ -7,10 +7,11 @@ import BasicUnit from '../shared/basic_unit';
 
 export class BasicClientUnit extends BasicUnit {
 
-    constructor(parentContainer, x = 0, y = 0, team = NEUTRAL) {
+    constructor(game, x = 0, y = 0, team = NEUTRAL) {
         super(x, y, team);
-      
-        this.parentContainer = parentContainer;
+
+        this.game = game;
+        this.parentContainer = game.unitContainer;
 
         let spriteContainer = new PIXI.Container();
         spriteContainer.pivot.x = spriteContainer.width / 2;
@@ -27,7 +28,7 @@ export class BasicClientUnit extends BasicUnit {
 
         this.isSelected = false;
         this.selectionCircle = new PIXI.Graphics;
-        this.parentContainer.addChild(this.selectionCircle);
+        this.game.interfaceContainer.addChild(this.selectionCircle);
 
         this.laser = new PIXI.Graphics;
         this.isAttacking = false;
@@ -67,7 +68,7 @@ export class BasicClientUnit extends BasicUnit {
 
     drawLaser(nearestEnemy) {
         this.laser.clear();
-        this.laser.lineStyle(10, TEAM_COLOURS[this.team]);
+        this.laser.lineStyle(Constants.LASER_THICKNESS, TEAM_COLOURS[this.team]);
         this.laser.position.set(0, 0);
         const direction = Vectors.difference(nearestEnemy, this);
         const offset = Vectors.scaleTo(direction, Constants.BASIC_UNIT_TURRET_LENGTH);
@@ -94,7 +95,7 @@ export class BasicClientUnit extends BasicUnit {
         this.sprite.removeChild(this.basicUnitSprite);
         this.parentContainer.removeChild(this.laser);
         this.parentContainer.removeChild(this.sprite);
-        this.parentContainer.removeChild(this.selectionCircle);
+        this.game.interfaceContainer.removeChild(this.selectionCircle);
     }
 
     scaleUnitCore() {

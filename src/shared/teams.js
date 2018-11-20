@@ -1,5 +1,5 @@
 
-export const NEUTRAL_COLOR = 0x646464;
+export const NEUTRAL_COLOR = 0x404040;
 export const RED_TEAM_COLOR = 0xFF4040;
 export const BLUE_TEAM_COLOR = 0x3697FF;
 

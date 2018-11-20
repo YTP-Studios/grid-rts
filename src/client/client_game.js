@@ -1,13 +1,14 @@
-import * as PIXI from 'pixi.js'
-import { BasicClientUnit } from './basic_client_unit';
-import * as Vectors from '../shared/vectors';
+import { AdvancedBloomFilter } from 'pixi-filters';
+import * as PIXI from 'pixi.js';
+import { Command, MoveCommand } from '../shared/commands';
 import * as Constants from '../shared/constants';
-import ClientMap from './client_map';
-import { BLUE_TEAM, TEAM_COLOURS } from '../shared/teams';
-import keyboard from './keyboard';
 import Game from '../shared/game';
-import { MoveCommand, Command } from '../shared/commands';
-import { RESET, GAME_STATE, COMMAND } from '../shared/game-events';
+import { COMMAND, GAME_STATE, RESET } from '../shared/game-events';
+import { BLUE_TEAM, TEAM_COLOURS } from '../shared/teams';
+import * as Vectors from '../shared/vectors';
+import { BasicClientUnit } from './basic_client_unit';
+import ClientMap from './client_map';
+import keyboard from './keyboard';
 
 export default class ClientGame extends Game {
     static loadAssets() {
@@ -32,29 +33,46 @@ export default class ClientGame extends Game {
             antialias: true,
             transparent: false,
             resolution: 1,
-            backgroundColor: 0x3B3B3B,
+            backgroundColor: Constants.BACKGROUND_COLOR,
         });
 
         document.body.appendChild(this.app.view);
+
+
+        this.world = new PIXI.Container();
+        this.world.velocity = { x: 0, y: 0 };
+        this.app.stage.addChild(this.world);
+
+        this.buildingContainer = new PIXI.Container();
+        this.unitContainer = new PIXI.Container();
+        this.interfaceContainer = new PIXI.Container();
+        this.world.addChild(this.buildingContainer);
+        this.world.addChild(this.unitContainer);
+        this.world.addChild(this.interfaceContainer);
+
+        let bloomFilter = new AdvancedBloomFilter({
+            quality: 8,
+            pixelSize: 0.5,
+        });
+
+        this.buildingContainer.filters = [bloomFilter];
+        this.unitContainer.filters = [bloomFilter];
+
+        let map = ClientMap.fromString(this.buildingContainer, Constants.DEFAULT_MAP);
+        let units = [
+            new BasicClientUnit(this, Math.random() * 500, Math.random() * 500, BLUE_TEAM),
+            new BasicClientUnit(this, Math.random() * 500, Math.random() * 500, BLUE_TEAM),
+            new BasicClientUnit(this, 50, 50),
+            new BasicClientUnit(this, 500, 500),
+        ];
+        super.init(map, units);
+
         this.app.view.oncontextmenu = () => false;
 
         let upKey = keyboard("ArrowUp");
         let downKey = keyboard("ArrowDown");
         let leftKey = keyboard("ArrowLeft");
         let rightKey = keyboard("ArrowRight");
-
-        this.world = new PIXI.Container();
-        this.world.velocity = { x: 0, y: 0 };
-        this.app.stage.addChild(this.world);
-
-        let map = ClientMap.fromString(this.world, Constants.DEFAULT_MAP);
-        let units = [
-            new BasicClientUnit(this.world, Math.random() * 500, Math.random() * 500, BLUE_TEAM),
-            new BasicClientUnit(this.world, Math.random() * 500, Math.random() * 500, BLUE_TEAM),
-            new BasicClientUnit(this.world, 50, 50),
-            new BasicClientUnit(this.world, 500, 500),
-        ];
-        super.init(map, units);
 
         upKey.press = () => this.world.velocity.y += Constants.CAMERA_SPEED;
         upKey.release = () => this.world.velocity.y -= Constants.CAMERA_SPEED;
@@ -69,12 +87,12 @@ export default class ClientGame extends Game {
         this.initialMousePos = { x: 0, y: 0 };
 
         this.unitSelectorBox = new PIXI.Graphics();
-        this.world.addChild(this.unitSelectorBox);
+        this.interfaceContainer.addChild(this.unitSelectorBox);
 
         this.app.renderer.plugins.interaction.on('rightdown', () => {
             const mousePosition = this.app.renderer.plugins.interaction.mouse.global;
             const unitIds = this.units.filter((unit) => unit.team === this.playerTeam && unit.isSelected).map(unit => unit.id);
-            const targetPos = Vectors.difference(mousePosition, this.world)
+            const targetPos = this.world.toLocal(mousePosition)
             const command = new MoveCommand({ targetPos, unitIds });
             socket.emit(COMMAND, Command.toData(command));
             command.exec(this);
@@ -93,9 +111,6 @@ export default class ClientGame extends Game {
             this.isMouseDown = false;
         })
 
-
-
-        let state = this.getState();
         let resetKey = keyboard("p");
         resetKey.press = () => {
             this.socket.emit(RESET);
@@ -128,7 +143,7 @@ export default class ClientGame extends Game {
             let unit;
             switch (data.type) {
                 case "unit:basic_unit":
-                    unit = new BasicClientUnit(this.world, data.x, data.y, data.team);
+                    unit = new BasicClientUnit(this, data.x, data.y, data.team);
                     break;
                 default:
                     throw new Error("Undefined unit type.");

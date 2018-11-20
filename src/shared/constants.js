@@ -1,5 +1,4 @@
 
-
 /**
  * The factor by which the collision adjustment is reduced.
  */
@@ -7,20 +6,22 @@ export const COLLISION_LENIENCY = 0.3;
 
 export const CAMERA_SPEED = 4;
 
-export const SELECTOR_BOX_BORDER_WIDTH = 2;
+export const SELECTOR_BOX_BORDER_WIDTH = 1.5;
 export const SELECTOR_BOX_OPACITY = 0.2;
 
-export const SELECTOR_CIRCLE_RADIUS = 40;
+export const SELECTOR_CIRCLE_RADIUS = 30;
 export const SELECTOR_CIRCLE_COLOR = 0xFFFFFF;
 
 export const BASIC_UNIT_SPEED = 2.0;
-export const BASIC_UNIT_RANGE = 300;
-export const BASIC_UNIT_BODY_SIZE = 32;
-export const BASIC_UNIT_TURRET_LENGTH = 24;
+export const BASIC_UNIT_RANGE = 200;
+export const BASIC_UNIT_BODY_SIZE = 24;
+export const BASIC_UNIT_TURRET_LENGTH = 18;
 export const BASIC_UNIT_HEALTH = 100;
 
 export const LASER_DAMAGE = 0.5;
-export const LASER_THICKNESS = 10;
+export const LASER_THICKNESS = 5;
+
+export const BACKGROUND_COLOR = 0x202020;
 
 export const GRID_SCALE = 64;
 
