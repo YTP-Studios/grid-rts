@@ -14,6 +14,7 @@ export const SELECTOR_CIRCLE_COLOR = 0xFFFFFF;
 
 export const BASIC_UNIT_SPEED = 2.0;
 export const BASIC_UNIT_RANGE = 200;
+export const BASIC_UNIT_SIGHT_RANGE = 250;
 export const BASIC_UNIT_BODY_SIZE = 24;
 export const BASIC_UNIT_TURRET_LENGTH = 18;
 export const BASIC_UNIT_HEALTH = 100;
