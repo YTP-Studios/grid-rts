@@ -70,7 +70,7 @@ export default class ClientGame extends Game {
         this.buildingContainer.mask = this.sightRangeSprite;
         this.unitContainer.mask = this.sightRangeSprite;
 
-        let map = ClientMap.fromString(this.buildingContainer, Constants.DEFAULT_MAP);
+        let map = ClientMap.fromString(this, Constants.DEFAULT_MAP);
         let units = [
             new BasicClientUnit(this, Math.random() * 500, Math.random() * 500, BLUE_TEAM),
             new BasicClientUnit(this, Math.random() * 500, Math.random() * 500, BLUE_TEAM),

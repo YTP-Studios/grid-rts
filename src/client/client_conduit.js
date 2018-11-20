@@ -1,12 +1,13 @@
 import Conduit from "../shared/conduit";
-import { GRID_SCALE } from "../shared/constants";
+import { GRID_SCALE, BUILDING_SIGHT_RANGE } from "../shared/constants";
 import * as PIXI from 'pixi.js'
 import { NEUTRAL_COLOR, TEAM_COLOURS } from "../shared/teams";
 
 
 export default class ClientConduit extends Conduit {
-    constructor(container, row, col, team) {
+    constructor(game, row, col, team) {
         super(row, col, team);
+        this.game = game;
 
         let edgeTexture = PIXI.loader.resources["assets/conduit-edge.png"].texture;
         let centerTexture = PIXI.loader.resources["assets/conduit-center.png"].texture;
@@ -44,7 +45,13 @@ export default class ClientConduit extends Conduit {
         this.sprite = conduitSprite;
         this.sprite.x = this.x;
         this.sprite.y = this.y;
-        container.addChild(this.sprite);
+        this.game.buildingContainer.addChild(this.sprite);
+
+        this.sightCircle = new PIXI.Graphics;
+        this.sightCircle.clear();
+        this.sightCircle.beginFill(0xFFFFFF);
+        this.sightCircle.drawCircle(GRID_SCALE, GRID_SCALE, BUILDING_SIGHT_RANGE);
+        this.sightCircle.endFill();
     }
 
     update(delta, map) {
@@ -63,6 +70,9 @@ export default class ClientConduit extends Conduit {
         checkColour(row + 1, col, this.bottomSprite);
         checkColour(row, col - 1, this.leftSprite);
         checkColour(row, col + 1, this.rightSprite);
-
+        if (this.team == this.game.playerTeam) {
+            this.sightCircle.position.copy(this);
+            this.game.app.renderer.render(this.sightCircle, this.game.sightRangeTexture, false, null, false);
+        }
     }
 }
