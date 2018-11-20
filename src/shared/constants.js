@@ -12,6 +12,10 @@ export const SELECTOR_BOX_OPACITY = 0.2;
 export const SELECTOR_CIRCLE_RADIUS = 30;
 export const SELECTOR_CIRCLE_COLOR = 0xFFFFFF;
 
+export const POSITION_INDICATOR_DIAMETER = 20;
+export const POSITION_INDICATOR_INNER_RADIUS = 1.5;
+export const POSITION_INDICATOR_OPACITY = 0.1;
+
 export const BASIC_UNIT_SPEED = 2.0;
 export const BASIC_UNIT_RANGE = 200;
 export const BASIC_UNIT_BODY_SIZE = 24;

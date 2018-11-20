@@ -88,14 +88,21 @@ export default class ClientGame extends Game {
 
         this.unitSelectorBox = new PIXI.Graphics();
         this.interfaceContainer.addChild(this.unitSelectorBox);
+        this.posIndicator = new PIXI.Graphics();
+        this.interfaceContainer.addChild(this.posIndicator);
 
         this.app.renderer.plugins.interaction.on('rightdown', () => {
             const mousePosition = this.app.renderer.plugins.interaction.mouse.global;
+            this.drawIndicator(mousePosition);
             const unitIds = this.units.filter((unit) => unit.team === this.playerTeam && unit.isSelected).map(unit => unit.id);
             const targetPos = this.world.toLocal(mousePosition)
             const command = new MoveCommand({ targetPos, unitIds });
             socket.emit(COMMAND, Command.toData(command));
             command.exec(this);
+        })
+
+        this.app.renderer.plugins.interaction.on('rightup', () => {
+            this.posIndicator.clear();
         })
 
         this.app.renderer.plugins.interaction.on('mousedown', () => {
@@ -178,5 +185,15 @@ export default class ClientGame extends Game {
         const bounds = this.unitSelectorBox.getLocalBounds();
         return unit.x >= bounds.x && unit.x <= bounds.x + bounds.width
             && unit.y >= bounds.y && unit.y <= bounds.y + bounds.height;
+    }
+
+    drawIndicator(mousePosition) {
+        this.posIndicator.lineStyle(3, TEAM_COLOURS[this.playerTeam]);
+        this.posIndicator.beginFill(TEAM_COLOURS[this.playerTeam], Constants.POSITION_INDICATOR_OPACITY);
+        this.posIndicator.drawRoundedRect(mousePosition.x - Constants.POSITION_INDICATOR_DIAMETER/2, 
+            mousePosition.y - Constants.POSITION_INDICATOR_DIAMETER/2, Constants.POSITION_INDICATOR_DIAMETER, 
+            Constants.POSITION_INDICATOR_DIAMETER, Constants.POSITION_INDICATOR_DIAMETER/2);
+        this.posIndicator.drawCircle(mousePosition.x, mousePosition.y, 
+            Constants.POSITION_INDICATOR_INNER_RADIUS);
     }
 }
