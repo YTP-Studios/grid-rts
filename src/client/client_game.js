@@ -188,7 +188,7 @@ export default class ClientGame extends Game {
     }
 
     drawIndicator(mousePosition) {
-        this.posIndicator.lineStyle(3, TEAM_COLOURS[this.playerTeam]);
+        this.posIndicator.lineStyle(Constants.POSITION_INDICATOR_LINE_WIDTH, TEAM_COLOURS[this.playerTeam]);
         this.posIndicator.beginFill(TEAM_COLOURS[this.playerTeam], Constants.POSITION_INDICATOR_OPACITY);
         this.posIndicator.drawRoundedRect(mousePosition.x - Constants.POSITION_INDICATOR_DIAMETER/2, 
             mousePosition.y - Constants.POSITION_INDICATOR_DIAMETER/2, Constants.POSITION_INDICATOR_DIAMETER, 
