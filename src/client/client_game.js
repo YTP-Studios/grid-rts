@@ -175,6 +175,8 @@ export default class ClientGame extends Game {
         for (let unit of this.units) {
             if (this.isUnitInSelectionBox(unit) && unit.team === this.playerTeam) {
                 unit.isSelected = true;
+            } else if (this.isSelectionBoxInUnit(unit) && unit.team === this.playerTeam) {
+                unit.isSelected = true;      
             } else {
                 unit.isSelected = false;
             }
@@ -185,6 +187,13 @@ export default class ClientGame extends Game {
         const bounds = this.unitSelectorBox.getLocalBounds();
         return unit.x >= bounds.x && unit.x <= bounds.x + bounds.width
             && unit.y >= bounds.y && unit.y <= bounds.y + bounds.height;
+    }
+
+    isSelectionBoxInUnit(unit) {
+        const bounds = this.unitSelectorBox.getLocalBounds();
+        const width = Constants.BASIC_UNIT_BODY_SIZE;
+        return unit.x >= bounds.x - width && unit.x <= bounds.x + bounds.width + width
+            && unit.y >= bounds.y - width && unit.y <= bounds.y + bounds.height + width;
     }
 
     drawIndicator(mousePosition) {
