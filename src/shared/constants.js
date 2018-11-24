@@ -5,7 +5,10 @@
 export const COLLISION_LENIENCY = 0.3;
 
 export const CONDUIT_SIZE = 10;
+export const CONDUIT_HEALTH = 50;
+
 export const GENERATOR_SIZE = 20;
+export const GENERATOR_HEALTH = 420;
 
 export const CAMERA_SPEED = 4;
 
