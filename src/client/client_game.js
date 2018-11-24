@@ -93,9 +93,9 @@ export default class ClientGame extends Game {
 
         this.app.renderer.plugins.interaction.on('rightdown', () => {
             const mousePosition = this.app.renderer.plugins.interaction.mouse.global;
-            this.drawIndicator(mousePosition);
-            const unitIds = this.units.filter((unit) => unit.team === this.playerTeam && unit.isSelected).map(unit => unit.id);
             const targetPos = this.world.toLocal(mousePosition)
+            this.drawIndicator(targetPos);
+            const unitIds = this.units.filter((unit) => unit.team === this.playerTeam && unit.isSelected).map(unit => unit.id);
             const command = new MoveCommand({ targetPos, unitIds });
             socket.emit(COMMAND, Command.toData(command));
             command.exec(this);
