@@ -4,6 +4,9 @@
  */
 export const COLLISION_LENIENCY = 0.3;
 
+export const CONDUIT_SIZE = 10;
+export const GENERATOR_SIZE = 20;
+
 export const CAMERA_SPEED = 4;
 
 export const SELECTOR_BOX_BORDER_WIDTH = 1.5;
