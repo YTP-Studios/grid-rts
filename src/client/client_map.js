@@ -3,6 +3,7 @@ import ClientConduit from "./client_conduit";
 import { RED_TEAM, BLUE_TEAM, NEUTRAL } from "../shared/teams";
 import ClientGenerator from "./client-generator";
 import { BACKGROUND_COLOR, GRID_SCALE } from "../shared/constants";
+import { checkBuildingColours } from "./sprite-utils";
 
 export default class ClientMap extends GameMap {
     static fromString(game, s) {
@@ -34,6 +35,13 @@ export default class ClientMap extends GameMap {
         background.endFill();
 
         game.buildingContainer.addChildAt(background, 0);
+
+        for (let row of data) {
+            for (let building of row) {
+                if (!building) continue;
+                checkBuildingColours(building.oldBuildingSprite, this, building.team, building.row, building.col);
+            }
+        }
     }
 
 }

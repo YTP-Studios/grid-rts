@@ -1,5 +1,5 @@
 import { NEUTRAL, TEAM_COLOURS, NEUTRAL_COLOR } from "../shared/teams";
-import { GRID_SCALE, BACKGROUND_COLOR } from "../shared/constants";
+import { GRID_SCALE } from "../shared/constants";
 
 export function createCenteredSprite(filePath, width, height = width) {
     let sprite = new PIXI.Sprite(PIXI.loader.resources[filePath].texture);
@@ -37,4 +37,20 @@ export function createBuildingSprite(edgePath, centerPath, team = NEUTRAL) {
     sprite.container = spriteContainer;
 
     return sprite;
+}
+
+export function checkBuildingColours(buildingSprite, map, team, row, col) {
+    const checkColour = (row, col, sprite) => {
+        let building = map.getBuilding(row, col);
+        if (building == null) {
+            sprite.visible = false;
+        } else if (building.team == team) {
+            sprite.visible = true;
+            sprite.tint = TEAM_COLOURS[team];
+        }
+    }
+    checkColour(row - 1, col, buildingSprite.topSprite);
+    checkColour(row + 1, col, buildingSprite.bottomSprite);
+    checkColour(row, col - 1, buildingSprite.leftSprite);
+    checkColour(row, col + 1, buildingSprite.rightSprite);
 }

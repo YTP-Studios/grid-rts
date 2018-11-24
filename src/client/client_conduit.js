@@ -1,9 +1,7 @@
+import * as PIXI from 'pixi.js';
 import Conduit from "../shared/conduit";
-import { GRID_SCALE, BUILDING_SIGHT_RANGE } from "../shared/constants";
-import * as PIXI from 'pixi.js'
-import { NEUTRAL_COLOR, TEAM_COLOURS } from "../shared/teams";
-import { createCenteredSprite, createBuildingSprite } from "./sprite-utils";
-
+import { BUILDING_SIGHT_RANGE, GRID_SCALE } from "../shared/constants";
+import { checkBuildingColours, createBuildingSprite } from "./sprite-utils";
 
 export default class ClientConduit extends Conduit {
     constructor(game, row, col, team) {
@@ -36,20 +34,8 @@ export default class ClientConduit extends Conduit {
 
     update(delta, map) {
         super.update(delta, map);
-        const checkColour = (row, col, sprite) => {
-            let building = map.getBuilding(row, col);
-            if (building == null) {
-                sprite.visible = false;
-            } else if (building.team == this.team) {
-                sprite.visible = true;
-                sprite.tint = TEAM_COLOURS[this.team];
-            }
-        }
-        const { row, col } = this;
-        checkColour(row - 1, col, this.topSprite);
-        checkColour(row + 1, col, this.bottomSprite);
-        checkColour(row, col - 1, this.leftSprite);
-        checkColour(row, col + 1, this.rightSprite);
+        const { team, row, col } = this;
+        checkBuildingColours(this.buildingSprite, map, team, row, col);
         if (this.team == this.game.playerTeam) {
             this.sightCircle.position.copy(this);
             this.game.app.renderer.render(this.sightCircle, this.game.sightRangeTexture, false, null, false);
