@@ -1,6 +1,6 @@
 import * as Vectors from '../shared/vectors';
 import * as Constants from '../shared/constants';
-import { NEUTRAL } from './teams';
+import { NEUTRAL, TEAMS } from './teams';
 import * as uuid from 'uuid/v4';
 
 export default class Unit {
@@ -41,7 +41,7 @@ export default class Unit {
 
     canAttackUnit(unit) {
         let dist = Vectors.dist(this, unit);
-        return this.team != unit.team && dist < this.range;
+        return this.team != unit.team && dist < this.range && unit.team != NEUTRAL;
     }
 
     stopAttacking() {

@@ -1,6 +1,6 @@
 import Generator from "../shared/generator";
-import { TEAM_COLOURS, NEUTRAL_COLOR } from "../shared/teams";
-import { GRID_SCALE } from "../shared/constants";
+import { TEAM_COLOURS, NEUTRAL_COLOR, NEUTRAL } from "../shared/teams";
+import * as Constants from '../shared/constants';
 
 export default class ClientGenerator extends Generator {
     constructor(container, row, col, team) {
@@ -14,21 +14,21 @@ export default class ClientGenerator extends Generator {
         this.centerSprite.tint = TEAM_COLOURS[team];
         this.centerSprite.pivot.x = centerTexture.width / 2;
         this.centerSprite.pivot.y = centerTexture.height / 2;
-        this.centerSprite.width = GRID_SCALE;
-        this.centerSprite.height = GRID_SCALE;
+        this.centerSprite.width = Constants.GRID_SCALE;
+        this.centerSprite.height = Constants.GRID_SCALE;
 
         this.coreSprite = new PIXI.Sprite(coreTexture);
         this.coreSprite.pivot.x = coreTexture.width / 2;
         this.coreSprite.pivot.y = coreTexture.height / 2;
-        this.coreSprite.width = GRID_SCALE;
-        this.coreSprite.height = GRID_SCALE;
+        this.coreSprite.width = Constants.GRID_SCALE;
+        this.coreSprite.height = Constants.GRID_SCALE;
 
         const initEdgeSprite = (angle) => {
             let newSprite = new PIXI.Sprite(edgeTexture);
             newSprite.pivot.x = edgeTexture.width / 2;
             newSprite.pivot.y = edgeTexture.height / 2;
-            newSprite.width = GRID_SCALE;
-            newSprite.height = GRID_SCALE;
+            newSprite.width = Constants.GRID_SCALE;
+            newSprite.height = Constants.GRID_SCALE;
             newSprite.rotation = angle;
             newSprite.tint = NEUTRAL_COLOR;
             return newSprite;
@@ -70,5 +70,10 @@ export default class ClientGenerator extends Generator {
         checkColour(row, col - 1, this.leftSprite);
         checkColour(row, col + 1, this.rightSprite);
 
+        if (this.health < 0) {
+            this.team = NEUTRAL;
+            this.centerSprite.tint = NEUTRAL_COLOR;
+            this.health = Constants.GENERATOR_HEALTH; 
+        }
     }
 }
