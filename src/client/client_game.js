@@ -1,4 +1,4 @@
-import { AdvancedBloomFilter } from 'pixi-filters';
+import { AdvancedBloomFilter, AdjustmentFilter, KawaseBlurFilter } from 'pixi-filters';
 import * as PIXI from 'pixi.js';
 import { Command, MoveCommand } from '../shared/commands';
 import * as Constants from '../shared/constants';
@@ -33,7 +33,7 @@ export default class ClientGame extends Game {
             antialias: true,
             transparent: false,
             resolution: 1,
-            backgroundColor: Constants.BACKGROUND_COLOR,
+            backgroundColor: 0x000000,
         });
 
         document.body.appendChild(this.app.view);
@@ -43,9 +43,11 @@ export default class ClientGame extends Game {
         this.world.velocity = { x: 0, y: 0 };
         this.app.stage.addChild(this.world);
 
+        this.oldBuildingContainer = new PIXI.Container();
         this.buildingContainer = new PIXI.Container();
         this.unitContainer = new PIXI.Container();
         this.interfaceContainer = new PIXI.Container();
+        this.world.addChild(this.oldBuildingContainer);
         this.world.addChild(this.buildingContainer);
         this.world.addChild(this.unitContainer);
         this.world.addChild(this.interfaceContainer);
@@ -55,10 +57,27 @@ export default class ClientGame extends Game {
             pixelSize: 0.5,
         });
 
+        this.oldBuildingContainer.filters = [
+            new AdjustmentFilter({
+                brightness: 0.5,
+            }),
+        ];
         this.buildingContainer.filters = [bloomFilter];
         this.unitContainer.filters = [bloomFilter];
 
-        let map = ClientMap.fromString(this.buildingContainer, Constants.DEFAULT_MAP);
+        this.sightRangeTexture = PIXI.RenderTexture.create(10000, 10000);
+        this.sightRangeRect = new PIXI.Graphics();
+        this.sightRangeRect.beginFill(0x000000);
+        this.sightRangeRect.drawRect(-Constants.GRID_SCALE, -Constants.GRID_SCALE, 10000, 10000);
+        this.sightRangeRect.endFill();
+        this.sightRangeSprite = new PIXI.Sprite(this.sightRangeTexture);
+        this.sightRangeSprite.position.set(-Constants.GRID_SCALE, -Constants.GRID_SCALE);
+
+        this.world.addChild(this.sightRangeSprite);
+        this.buildingContainer.mask = this.sightRangeSprite;
+        this.unitContainer.mask = this.sightRangeSprite;
+
+        let map = ClientMap.fromString(this, Constants.DEFAULT_MAP);
         let units = [
             new BasicClientUnit(this, Math.random() * 500, Math.random() * 500, BLUE_TEAM),
             new BasicClientUnit(this, Math.random() * 500, Math.random() * 500, BLUE_TEAM),
@@ -133,6 +152,7 @@ export default class ClientGame extends Game {
     }
 
     update(delta) {
+        this.updateSightRanges();
         super.update(delta);
         this.updateCamera(delta);
         if (this.isMouseDown) {
@@ -143,6 +163,10 @@ export default class ClientGame extends Game {
 
     updateCamera(delta) {
         Vectors.copyTo(Vectors.sum(this.world, Vectors.scale(this.world.velocity, delta)), this.world);
+    }
+
+    updateSightRanges() {
+        this.app.renderer.clearRenderTexture(this.sightRangeTexture, 0x000000)
     }
 
     instantiate(data) {

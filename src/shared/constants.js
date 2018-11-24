@@ -25,6 +25,7 @@ export const POSITION_INDICATOR_OPACITY = 0.1;
 
 export const BASIC_UNIT_SPEED = 2.0;
 export const BASIC_UNIT_RANGE = 200;
+export const BASIC_UNIT_SIGHT_RANGE = 256;
 export const BASIC_UNIT_BODY_SIZE = 24;
 export const BASIC_UNIT_TURRET_LENGTH = 18;
 export const BASIC_UNIT_HEALTH = 100;
@@ -35,6 +36,8 @@ export const LASER_THICKNESS = 5;
 export const BACKGROUND_COLOR = 0x202020;
 
 export const GRID_SCALE = 64;
+
+export const BUILDING_SIGHT_RANGE = 2 * GRID_SCALE;
 
 export const DEFAULT_MAP = `.................................
 ..1.............1................

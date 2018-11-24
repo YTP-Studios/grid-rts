@@ -1,79 +1,55 @@
+import { BUILDING_SIGHT_RANGE, GRID_SCALE, GENERATOR_HEALTH } from "../shared/constants";
 import Generator from "../shared/generator";
+import { checkBuildingColours, createBuildingSprite, createCenteredSprite } from "./sprite-utils";
 import { TEAM_COLOURS, NEUTRAL_COLOR, NEUTRAL } from "../shared/teams";
-import * as Constants from '../shared/constants';
 
 export default class ClientGenerator extends Generator {
-    constructor(container, row, col, team) {
+    constructor(game, row, col, team) {
         super(row, col, team);
+        this.game = game;
 
-        let edgeTexture = PIXI.loader.resources["assets/generator-edge.png"].texture;
-        let centerTexture = PIXI.loader.resources["assets/generator-center.png"].texture;
-        let coreTexture = PIXI.loader.resources["assets/generator-core.png"].texture;
+        this.buildingSprite = createBuildingSprite("assets/generator-edge.png", "assets/generator-center.png", team);
+        this.centerSprite = this.buildingSprite.centerSprite;
+        this.topSprite = this.buildingSprite.topSprite;
+        this.bottomSprite = this.buildingSprite.bottomSprite;
+        this.leftSprite = this.buildingSprite.leftSprite;
+        this.rightSprite = this.buildingSprite.rightSprite;
 
-        this.centerSprite = new PIXI.Sprite(centerTexture);
-        this.centerSprite.tint = TEAM_COLOURS[team];
-        this.centerSprite.pivot.x = centerTexture.width / 2;
-        this.centerSprite.pivot.y = centerTexture.height / 2;
-        this.centerSprite.width = Constants.GRID_SCALE;
-        this.centerSprite.height = Constants.GRID_SCALE;
+        this.coreSprite = createCenteredSprite("assets/generator-core.png", GRID_SCALE);
 
-        this.coreSprite = new PIXI.Sprite(coreTexture);
-        this.coreSprite.pivot.x = coreTexture.width / 2;
-        this.coreSprite.pivot.y = coreTexture.height / 2;
-        this.coreSprite.width = Constants.GRID_SCALE;
-        this.coreSprite.height = Constants.GRID_SCALE;
+        this.buildingSprite.container.addChild(this.coreSprite);
 
-        const initEdgeSprite = (angle) => {
-            let newSprite = new PIXI.Sprite(edgeTexture);
-            newSprite.pivot.x = edgeTexture.width / 2;
-            newSprite.pivot.y = edgeTexture.height / 2;
-            newSprite.width = Constants.GRID_SCALE;
-            newSprite.height = Constants.GRID_SCALE;
-            newSprite.rotation = angle;
-            newSprite.tint = NEUTRAL_COLOR;
-            return newSprite;
-        }
-
-        this.topSprite = initEdgeSprite(0);
-        this.bottomSprite = initEdgeSprite(Math.PI * 2 / 2);
-        this.leftSprite = initEdgeSprite(Math.PI * 3 / 2);
-        this.rightSprite = initEdgeSprite(Math.PI * 1 / 2);
-
-        let conduitSprite = new PIXI.Container();
-        conduitSprite.addChild(this.centerSprite);
-        conduitSprite.addChild(this.coreSprite);
-        conduitSprite.addChild(this.topSprite);
-        conduitSprite.addChild(this.bottomSprite);
-        conduitSprite.addChild(this.leftSprite);
-        conduitSprite.addChild(this.rightSprite);
-
-        this.sprite = conduitSprite;
+        this.sprite = this.buildingSprite.container;
         this.sprite.x = this.x;
         this.sprite.y = this.y;
-        container.addChild(this.sprite);
+        this.game.buildingContainer.addChild(this.sprite);
+
+        this.oldBuildingSprite = createBuildingSprite("assets/generator-edge.png", "assets/generator-center.png", team);
+        this.oldBuildingSprite.container.addChild(createCenteredSprite("assets/generator-core.png", GRID_SCALE));
+        this.oldBuildingSprite.container.x = this.x;
+        this.oldBuildingSprite.container.y = this.y;
+        this.game.oldBuildingContainer.addChild(this.oldBuildingSprite.container);
+
+        this.sightCircle = new PIXI.Graphics;
+        this.sightCircle.clear();
+        this.sightCircle.beginFill(0xFFFFFF);
+        this.sightCircle.drawCircle(GRID_SCALE, GRID_SCALE, BUILDING_SIGHT_RANGE);
+        this.sightCircle.endFill();
     }
 
     update(delta, map) {
         super.update(delta, map);
-        const checkColour = (row, col, sprite) => {
-            let building = map.getBuilding(row, col);
-            if (building == null) {
-                sprite.visible = false;
-            } else if (building.team == this.team) {
-                sprite.visible = true;
-                sprite.tint = TEAM_COLOURS[this.team];
-            }
+        const { team, row, col } = this;
+        checkBuildingColours(this.buildingSprite, map, team, row, col)
+        if (this.team == this.game.playerTeam) {
+            this.sightCircle.position.copy(this);
+            this.game.app.renderer.render(this.sightCircle, this.game.sightRangeTexture, false, null, false);
         }
-        const { row, col } = this;
-        checkColour(row - 1, col, this.topSprite);
-        checkColour(row + 1, col, this.bottomSprite);
-        checkColour(row, col - 1, this.leftSprite);
-        checkColour(row, col + 1, this.rightSprite);
 
         if (this.health < 0) {
             this.team = NEUTRAL;
             this.centerSprite.tint = NEUTRAL_COLOR;
-            this.health = Constants.GENERATOR_HEALTH; 
+            this.health = GENERATOR_HEALTH;
         }
     }
 }

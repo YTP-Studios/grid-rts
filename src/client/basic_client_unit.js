@@ -33,6 +33,12 @@ export class BasicClientUnit extends BasicUnit {
         this.laser = new PIXI.Graphics;
         this.isAttacking = false;
         this.parentContainer.addChild(this.laser);
+
+        this.sightCircle = new PIXI.Graphics;
+        this.sightCircle.clear();
+        this.sightCircle.beginFill(0xFFFFFF);
+        this.sightCircle.drawCircle(Constants.GRID_SCALE, Constants.GRID_SCALE, Constants.BASIC_UNIT_SIGHT_RANGE);
+        this.sightCircle.endFill();
     }
 
     update(delta) {
@@ -56,6 +62,10 @@ export class BasicClientUnit extends BasicUnit {
             this.selectionCircle.clear();
         }
 
+        if (this.team == this.game.playerTeam) {
+            this.sightCircle.position.copy(this);
+            this.game.app.renderer.render(this.sightCircle, this.game.sightRangeTexture, false, null, false);
+        }
         if (this.health < 0) {
             this.destroy();
         }
