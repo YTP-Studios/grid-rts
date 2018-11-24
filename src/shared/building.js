@@ -1,8 +1,5 @@
 import { GRID_SCALE } from "./constants";
 
-
-
-
 export default class Building {
 
     get x() {
@@ -12,10 +9,11 @@ export default class Building {
         return this.row * GRID_SCALE;
     }
 
-    constructor(row, col, team) {
+    constructor(row, col, team, size) {
         this.row = row;
         this.col = col;
         this.team = team;
+        this.size = size;
     }
 
     update(delta, map) {
