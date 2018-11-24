@@ -183,8 +183,9 @@ export default class ClientGame extends Game {
 
     isUnitInSelectionBox(unit) {
         const bounds = this.unitSelectorBox.getLocalBounds();
-        return unit.x >= bounds.x && unit.x <= bounds.x + bounds.width
-            && unit.y >= bounds.y && unit.y <= bounds.y + bounds.height;
+        const width = Constants.BASIC_UNIT_BODY_SIZE;
+        return unit.x >= bounds.x - width && unit.x <= bounds.x + bounds.width + width
+            && unit.y >= bounds.y - width && unit.y <= bounds.y + bounds.height + width;
     }
 
     drawIndicator(mousePosition) {
