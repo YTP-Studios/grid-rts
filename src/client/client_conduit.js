@@ -7,8 +7,6 @@ export default class ClientConduit extends Conduit {
     constructor(container, row, col, team) {
         super(row, col, team);
 
-        this.container = container;
-
         let edgeTexture = PIXI.loader.resources["assets/conduit-edge.png"].texture;
         let centerTexture = PIXI.loader.resources["assets/conduit-center.png"].texture;
 
@@ -45,7 +43,7 @@ export default class ClientConduit extends Conduit {
         this.sprite = conduitSprite;
         this.sprite.x = this.x;
         this.sprite.y = this.y;
-        this.container.addChild(this.sprite);
+        container.addChild(this.sprite);
     }
 
     update(delta, map) {
