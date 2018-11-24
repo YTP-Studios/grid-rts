@@ -1,57 +1,34 @@
 import Generator from "../shared/generator";
 import { TEAM_COLOURS, NEUTRAL_COLOR } from "../shared/teams";
 import { GRID_SCALE, BASIC_UNIT_SIGHT_RANGE, BUILDING_SIGHT_RANGE } from "../shared/constants";
+import { createCenteredSprite, createBuildingSprite } from "./sprite-utils";
 
 export default class ClientGenerator extends Generator {
     constructor(game, row, col, team) {
         super(row, col, team);
         this.game = game;
 
-        let edgeTexture = PIXI.loader.resources["assets/generator-edge.png"].texture;
-        let centerTexture = PIXI.loader.resources["assets/generator-center.png"].texture;
-        let coreTexture = PIXI.loader.resources["assets/generator-core.png"].texture;
+        this.buildingSprite = createBuildingSprite("assets/generator-edge.png", "assets/generator-center.png", team);
+        this.centerSprite = this.centerSprite;
+        this.topSprite = this.buildingSprite.topSprite;
+        this.bottomSprite = this.buildingSprite.bottomSprite;
+        this.leftSprite = this.buildingSprite.leftSprite;
+        this.rightSprite = this.buildingSprite.rightSprite;
 
-        this.centerSprite = new PIXI.Sprite(centerTexture);
-        this.centerSprite.tint = TEAM_COLOURS[team];
-        this.centerSprite.pivot.x = centerTexture.width / 2;
-        this.centerSprite.pivot.y = centerTexture.height / 2;
-        this.centerSprite.width = GRID_SCALE;
-        this.centerSprite.height = GRID_SCALE;
+        this.coreSprite = createCenteredSprite("assets/generator-core.png", GRID_SCALE);
 
-        this.coreSprite = new PIXI.Sprite(coreTexture);
-        this.coreSprite.pivot.x = coreTexture.width / 2;
-        this.coreSprite.pivot.y = coreTexture.height / 2;
-        this.coreSprite.width = GRID_SCALE;
-        this.coreSprite.height = GRID_SCALE;
+        this.buildingSprite.container.addChild(this.coreSprite);
 
-        const initEdgeSprite = (angle) => {
-            let newSprite = new PIXI.Sprite(edgeTexture);
-            newSprite.pivot.x = edgeTexture.width / 2;
-            newSprite.pivot.y = edgeTexture.height / 2;
-            newSprite.width = GRID_SCALE;
-            newSprite.height = GRID_SCALE;
-            newSprite.rotation = angle;
-            newSprite.tint = NEUTRAL_COLOR;
-            return newSprite;
-        }
-
-        this.topSprite = initEdgeSprite(0);
-        this.bottomSprite = initEdgeSprite(Math.PI * 2 / 2);
-        this.leftSprite = initEdgeSprite(Math.PI * 3 / 2);
-        this.rightSprite = initEdgeSprite(Math.PI * 1 / 2);
-
-        let conduitSprite = new PIXI.Container();
-        conduitSprite.addChild(this.centerSprite);
-        conduitSprite.addChild(this.coreSprite);
-        conduitSprite.addChild(this.topSprite);
-        conduitSprite.addChild(this.bottomSprite);
-        conduitSprite.addChild(this.leftSprite);
-        conduitSprite.addChild(this.rightSprite);
-
-        this.sprite = conduitSprite;
+        this.sprite = this.buildingSprite.container;
         this.sprite.x = this.x;
         this.sprite.y = this.y;
         this.game.buildingContainer.addChild(this.sprite);
+
+        this.oldBuildingSprite = createBuildingSprite("assets/generator-edge.png", "assets/generator-center.png", team);
+        this.oldBuildingSprite.container.addChild(createCenteredSprite("assets/generator-core.png", GRID_SCALE));
+        this.oldBuildingSprite.container.x = this.x;
+        this.oldBuildingSprite.container.y = this.y;
+        this.game.oldBuildingContainer.addChild(this.oldBuildingSprite.container);
 
         this.sightCircle = new PIXI.Graphics;
         this.sightCircle.clear();

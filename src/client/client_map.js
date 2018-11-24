@@ -2,10 +2,11 @@ import GameMap from "../shared/game_map";
 import ClientConduit from "./client_conduit";
 import { RED_TEAM, BLUE_TEAM, NEUTRAL } from "../shared/teams";
 import ClientGenerator from "./client-generator";
+import { BACKGROUND_COLOR, GRID_SCALE } from "../shared/constants";
 
 export default class ClientMap extends GameMap {
     static fromString(game, s) {
-        return new ClientMap(s
+        return new ClientMap(game, s
             .split('\n')
             .map((line, row) => line
                 .split("")
@@ -22,6 +23,17 @@ export default class ClientMap extends GameMap {
             default:
                 return null;
         }
+    }
+
+    constructor(game, data) {
+        super(data);
+        let background = new PIXI.Graphics;
+        background.clear();
+        background.beginFill(BACKGROUND_COLOR);
+        background.drawRect(-GRID_SCALE / 2, -GRID_SCALE / 2, this.buildings[0].length * GRID_SCALE, this.buildings.length * GRID_SCALE);
+        background.endFill();
+
+        game.buildingContainer.addChildAt(background, 0);
     }
 
 }

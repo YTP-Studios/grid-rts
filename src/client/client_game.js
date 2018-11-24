@@ -1,4 +1,4 @@
-import { AdvancedBloomFilter } from 'pixi-filters';
+import { AdvancedBloomFilter, AdjustmentFilter, KawaseBlurFilter } from 'pixi-filters';
 import * as PIXI from 'pixi.js';
 import { Command, MoveCommand } from '../shared/commands';
 import * as Constants from '../shared/constants';
@@ -33,7 +33,7 @@ export default class ClientGame extends Game {
             antialias: true,
             transparent: false,
             resolution: 1,
-            backgroundColor: Constants.BACKGROUND_COLOR,
+            backgroundColor: 0x000000,
         });
 
         document.body.appendChild(this.app.view);
@@ -43,9 +43,11 @@ export default class ClientGame extends Game {
         this.world.velocity = { x: 0, y: 0 };
         this.app.stage.addChild(this.world);
 
+        this.oldBuildingContainer = new PIXI.Container();
         this.buildingContainer = new PIXI.Container();
         this.unitContainer = new PIXI.Container();
         this.interfaceContainer = new PIXI.Container();
+        this.world.addChild(this.oldBuildingContainer);
         this.world.addChild(this.buildingContainer);
         this.world.addChild(this.unitContainer);
         this.world.addChild(this.interfaceContainer);
@@ -55,6 +57,11 @@ export default class ClientGame extends Game {
             pixelSize: 0.5,
         });
 
+        this.oldBuildingContainer.filters = [
+            new AdjustmentFilter({
+                brightness: 0.5,
+            }),
+        ];
         this.buildingContainer.filters = [bloomFilter];
         this.unitContainer.filters = [bloomFilter];
 
