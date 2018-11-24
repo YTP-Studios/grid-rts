@@ -70,6 +70,7 @@ export default class Game {
             }
         }
         this.units = this.units.filter(unit => unit.enabled);
+       // this.map.buildings = this.map.buildings.filter(building => building.enabled);
     }
 
     getState() {

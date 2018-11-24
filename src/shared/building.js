@@ -9,14 +9,14 @@ export default class Building {
         return this.row * GRID_SCALE;
     }
 
-    constructor(row, col, team, size) {
+    constructor(row, col, team, size, health) {
         this.row = row;
         this.col = col;
         this.team = team;
         this.size = size;
+        this.health = health;
     }
 
     update(delta, map) {
-
     }
 }
