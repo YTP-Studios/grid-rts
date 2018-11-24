@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js';
 import Conduit from "../shared/conduit";
 import { BUILDING_SIGHT_RANGE, GRID_SCALE } from "../shared/constants";
 import { checkBuildingColours, createBuildingSprite } from "./sprite-utils";
+import { TEAM_COLOURS, NEUTRAL_COLOR, NEUTRAL } from "../shared/teams";
 
 export default class ClientConduit extends Conduit {
     constructor(game, row, col, team) {
@@ -39,6 +40,12 @@ export default class ClientConduit extends Conduit {
         if (this.team == this.game.playerTeam) {
             this.sightCircle.position.copy(this);
             this.game.app.renderer.render(this.sightCircle, this.game.sightRangeTexture, false, null, false);
+        }
+
+        if (this.health < 0) {
+            this.team = NEUTRAL;
+            this.centerSprite.tint = NEUTRAL_COLOR;
+            this.health = Constants.CONDUIT_HEALTH;
         }
     }
 }

@@ -50,13 +50,27 @@ export default class Game {
                 }
             }
             if (minDist === Infinity) {
-                a.stopAttacking();
+                for (let j = 0; j < this.map.buildings.length; j++) {
+                    for (let k = 0; k < this.map.buildings[j].length; k++) {
+                        let b = this.map.buildings[j][k];
+                        if (!b) continue;
+                        const dist = Vectors.dist(a, b);
+                        if (dist < minDist && a.canAttackUnit(b)) {
+                            minDist = dist;
+                            nearestEnemy = b;
+                        }
+                    }
+                }
+            }
+            if (minDist === Infinity) {
+                a.stopAttacking()
             } else {
                 a.isAttacking = true;
                 a.attack(nearestEnemy);
             }
         }
         this.units = this.units.filter(unit => unit.enabled);
+       // this.map.buildings = this.map.buildings.filter(building => building.enabled);
     }
 
     getState() {
