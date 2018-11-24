@@ -1,4 +1,5 @@
 # grid-rts
+[![Build Status](https://travis-ci.com/YTP-Studios/grid-rts.svg?branch=master)](https://travis-ci.com/YTP-Studios/grid-rts)
 
 ## Requirements
 
