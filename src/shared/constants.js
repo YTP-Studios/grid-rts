@@ -30,6 +30,13 @@ export const BASIC_UNIT_BODY_SIZE = 24;
 export const BASIC_UNIT_TURRET_LENGTH = 18;
 export const BASIC_UNIT_HEALTH = 100;
 
+export const SIEGE_UNIT_SPEED = 1.0;
+export const SIEGE_UNIT_RANGE = 400;
+export const SIEGE_UNIT_SIGHT_RANGE = 512;
+export const SIEGE_UNIT_BODY_SIZE = 24;
+export const SIEGE_UNIT_TURRET_LENGTH = 18;
+export const SIEGE_UNIT_HEALTH = 100;
+
 export const LASER_DAMAGE = 0.5;
 export const LASER_THICKNESS = 5;
 

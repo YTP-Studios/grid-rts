@@ -14,6 +14,11 @@ export default class BasicUnit extends Unit {
         this.nearestEnemy.health -= Constants.LASER_DAMAGE;
     }
 
+    canAttackUnit(unit) {
+        let dist = Vectors.dist(this, unit);
+        return this.team != unit.team && dist < this.range && unit.team != NEUTRAL;
+    }
+
     getState() {
         let state = super.getState();
         state.type = "unit:basic_unit";

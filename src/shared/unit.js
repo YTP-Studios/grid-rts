@@ -39,11 +39,6 @@ export default class Unit {
         return Vectors.dist(this, this.targetPos) <= this.size;
     }
 
-    canAttackUnit(unit) {
-        let dist = Vectors.dist(this, unit);
-        return this.team != unit.team && dist < this.range && unit.team != NEUTRAL;
-    }
-
     stopAttacking() {
         this.isAttacking = false;
     }
