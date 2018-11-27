@@ -89,10 +89,14 @@ export class SiegeClientUnit extends SiegeUnit {
         if (this.isInAoeField(curEnemyLocation, nearestEnemy)) {
             super.attack(nearestEnemy);
         }
-        setTimeout(function detonateAoeField(){
-            this.isAttacking = false;
-            this.aoeField.clear();
+        setTimeout(function destroyAoeField() {
+            this.stopAttack();
         }.bind(this), 500);
+    }
+
+    stopAttack() {
+        super.stopAttacking();
+        this.aoeField.clear();
     }
 
     isInAoeField(aoeFieldLocation, nearestEnemy) {

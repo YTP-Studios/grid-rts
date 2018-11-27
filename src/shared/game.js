@@ -63,7 +63,7 @@ export default class Game {
                 }
             }
             if (minDist === Infinity) {
-                a.stopAttacking()
+                a.stopAttacking();
             } else {
                 a.isAttacking = true;
                 a.attack(nearestEnemy);

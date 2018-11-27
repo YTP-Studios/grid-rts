@@ -7,7 +7,6 @@ export default class SiegeUnit extends Unit {
 
     constructor(x = 0, y = 0, team = NEUTRAL) {
         super(x, y, team, Constants.SIEGE_UNIT_BODY_SIZE, Constants.SIEGE_UNIT_HEALTH, Constants.SIEGE_UNIT_RANGE, Constants.SIEGE_UNIT_SPEED);
-        console.log(this.health)
     }
 
     canAttackUnit(unit) {
@@ -17,7 +16,7 @@ export default class SiegeUnit extends Unit {
 
     attack(nearestEnemy) {
         this.nearestEnemy = nearestEnemy;
-        this.nearestEnemy.health -= 50;
+        this.nearestEnemy.health -= 1;
     }
 
     getState() {
