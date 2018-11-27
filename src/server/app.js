@@ -6,7 +6,9 @@ let io = require('socket.io')(http);
 import ServerGame from './server-game'
 import { Command } from "../shared/commands";
 import { TEAMS } from "../shared/teams";
-import { READY, START, COMMAND, GAME_STATE, RESET } from "../shared/game-events";
+import { READY, START, COMMAND, GAME_STATE, RESET, MAPDATA } from "../shared/game-events";
+import { DEFAULT_MAP, VS_MAP } from "../shared/constants";
+import GameMap from "../shared/game_map";
 
 const port = 8000;
 
@@ -18,8 +20,8 @@ app.get('/', (req, res) => {
 })
 
 let game = new ServerGame(io);
-game.init();
-
+game.init(GameMap.fromString(VS_MAP));
+io.emit(MAPDATA, VS_MAP);
 setInterval(() => {
     game.update(1);
     io.emit(GAME_STATE, game.getState());
@@ -35,7 +37,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on(READY, () => {
-        socket.emit(START, (game.players.length % (TEAMS.length - 1)) + 1)
+        socket.emit(START, (game.players.length % (TEAMS.length - 1)) + 1, VS_MAP)
     });
 
     socket.on(COMMAND, (data) => {
@@ -43,8 +45,9 @@ io.on('connection', (socket) => {
         command.exec(game);
     })
 
-    socket.on(RESET, (data) => {
-        game.init();
+    socket.on(RESET, () => {
+        io.emit(MAPDATA, VS_MAP);
+        game.init(GameMap.fromString(VS_MAP));
     })
 });
 
