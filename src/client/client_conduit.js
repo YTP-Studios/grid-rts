@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import * as Constants from '../shared/constants';
 import Conduit from "../shared/conduit";
 import { BUILDING_SIGHT_RANGE, GRID_SCALE } from "../shared/constants";
 import { checkBuildingColours, createBuildingSprite } from "./sprite-utils";

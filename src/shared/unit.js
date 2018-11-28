@@ -5,7 +5,7 @@ import * as uuid from 'uuid/v4';
 
 export default class Unit {
 
-    constructor(x = 0, y = 0, team = NEUTRAL, size = 0, health, range, speed, enabled = true) {
+    constructor(x = 0, y = 0, team = NEUTRAL, size = 0, health, range, speed, maxTargets) {
         this.id = uuid();
         this.x = x;
         this.y = y;
@@ -17,7 +17,9 @@ export default class Unit {
         this.health = health;
         this.range = range;
         this.speed = speed;
-        this.enabled = enabled;
+        this.enabled = true;
+        this.isOnCooldown = false;
+        this.maxTargets = maxTargets;
     }
 
     update(delta) {
@@ -33,6 +35,19 @@ export default class Unit {
         if (this.health < 0) {
             this.enabled = false;
         }
+    }
+
+    findNearestEnemy(enemiesInRange) {
+        let minDist = Infinity;
+        let nearestEnemy;
+        for (let i = 0; i < enemiesInRange.length; i ++) {
+            const dist = Vectors.dist(this, enemiesInRange[i]);
+            if (dist < minDist) {
+                nearestEnemy = enemiesInRange[i];
+                minDist = dist;
+            }
+        }
+        return nearestEnemy;
     }
 
     atDestination() {

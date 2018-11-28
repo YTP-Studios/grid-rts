@@ -6,11 +6,12 @@ import Unit from './unit';
 export default class BasicUnit extends Unit {
 
     constructor(x = 0, y = 0, team = NEUTRAL) {
-        super(x, y, team, Constants.BASIC_UNIT_BODY_SIZE, Constants.BASIC_UNIT_HEALTH, Constants.BASIC_UNIT_RANGE, Constants.BASIC_UNIT_SPEED);
+        super(x, y, team, Constants.BASIC_UNIT_BODY_SIZE, Constants.BASIC_UNIT_HEALTH, Constants.BASIC_UNIT_RANGE, 
+            Constants.BASIC_UNIT_SPEED, Constants.BASIC_UNIT_MAX_TARGETS);
     }
 
-    attack(nearestEnemy) {
-        this.nearestEnemy = nearestEnemy;
+    attack(enemies) {
+        this.nearestEnemy = this.findNearestEnemy(enemies);
         this.nearestEnemy.health -= Constants.LASER_DAMAGE;
     }
 

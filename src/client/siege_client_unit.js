@@ -18,19 +18,18 @@ export class SiegeClientUnit extends SiegeUnit {
         this.sprite = spriteContainer;
         this.parentContainer.addChild(this.sprite);
 
-        this.basicUnitSprite = createCenteredSprite("assets/basic-unit-body.png", Constants.SIEGE_UNIT_BODY_SIZE * 4);
-        this.basicUnitSprite.tint = TEAM_COLOURS[this.team];
-        this.sprite.addChild(this.basicUnitSprite);
+        this.siegeUnitSprite = createCenteredSprite("assets/siege-unit-body.png", Constants.SIEGE_UNIT_BODY_SIZE * 2);
+        this.siegeUnitSprite.tint = TEAM_COLOURS[this.team];
+        this.sprite.addChild(this.siegeUnitSprite);
 
-        this.basicUnitCoreSprite = createCenteredSprite("assets/basic-unit-core.png", Constants.SIEGE_UNIT_BODY_SIZE * 4);
-        this.sprite.addChild(this.basicUnitCoreSprite);
+        this.siegeUnitCoreSprite = createCenteredSprite("assets/siege-unit-core.png", Constants.SIEGE_UNIT_BODY_SIZE * 2);
+        this.sprite.addChild(this.siegeUnitCoreSprite);
 
         this.isSelected = false;
         this.selectionCircle = new PIXI.Graphics;
         this.game.interfaceContainer.addChild(this.selectionCircle);
 
         this.aoeField = new PIXI.Graphics;
-        this.isAttacking = false;
         this.parentContainer.addChild(this.aoeField);
 
         this.sightCircle = new PIXI.Graphics;
@@ -38,16 +37,22 @@ export class SiegeClientUnit extends SiegeUnit {
         this.sightCircle.beginFill(0xFFFFFF);
         this.sightCircle.drawCircle(Constants.GRID_SCALE, Constants.GRID_SCALE, Constants.BASIC_UNIT_SIGHT_RANGE);
         this.sightCircle.endFill();
+
+        this.rotationRate = 0.05;
     }
 
     update(delta) {
         super.update(delta);
         this.sprite.x = this.x;
         this.sprite.y = this.y;
-        let vertical_distance = this.targetPos.y - this.y;
-        let horizontal_distance = this.targetPos.x - this.x;
-        let angle = Math.atan2(vertical_distance, horizontal_distance) + Math.PI / 2; //sprite faces upwards on default so an offset of 90 degrees is needed
-        this.sprite.rotation = angle;
+        if (this.isOnCooldown) {
+            if (this.rotationRate < 0.4) {
+                this.rotationRate += 0.005;
+            }
+        } else {
+            this.rotationRate = 0.05;
+        }
+        this.sprite.rotation += this.rotationRate;
         this.scaleUnitCore();
 
         if (this.isSelected) {
@@ -65,66 +70,53 @@ export class SiegeClientUnit extends SiegeUnit {
         }
     }
 
-    attack(nearestEnemy) {
+    attack(enemies) {
+        const nearestEnemy = super.findNearestEnemy(enemies);
+        super.attack(enemies); 
         this.drawAoeField(nearestEnemy);
     }
 
     drawAoeField(nearestEnemy) {
         this.aoeField.lineStyle(1, TEAM_COLOURS[this.team]);
-        this.aoeField.beginFill(Constants.SELECTOR_CIRCLE_COLOR, 0.1);
-        this.aoeField.drawCircle(nearestEnemy.x, nearestEnemy.y, 50);
-        const curEnemyLocation =  {x: nearestEnemy.x, y: nearestEnemy.y }
+        this.aoeField.beginFill(Constants.SELECTOR_CIRCLE_COLOR, Constants.SIEGE_UNIT_AOE_OPACITY);
+        this.aoeField.drawCircle(nearestEnemy.x, nearestEnemy.y, Constants.SIEGE_UNIT_EXPLOSION_RADIUS);
+        const curEnemyLocation = {x: nearestEnemy.x, y: nearestEnemy.y }
         this.detonateAoeField(curEnemyLocation, nearestEnemy);
     }
 
     detonateAoeField(curEnemyLocation, nearestEnemy) {
-        setTimeout(function detonateAoeField() {
-            this.aoeField.beginFill(Constants.SELECTOR_CIRCLE_COLOR, 100);
-            this.aoeField.drawCircle(curEnemyLocation.x, curEnemyLocation.y, 50);
+        setTimeout(() => {
+            this.aoeField.beginFill(Constants.SELECTOR_CIRCLE_COLOR);
+            this.aoeField.drawCircle(curEnemyLocation.x, curEnemyLocation.y, Constants.SIEGE_UNIT_EXPLOSION_RADIUS);
             this.destroyAoeField(curEnemyLocation, nearestEnemy);
-        }.bind(this), 1500);
+        }, 2500);
     }
 
-    destroyAoeField(curEnemyLocation, nearestEnemy) {
-        if (this.isInAoeField(curEnemyLocation, nearestEnemy)) {
-            super.attack(nearestEnemy);
-        }
-        setTimeout(function destroyAoeField() {
-            this.stopAttack();
-        }.bind(this), 500);
+    destroyAoeField() {
+        setTimeout(() => {
+            this.aoeField.clear();
+        }, 500);
     }
 
-    stopAttack() {
-        super.stopAttacking();
-        this.aoeField.clear();
-    }
-
-    isInAoeField(aoeFieldLocation, nearestEnemy) {
-        const combinedSize = 50 + nearestEnemy.size;
-        const dist = Vectors.dist(aoeFieldLocation, nearestEnemy);
-        return dist <= combinedSize;
-    }
 
     drawSelectionCircle() {
         this.selectionCircle.clear();
         this.selectionCircle.lineStyle(Constants.SELECTOR_BOX_BORDER_WIDTH, Constants.SELECTOR_CIRCLE_COLOR);
         this.selectionCircle.beginFill(Constants.SELECTOR_CIRCLE_COLOR, Constants.SELECTOR_BOX_OPACITY);
-        this.selectionCircle.drawCircle(this.x, this.y, Constants.SELECTOR_CIRCLE_RADIUS);
+        this.selectionCircle.drawCircle(this.x, this.y, Constants.SELECTOR_CIRCLE_RADIUS + Constants.SIEGE_UNIT_BODY_SIZE);
     }
 
-    stopAttacking() {
-    }
 
     destroy() {
-        this.sprite.removeChild(this.basicUnitSprite);
+        this.sprite.removeChild(this.siegeUnitSprite);
         this.parentContainer.removeChild(this.aoeField);
         this.parentContainer.removeChild(this.sprite);
         this.game.interfaceContainer.removeChild(this.selectionCircle);
     }
 
     scaleUnitCore() {
-        this.basicUnitCoreSprite.height = this.health / Constants.BASIC_UNIT_HEALTH * Constants.BASIC_UNIT_BODY_SIZE * 4;
-        this.basicUnitCoreSprite.width = this.health / Constants.BASIC_UNIT_HEALTH * Constants.BASIC_UNIT_BODY_SIZE * 4;
+        this.siegeUnitCoreSprite.height = this.health / Constants.SIEGE_UNIT_HEALTH * Constants.SIEGE_UNIT_BODY_SIZE;
+        this.siegeUnitCoreSprite.width = this.health / Constants.SIEGE_UNIT_HEALTH * Constants.SIEGE_UNIT_BODY_SIZE;
     }
 
 
