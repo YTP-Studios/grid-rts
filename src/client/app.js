@@ -1,10 +1,6 @@
 import ClientGame from './client_game';
 import io from 'socket.io-client';
-import { READY, START, MAPDATA } from '../shared/game-events';
-import GameMap from '../shared/game_map';
-import { DEFAULT_MAP } from '../shared/constants';
-import ClientMap from './client_map';
-
+import { READY, START } from '../shared/game-events';
 const socket = io();
 
 ClientGame.loadAssets().then(() => {
@@ -14,5 +10,6 @@ ClientGame.loadAssets().then(() => {
         game.init(socket, mapData);
         game.playerTeam = team;
         game.start();
+        window.game = game; // for debugging
     });
 })

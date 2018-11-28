@@ -7,7 +7,7 @@ import ServerGame from './server-game'
 import { Command } from "../shared/commands";
 import { TEAMS } from "../shared/teams";
 import { READY, START, COMMAND, GAME_STATE, RESET, MAPDATA } from "../shared/game-events";
-import { DEFAULT_MAP, VS_MAP } from "../shared/constants";
+import { VS_MAP } from "../shared/constants";
 import GameMap from "../shared/game_map";
 
 const port = 8000;
@@ -21,7 +21,6 @@ app.get('/', (req, res) => {
 
 let game = new ServerGame(io);
 game.init(GameMap.fromString(VS_MAP));
-io.emit(MAPDATA, VS_MAP);
 setInterval(() => {
     game.update(1);
     io.emit(GAME_STATE, game.getState());
@@ -46,7 +45,6 @@ io.on('connection', (socket) => {
     })
 
     socket.on(RESET, () => {
-        io.emit(MAPDATA, VS_MAP);
         game.init(GameMap.fromString(VS_MAP));
     })
 });

@@ -39,11 +39,17 @@ export default class GameMap {
         return this.buildings[row][col];
     }
 
-    setState() {
-        // TODO: unimplemented
+    setState(data) {
+        for (let i = 0; i < data.length; i++) {
+            for (let j = 0; j < data[i].length; j++) {
+                if (!this.buildings[i][j]) continue;
+                this.buildings[i][j].setState(data[i][j]);
+            }
+        }
     }
 
     getState() {
-        // TODO: unimplemented
+        return this.buildings.map(row => row
+            .map(building => building && building.getState()));
     }
 }
