@@ -1,6 +1,6 @@
 import { AdvancedBloomFilter, AdjustmentFilter, KawaseBlurFilter } from 'pixi-filters';
 import * as PIXI from 'pixi.js';
-import { Command, MoveCommand } from '../shared/commands';
+import { Command, MoveCommand, CaptureCommand } from '../shared/commands';
 import * as Constants from '../shared/constants';
 import Game from '../shared/game';
 import { COMMAND, GAME_STATE, RESET } from '../shared/game-events';
@@ -113,22 +113,32 @@ export default class ClientGame extends Game {
         this.posIndicator = new PIXI.Graphics();
         this.interfaceContainer.addChild(this.posIndicator);
 
-        const style = new PIXI.TextStyle({fontFamily: "Arial Black", fontSize: 20, fontVariant: "small-caps", letterSpacing:2, 
-            fill: 0xffffff, lineJoin:"round", strokeThickness:1});
+        const style = new PIXI.TextStyle({
+            fontFamily: "Arial Black", fontSize: 20, fontVariant: "small-caps", letterSpacing: 2,
+            fill: 0xffffff, lineJoin: "round", strokeThickness: 1
+        });
 
         this.energyText = new PIXI.Text("", style);
         this.energyText.x = 525;
         this.energyText.y = 10;
-        this.app.stage.addChild(this.energyText);   
+        this.app.stage.addChild(this.energyText);
 
         this.app.renderer.plugins.interaction.on('rightdown', () => {
             const mousePosition = this.app.renderer.plugins.interaction.mouse.global;
             const targetPos = this.world.toLocal(mousePosition)
             this.drawIndicator(targetPos);
             const unitIds = this.units.filter((unit) => unit.team === this.playerTeam && unit.isSelected).map(unit => unit.id);
-            const command = new MoveCommand({ targetPos, unitIds });
-            socket.emit(COMMAND, Command.toData(command));
-            command.exec(this);
+            if (unitIds.length > 0) {
+                const command = new MoveCommand({ targetPos, unitIds });
+                socket.emit(COMMAND, Command.toData(command));
+                command.exec(this);
+            } else {
+                const row = Math.round(targetPos.y / Constants.GRID_SCALE);
+                const col = Math.round(targetPos.x / Constants.GRID_SCALE);
+                const command = new CaptureCommand({ row, col, team: this.playerTeam });
+                socket.emit(COMMAND, Command.toData(command));
+                command.exec(this);
+            }
         })
 
         this.app.renderer.plugins.interaction.on('rightup', () => {
