@@ -114,7 +114,7 @@ export default class ClientGame extends Game {
             fill: 0xffffff, lineJoin:"round", strokeThickness:1});
 
         this.energyText = new PIXI.Text("", style);
-        this.energyText.x = 610;
+        this.energyText.x = 525;
         this.energyText.y = 10;
         this.app.stage.addChild(this.energyText);   
 
@@ -233,6 +233,8 @@ export default class ClientGame extends Game {
     }
 
     drawEnergyText() {
-        this.energyText.text = "Energy: " + Math.floor(this.energy[this.playerTeam]);
+        const energy = Math.floor(this.energy[this.playerTeam])
+        const energyCap = this.energyCap[this.playerTeam];
+        this.energyText.text = "Energy: " + energy + " / " + energyCap;
     }
 }
