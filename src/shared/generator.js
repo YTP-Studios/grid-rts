@@ -12,6 +12,7 @@ export default class Generator extends Building {
 
     getEnergyCap() {
         return Constants.GENERATOR_CAP;
+    }
       
     reset() {
         super.reset();
