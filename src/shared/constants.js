@@ -33,6 +33,8 @@ export const BASIC_UNIT_HEALTH = 100;
 export const LASER_DAMAGE = 0.5;
 export const LASER_THICKNESS = 5;
 
+export const BUILDING_INCOME = 0.1;
+
 export const BACKGROUND_COLOR = 0x202020;
 
 export const GRID_SCALE = 64;
