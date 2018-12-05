@@ -5,12 +5,14 @@ export default class Conduit extends Building {
     constructor(row, col, team) {
         super(row, col, team, Constants.CONDUIT_SIZE, Constants.CONDUIT_HEALTH);
     }
-
     getIncome() {
         return 0;
     }
 
     getEnergyCap() {
         return Constants.CONDUIT_CAP;
+    reset() {
+        super.reset();
+        this.health = Constants.CONDUIT_HEALTH;
     }
 }
