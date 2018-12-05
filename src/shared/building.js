@@ -1,4 +1,5 @@
 import { GRID_SCALE } from "./constants";
+import { NEUTRAL } from "./teams";
 
 export default class Building {
 
@@ -18,5 +19,24 @@ export default class Building {
     }
 
     update(delta, map) {
+        if (this.health < 0) {
+            this.reset();
+        }
+    }
+
+    reset() {
+        this.team = NEUTRAL;
+    }
+
+    getState() {
+        return {
+            team: this.team,
+            health: this.health,
+        };
+    }
+
+    setState({ team, health }) {
+        this.team = team;
+        this.health = health;
     }
 }
