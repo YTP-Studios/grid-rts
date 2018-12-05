@@ -1,6 +1,7 @@
 import Conduit from "./conduit";
 import Generator from "./generator";
 import { RED_TEAM, BLUE_TEAM, NEUTRAL } from "./teams";
+import Factory from "./factory";
 
 export default class GameMap {
 
@@ -14,10 +15,14 @@ export default class GameMap {
 
     static fromChar(c, row, col) {
         switch (c) {
+            case '0':
+                return new Generator(row, col, NEUTRAL);
             case '1':
                 return new Generator(row, col, RED_TEAM);
             case '2':
                 return new Generator(row, col, BLUE_TEAM);
+            case 'F':
+                return new Factory(row, col, NEUTRAL);
             case '.':
                 return new Conduit(row, col, NEUTRAL);
             default:
