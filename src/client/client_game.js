@@ -110,6 +110,14 @@ export default class ClientGame extends Game {
         this.posIndicator = new PIXI.Graphics();
         this.interfaceContainer.addChild(this.posIndicator);
 
+        const style = new PIXI.TextStyle({fontFamily: "Arial Black", fontSize: 20, fontVariant: "small-caps", letterSpacing:2, 
+            fill: 0xffffff, lineJoin:"round", strokeThickness:1});
+
+        this.energyText = new PIXI.Text("", style);
+        this.energyText.x = 525;
+        this.energyText.y = 10;
+        this.app.stage.addChild(this.energyText);   
+
         this.app.renderer.plugins.interaction.on('rightdown', () => {
             const mousePosition = this.app.renderer.plugins.interaction.mouse.global;
             const targetPos = this.world.toLocal(mousePosition)
@@ -159,6 +167,8 @@ export default class ClientGame extends Game {
             const mousePosition = this.world.toLocal(this.app.renderer.plugins.interaction.mouse.global);
             this.drawUnitSelectionBox(mousePosition);
         }
+
+        this.drawEnergyText();
     }
 
     updateCamera(delta) {
@@ -220,5 +230,11 @@ export default class ClientGame extends Game {
             Constants.POSITION_INDICATOR_DIAMETER, Constants.POSITION_INDICATOR_DIAMETER / 2);
         this.posIndicator.drawCircle(mousePosition.x, mousePosition.y,
             Constants.POSITION_INDICATOR_INNER_RADIUS);
+    }
+
+    drawEnergyText() {
+        const energy = Math.floor(this.energy[this.playerTeam])
+        const energyCap = this.energyCap[this.playerTeam];
+        this.energyText.text = "Energy: " + energy + " / " + energyCap;
     }
 }

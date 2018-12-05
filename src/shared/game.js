@@ -5,6 +5,9 @@ export default class Game {
     init(map, units) {
         this.map = map;
         this.units = units;
+        this.energy = [0, 0, 0];
+        this.income = [0, 0, 0];
+        this.energyCap = [0, 0, 0];
     }
 
     update(delta) {
@@ -12,6 +15,7 @@ export default class Game {
         this.units.forEach((unit) => unit.update(delta));
         this.resolveCollisions();
         this.resolveAttacks();
+        this.updateIncome();
     }
 
     resolveCollisions() {
@@ -100,5 +104,24 @@ export default class Game {
 
         // Update map
         this.map.setState(map);
+    }
+
+    updateIncome() {
+        for (let i = 0; i < this.energy.length; i ++) {
+            this.income[i] = 0;
+            this.energyCap[i] = 0;
+            for (let j = 0; j < this.map.buildings.length; j ++) {
+                for (let k = 0; k < this.map.buildings[j].length; k ++) {
+                    const building = this.map.buildings[j][k];
+                    if (!building) continue;
+                    if (building.team == i) {
+                        this.income[i] += building.getIncome();
+                        this.energyCap[i] += building.getEnergyCap();
+                    }
+                }
+            }
+            this.energy[i] += this.income[i];
+            this.energy[i] = Math.min(this.energy[i], this.energyCap[i]);
+        }
     }
 }
