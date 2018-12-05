@@ -233,6 +233,6 @@ export default class ClientGame extends Game {
     }
 
     drawEnergyText() {
-        this.energyText.text = "Energy: " + Math.round(this.energy[this.playerTeam]);
+        this.energyText.text = "Energy: " + Math.floor(this.energy[this.playerTeam]);
     }
 }

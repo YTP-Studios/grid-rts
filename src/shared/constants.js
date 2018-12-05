@@ -33,13 +33,16 @@ export const BASIC_UNIT_HEALTH = 100;
 export const LASER_DAMAGE = 0.5;
 export const LASER_THICKNESS = 5;
 
-export const BUILDING_INCOME = 0.1;
-
 export const BACKGROUND_COLOR = 0x202020;
 
 export const GRID_SCALE = 64;
 
 export const BUILDING_SIGHT_RANGE = 2 * GRID_SCALE;
+
+export const GENERATOR_INCOME = 0.1;
+export const GENERATOR_CAP = 500;
+
+export const CONDUIT_CAP = 20;
 
 export const DEFAULT_MAP = `.................................
 ..1.............1................

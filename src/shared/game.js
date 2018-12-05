@@ -107,17 +107,22 @@ export default class Game {
 
     updateIncome() {
         for (let i = 0; i < this.energy.length; i ++) {
-            let teamBuildingCount = 0;
+            this.income[i] = 0;
+            let energyCap = 0;
             for (let j = 0; j < this.map.buildings.length; j ++) {
-                for (let k = 0; k < this.map.buildings[j].length; k++) {
-                    if (!this.map.buildings[j][k]) continue;
-                    if (this.map.buildings[j][k].team == i) {
-                        teamBuildingCount ++;
+                for (let k = 0; k < this.map.buildings[j].length; k ++) {
+                    const building = this.map.buildings[j][k];
+                    if (!building) continue;
+                    if (building.team == i) {
+                        this.income[i] += building.getIncome();
+                        energyCap += building.getEnergyCap();
                     }
                 }
             }
-            this.income[i] = teamBuildingCount * Constants.BUILDING_INCOME;
             this.energy[i] += this.income[i];
+            if (this.energy[i] > energyCap) {
+                this.energy[i] = energyCap;
+            }
         }
     }
 }
