@@ -47,10 +47,14 @@ export function checkBuildingColours(buildingSprite, map, team, row, col) {
         } else if (building.team == team) {
             sprite.visible = true;
             sprite.tint = TEAM_COLOURS[team];
+        } else {
+            sprite.visible = true;
+            sprite.tint = NEUTRAL_COLOR;
         }
     }
     checkColour(row - 1, col, buildingSprite.topSprite);
     checkColour(row + 1, col, buildingSprite.bottomSprite);
     checkColour(row, col - 1, buildingSprite.leftSprite);
     checkColour(row, col + 1, buildingSprite.rightSprite);
+    buildingSprite.centerSprite.tint = TEAM_COLOURS[team];
 }

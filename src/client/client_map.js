@@ -11,7 +11,7 @@ export default class ClientMap extends GameMap {
             .split('\n')
             .map((line, row) => line
                 .split("")
-                .map((c, col) => ClientMap.fromChar(game, c, row, col))))
+                .map((c, col) => ClientMap.fromChar(game, c, row, col))));
     }
     static fromChar(game, c, row, col) {
         switch (c) {

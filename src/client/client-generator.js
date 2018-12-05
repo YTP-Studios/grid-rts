@@ -1,7 +1,6 @@
-import { BUILDING_SIGHT_RANGE, GRID_SCALE, GENERATOR_HEALTH } from "../shared/constants";
+import { BUILDING_SIGHT_RANGE, GRID_SCALE } from "../shared/constants";
 import Generator from "../shared/generator";
 import { checkBuildingColours, createBuildingSprite, createCenteredSprite } from "./sprite-utils";
-import { TEAM_COLOURS, NEUTRAL_COLOR, NEUTRAL } from "../shared/teams";
 
 export default class ClientGenerator extends Generator {
     constructor(game, row, col, team) {
@@ -40,16 +39,10 @@ export default class ClientGenerator extends Generator {
     update(delta, map) {
         super.update(delta, map);
         const { team, row, col } = this;
-        checkBuildingColours(this.buildingSprite, map, team, row, col)
+        checkBuildingColours(this.buildingSprite, map, team, row, col);
         if (this.team == this.game.playerTeam) {
             this.sightCircle.position.copy(this);
             this.game.app.renderer.render(this.sightCircle, this.game.sightRangeTexture, false, null, false);
-        }
-
-        if (this.health < 0) {
-            this.team = NEUTRAL;
-            this.centerSprite.tint = NEUTRAL_COLOR;
-            this.health = GENERATOR_HEALTH;
         }
     }
 }
