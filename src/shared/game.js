@@ -1,5 +1,6 @@
 import * as Vectors from '../shared/vectors'
 import * as Constants from '../shared/constants';
+import { NEUTRAL } from './teams';
 
 export default class Game {
     init(map, units) {
@@ -41,40 +42,38 @@ export default class Game {
 
     resolveAttacks() {
         for (let i = 0; i < this.units.length; i++) {
+            let foundEnemyInRange = false;
+            let enemies = []
             let a = this.units[i];
-            let minDist = Infinity;
-            let nearestEnemy;
             for (let j = 0; j < this.units.length; j++) {
                 if (i == j) continue;
                 let b = this.units[j];
-                const dist = Vectors.dist(a, b);
-                if (dist < minDist && a.canAttackUnit(b)) {
-                    minDist = dist;
-                    nearestEnemy = b;
-                }
+                if (a.canAttackUnit(b))
+                    foundEnemyInRange = true;
+                if (a.team != b.team&& b.team != NEUTRAL)
+                    enemies.push(b);
             }
-            if (minDist === Infinity) {
+            if (!foundEnemyInRange) {
                 for (let j = 0; j < this.map.buildings.length; j++) {
                     for (let k = 0; k < this.map.buildings[j].length; k++) {
                         let b = this.map.buildings[j][k];
                         if (!b) continue;
-                        const dist = Vectors.dist(a, b);
-                        if (dist < minDist && a.canAttackUnit(b)) {
-                            minDist = dist;
-                            nearestEnemy = b;
-                        }
+                        if (a.canAttackUnit(b))
+                            foundEnemyInRange = true;
+                        if (a.team != b.team && b.team != NEUTRAL)
+                            enemies.push(b);
                     }
                 }
             }
-            if (minDist === Infinity) {
-                a.stopAttacking()
+            if (!foundEnemyInRange) {
+                if (!a.isOnCooldown)
+                    a.stopAttacking();
             } else {
                 a.isAttacking = true;
-                a.attack(nearestEnemy);
+                a.attack(enemies);
             }
         }
         this.units = this.units.filter(unit => unit.enabled);
-       // this.map.buildings = this.map.buildings.filter(building => building.enabled);
     }
 
     getState() {

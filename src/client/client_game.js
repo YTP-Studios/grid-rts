@@ -7,6 +7,7 @@ import { COMMAND, GAME_STATE, RESET } from '../shared/game-events';
 import { BLUE_TEAM, TEAM_COLOURS } from '../shared/teams';
 import * as Vectors from '../shared/vectors';
 import { BasicClientUnit } from './basic_client_unit';
+import { SiegeClientUnit } from './siege_client_unit';
 import ClientMap from './client_map';
 import keyboard from './keyboard';
 
@@ -21,6 +22,8 @@ export default class ClientGame extends Game {
                 .add("assets/generator-edge.png")
                 .add("assets/generator-center.png")
                 .add("assets/generator-core.png")
+                .add("assets/siege-unit-body.png")
+                .add("assets/siege-unit-core.png")
                 .load(resolve));
 
     }
@@ -185,6 +188,9 @@ export default class ClientGame extends Game {
             switch (data.type) {
                 case "unit:basic_unit":
                     unit = new BasicClientUnit(this, data.x, data.y, data.team);
+                    break;
+                case "unit:siege_unit":
+                    unit = new SiegeClientUnit(this, data.x, data.y, data.team);
                     break;
                 default:
                     throw new Error("Undefined unit type.");
