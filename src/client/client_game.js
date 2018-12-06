@@ -22,6 +22,9 @@ export default class ClientGame extends Game {
                 .add("assets/generator-edge.png")
                 .add("assets/generator-center.png")
                 .add("assets/generator-core.png")
+                .add("assets/factory-edge.png")
+                .add("assets/factory-center.png")
+                .add("assets/factory-core.png")
                 .add("assets/siege-unit-body.png")
                 .add("assets/siege-unit-core.png")
                 .load(resolve));
