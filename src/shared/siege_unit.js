@@ -8,6 +8,9 @@ export default class SiegeUnit extends Unit {
     constructor(x = 0, y = 0, team = NEUTRAL) {
         super(x, y, team, Constants.SIEGE_UNIT_BODY_SIZE, Constants.SIEGE_UNIT_HEALTH, Constants.SIEGE_UNIT_RANGE,
             Constants.SIEGE_UNIT_SPEED, Constants.SIEGE_UNIT_MAX_TARGETS);
+        this.elapsedTime = 0;
+        this.foundTarget = false;
+        this.aoePos = {x: 0, y: 0};
     }
 
     canAttackUnit(unit) {
@@ -15,17 +18,21 @@ export default class SiegeUnit extends Unit {
         return this.team != unit.team && dist < this.range && unit.team != NEUTRAL && !this.isAttacking;
     }
 
-    attack(enemies) {
+    attack(enemies, delta) {
         this.nearestEnemy = super.findNearestEnemy(enemies);
-        this.isOnCooldown = true;
-        let curEnemyLocation = { x: this.nearestEnemy.x, y: this.nearestEnemy.y }
-        setTimeout(() => {
-            this.isOnCooldown = false;
+        if (!this.foundTarget) {
+            this.aoePos = {x: this.nearestEnemy.x, y: this.nearestEnemy.y};
+            this.foundTarget = true;
+        }   
+        this.elapsedTime += delta;
+        if (this.elapsedTime >= Constants.SIEGE_UNIT_COOLDOWN) {
             for (let i = 0; i < enemies.length; i ++) {
-                if (this.isInAoeField(curEnemyLocation, enemies[i]))
+                if (this.isInAoeField(this.aoePos, enemies[i]))
                     enemies[i].health -= Constants.SIEGE_UNIT_DAMAGE;
             }
-        }, Constants.SIEGE_UNIT_COOLDOWN);
+            this.foundTarget = false;
+            this.elapsedTime = 0;
+        }
     }
 
     isInAoeField(aoeFieldLocation, nearestEnemy) {

@@ -40,7 +40,7 @@ export const SIEGE_UNIT_HEALTH = 420;
 export const SIEGE_UNIT_MAX_TARGETS = Infinity;
 export const SIEGE_UNIT_DAMAGE = 50;
 export const SIEGE_UNIT_EXPLOSION_RADIUS = 75;
-export const SIEGE_UNIT_COOLDOWN = 3000;
+export const SIEGE_UNIT_COOLDOWN = 75;
 export const SIEGE_UNIT_AOE_OPACITY = 0.1;
 
 export const LASER_DAMAGE = 0.5;

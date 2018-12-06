@@ -15,7 +15,7 @@ export default class Game {
         this.map.update(delta);
         this.units.forEach((unit) => unit.update(delta));
         this.resolveCollisions();
-        this.resolveAttacks();
+        this.resolveAttacks(delta);
         this.updateIncome();
     }
 
@@ -40,7 +40,7 @@ export default class Game {
         }
     }
 
-    resolveAttacks() {
+    resolveAttacks(delta) {
         for (let i = 0; i < this.units.length; i++) {
             let foundEnemyInRange = false;
             let enemies = []
@@ -66,11 +66,10 @@ export default class Game {
                 }
             }
             if (!foundEnemyInRange) {
-                if (!a.isOnCooldown)
-                    a.stopAttacking();
+                a.stopAttacking();
             } else {
                 a.isAttacking = true;
-                a.attack(enemies);
+                a.attack(enemies, delta);
             }
         }
         this.units = this.units.filter(unit => unit.enabled);

@@ -39,6 +39,8 @@ export class SiegeClientUnit extends SiegeUnit {
         this.sightCircle.endFill();
 
         this.rotationRate = 0.05;
+
+        this.hasDrawnAoeField = false;
     }
 
     update(delta) {
@@ -70,33 +72,35 @@ export class SiegeClientUnit extends SiegeUnit {
         }
     }
 
-    attack(enemies) {
-        const nearestEnemy = super.findNearestEnemy(enemies);
-        super.attack(enemies); 
-        this.drawAoeField(nearestEnemy);
+    attack(enemies, delta) {
+        super.attack(enemies, delta);
+
+        if (!this.hasDrawnAoeField) {
+            this.aoeField.clear();
+            this.drawAoeField();
+        }
+
+        if (this.elapsedTime < 1.5) {
+            this.hasDrawnAoeField = false;
+        }
+
+        if (this.elapsedTime >= Constants.SIEGE_UNIT_COOLDOWN - 5) {
+            this.detonateAoeField();
+        }
     }
 
-    drawAoeField(nearestEnemy) {
+    drawAoeField() {
         this.aoeField.lineStyle(1, TEAM_COLOURS[this.team]);
         this.aoeField.beginFill(Constants.SELECTOR_CIRCLE_COLOR, Constants.SIEGE_UNIT_AOE_OPACITY);
-        this.aoeField.drawCircle(nearestEnemy.x, nearestEnemy.y, Constants.SIEGE_UNIT_EXPLOSION_RADIUS);
-        const curEnemyLocation = {x: nearestEnemy.x, y: nearestEnemy.y }
-        this.detonateAoeField(curEnemyLocation, nearestEnemy);
+        this.aoeField.drawCircle(this.nearestEnemy.x, this.nearestEnemy.y, Constants.SIEGE_UNIT_EXPLOSION_RADIUS);
+        this.hasDrawnAoeField = true;
     }
 
-    detonateAoeField(curEnemyLocation, nearestEnemy) {
-        setTimeout(() => {
-            this.aoeField.beginFill(Constants.SELECTOR_CIRCLE_COLOR);
-            this.aoeField.drawCircle(curEnemyLocation.x, curEnemyLocation.y, Constants.SIEGE_UNIT_EXPLOSION_RADIUS);
-            this.destroyAoeField(curEnemyLocation, nearestEnemy);
-        }, 2500);
+    detonateAoeField() {
+        this.aoeField.beginFill(Constants.SELECTOR_CIRCLE_COLOR);
+        this.aoeField.drawCircle(this.aoePos.x, this.aoePos.y, Constants.SIEGE_UNIT_EXPLOSION_RADIUS);
     }
 
-    destroyAoeField() {
-        setTimeout(() => {
-            this.aoeField.clear();
-        }, 500);
-    }
 
 
     drawSelectionCircle() {
