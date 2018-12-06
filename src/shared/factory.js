@@ -13,9 +13,7 @@ export default class Factory extends Building {
   getEnergyCap() {
     return 0;
   }
-
-  reset() {
-    super.reset();
-    this.health = Constants.FACTORY_HEALTH;
+  getMaxHealth() {
+    return Constants.FACTORY_HEALTH;
   }
 }

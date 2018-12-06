@@ -20,8 +20,8 @@ export default class Generator extends Building {
     return Constants.GENERATOR_CAP;
   }
 
-  reset() {
-    super.reset();
-    this.health = Constants.GENERATOR_HEALTH;
+  getMaxHealth() {
+    return Constants.GENERATOR_HEALTH;
   }
+
 }

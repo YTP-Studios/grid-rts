@@ -42,7 +42,9 @@ export class CaptureCommand {
     if (building && building.team === NEUTRAL) {
       const neighbours = game.map.neighbours(building);
       if (neighbours.some(e => e && e.team === team && e.powered)) {
-        building.team = team;
+        building.maxHealth = building.getMaxHealth();
+        building.newTeam = team;
+        building.shouldCapture = true;
       }
     }
   }

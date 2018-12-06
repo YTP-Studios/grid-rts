@@ -49,7 +49,7 @@ export default class ClientGenerator extends Generator {
       this.sightCircle.position.copy(this);
       this.game.app.renderer.render(this.sightCircle, this.game.sightRangeTexture, false, null, false);
     }
-
+    this.scaleCore();
     if (this.isSelected) {
       this.drawSelectionCircle();
     } else {
@@ -62,5 +62,10 @@ export default class ClientGenerator extends Generator {
     this.selectionCircle.lineStyle(Constants.SELECTOR_BOX_BORDER_WIDTH, Constants.SELECTOR_CIRCLE_COLOR);
     this.selectionCircle.beginFill(TEAM_COLOURS[this.team], Constants.SELECTOR_BOX_OPACITY);
     this.selectionCircle.drawCircle(this.x, this.y, Constants.SELECTOR_CIRCLE_RADIUS + Constants.GENERATOR_SIZE);
+  }
+
+  scaleCore() {
+    this.coreSprite.height = this.health / Constants.GENERATOR_HEALTH * Constants.GENERATOR_SIZE * 3;
+    this.coreSprite.width = this.health / Constants.GENERATOR_HEALTH * Constants.GENERATOR_SIZE * 3;
   }
 }

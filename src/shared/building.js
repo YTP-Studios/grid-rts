@@ -15,19 +15,28 @@ export default class Building {
     this.col = col;
     this.team = team;
     this.size = size;
-    this.health = health;
     this.powered = false;
     this.isSelected = false;
+    this.health = this.team === NEUTRAL ? 1 : health;
+    this.delta = 0;
+    this.shouldCapture = false;
+    this.maxHealth = 0;
+    this.newTeam = NEUTRAL;
   }
 
   update(delta, map) {
+    this.delta = delta;
     if (this.health < 0) {
       this.reset();
+    }
+    if (this.shouldCapture) {
+      this.capture(delta);
     }
   }
 
   reset() {
     this.team = NEUTRAL;
+    this.health = 1;
   }
 
   checkPowered(map) {
@@ -56,5 +65,15 @@ export default class Building {
   setState({ team, health }) {
     this.team = team;
     this.health = health;
+  }
+
+  capture(delta) {
+    if (this.health >= this.maxHealth) {
+      this.health = this.maxHealth;
+      this.shouldCapture = false;
+      this.team = this.newTeam;
+    } else {
+      this.health += delta * 2;
+    }
   }
 }

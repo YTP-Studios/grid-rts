@@ -34,6 +34,9 @@ export default class ClientConduit extends Conduit {
 
     this.selectionCircle = new PIXI.Graphics;
     this.game.buildingContainer.addChild(this.selectionCircle);
+
+    this.healthBar = new PIXI.Graphics;
+    this.game.world.addChild(this.healthBar);
   }
 
   update(delta, map) {
@@ -43,6 +46,12 @@ export default class ClientConduit extends Conduit {
     if (this.team === this.game.playerTeam) {
       this.sightCircle.position.copy(this);
       this.game.app.renderer.render(this.sightCircle, this.game.sightRangeTexture, false, null, false);
+    }
+
+    if (this.health !== Constants.CONDUIT_HEALTH && this.health !== 1) {
+      this.drawHealthBar();
+    } else {
+      this.healthBar.clear();
     }
 
     if (this.isSelected) {
@@ -57,5 +66,12 @@ export default class ClientConduit extends Conduit {
     this.selectionCircle.lineStyle(Constants.SELECTOR_BOX_BORDER_WIDTH, Constants.SELECTOR_CIRCLE_COLOR);
     this.selectionCircle.beginFill(TEAM_COLOURS[this.team], Constants.SELECTOR_BOX_OPACITY);
     this.selectionCircle.drawCircle(this.x, this.y, Constants.SELECTOR_CIRCLE_RADIUS + Constants.CONDUIT_SIZE);
+  }
+
+  drawHealthBar() {
+    this.healthBar.clear();
+    this.healthBar.beginFill(0x00FF00);
+    this.healthBar.drawRect(this.x - Constants.CONDUIT_SIZE / 2, this.y - Constants.CONDUIT_SIZE / 2 - 10,
+      this.health / Constants.CONDUIT_HEALTH * Constants.HEALTHBAR_WIDTH, 5);
   }
 }
