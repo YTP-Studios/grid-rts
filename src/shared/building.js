@@ -17,6 +17,7 @@ export default class Building {
     this.size = size;
     this.health = health;
     this.powered = false;
+    this.isSelected = false;
   }
 
   update(delta, map) {

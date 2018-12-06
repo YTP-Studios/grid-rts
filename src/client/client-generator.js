@@ -1,7 +1,8 @@
 import * as PIXI from 'pixi.js';
-import { BUILDING_SIGHT_RANGE, GRID_SCALE } from '../shared/constants';
+import * as Constants from '../shared/constants';
 import Generator from '../shared/generator';
 import { checkBuildingColours, createBuildingSprite, createCenteredSprite } from './sprite-utils';
+import { TEAM_COLOURS } from '../shared/teams';
 
 export default class ClientGenerator extends Generator {
   constructor(game, row, col, team) {
@@ -15,7 +16,7 @@ export default class ClientGenerator extends Generator {
     this.leftSprite = this.buildingSprite.leftSprite;
     this.rightSprite = this.buildingSprite.rightSprite;
 
-    this.coreSprite = createCenteredSprite('assets/generator-core.png', GRID_SCALE);
+    this.coreSprite = createCenteredSprite('assets/generator-core.png', Constants.GRID_SCALE);
 
     this.buildingSprite.container.addChild(this.coreSprite);
 
@@ -25,7 +26,7 @@ export default class ClientGenerator extends Generator {
     this.game.buildingContainer.addChild(this.sprite);
 
     this.oldBuildingSprite = createBuildingSprite('assets/generator-edge.png', 'assets/generator-center.png', team);
-    this.oldBuildingSprite.container.addChild(createCenteredSprite('assets/generator-core.png', GRID_SCALE));
+    this.oldBuildingSprite.container.addChild(createCenteredSprite('assets/generator-core.png', Constants.GRID_SCALE));
     this.oldBuildingSprite.container.x = this.x;
     this.oldBuildingSprite.container.y = this.y;
     this.game.oldBuildingContainer.addChild(this.oldBuildingSprite.container);
@@ -33,8 +34,11 @@ export default class ClientGenerator extends Generator {
     this.sightCircle = new PIXI.Graphics;
     this.sightCircle.clear();
     this.sightCircle.beginFill(0xFFFFFF);
-    this.sightCircle.drawCircle(GRID_SCALE, GRID_SCALE, BUILDING_SIGHT_RANGE);
+    this.sightCircle.drawCircle(Constants.GRID_SCALE, Constants.GRID_SCALE, Constants.BUILDING_SIGHT_RANGE);
     this.sightCircle.endFill();
+
+    this.selectionCircle = new PIXI.Graphics;
+    this.game.buildingContainer.addChild(this.selectionCircle);
   }
 
   update(delta, map) {
@@ -45,5 +49,18 @@ export default class ClientGenerator extends Generator {
       this.sightCircle.position.copy(this);
       this.game.app.renderer.render(this.sightCircle, this.game.sightRangeTexture, false, null, false);
     }
+
+    if (this.isSelected) {
+      this.drawSelectionCircle();
+    } else {
+      this.selectionCircle.clear();
+    }
+  }
+
+  drawSelectionCircle() {
+    this.selectionCircle.clear();
+    this.selectionCircle.lineStyle(Constants.SELECTOR_BOX_BORDER_WIDTH, Constants.SELECTOR_CIRCLE_COLOR);
+    this.selectionCircle.beginFill(TEAM_COLOURS[this.team], Constants.SELECTOR_BOX_OPACITY);
+    this.selectionCircle.drawCircle(this.x, this.y, Constants.SELECTOR_CIRCLE_RADIUS + Constants.GENERATOR_SIZE);
   }
 }
