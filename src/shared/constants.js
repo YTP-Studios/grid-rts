@@ -42,6 +42,7 @@ export const SIEGE_UNIT_DAMAGE = 50;
 export const SIEGE_UNIT_EXPLOSION_RADIUS = 75;
 export const SIEGE_UNIT_COOLDOWN = 75;
 export const SIEGE_UNIT_AOE_OPACITY = 0.1;
+export const SIEGE_UNIT_ROTATION_RATE = 0.05;
 
 export const LASER_DAMAGE = 0.5;
 export const LASER_THICKNESS = 5;

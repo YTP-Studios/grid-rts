@@ -37,9 +37,6 @@ export class SiegeClientUnit extends SiegeUnit {
         this.sightCircle.beginFill(0xFFFFFF);
         this.sightCircle.drawCircle(Constants.GRID_SCALE, Constants.GRID_SCALE, Constants.BASIC_UNIT_SIGHT_RANGE);
         this.sightCircle.endFill();
-
-        this.rotationRate = 0.05;
-
         this.hasDrawnAoeField = false;
     }
 
@@ -47,14 +44,7 @@ export class SiegeClientUnit extends SiegeUnit {
         super.update(delta);
         this.sprite.x = this.x;
         this.sprite.y = this.y;
-        if (this.isOnCooldown) {
-            if (this.rotationRate < 0.4) {
-                this.rotationRate += 0.005;
-            }
-        } else {
-            this.rotationRate = 0.05;
-        }
-        this.sprite.rotation += this.rotationRate;
+        this.sprite.rotation += Constants.SIEGE_UNIT_ROTATION_RATE;
         this.scaleUnitCore();
 
         if (this.isSelected) {
