@@ -4,6 +4,12 @@ import * as Constants from '../shared/constants';
 export default class Generator extends Building {
     constructor(row, col, team) {
         super(row, col, team, Constants.GENERATOR_SIZE, Constants.GENERATOR_HEALTH);
+        this.powered = true;
+    }
+
+    checkPowered(map) {
+        this.powered = true;
+        super.checkPowered(map);
     }
 
     getIncome() {
@@ -13,7 +19,7 @@ export default class Generator extends Building {
     getEnergyCap() {
         return Constants.GENERATOR_CAP;
     }
-      
+
     reset() {
         super.reset();
         this.health = Constants.GENERATOR_HEALTH;

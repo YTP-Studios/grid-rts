@@ -40,13 +40,8 @@ export class CaptureCommand {
         const { row, col, team } = this;
         const building = game.map.getBuilding(row, col);
         if (building && building.team == NEUTRAL) {
-            const neighbours = [
-                game.map.getBuilding(row + 1, col),
-                game.map.getBuilding(row - 1, col),
-                game.map.getBuilding(row, col + 1),
-                game.map.getBuilding(row, col - 1),
-            ]
-            if (neighbours.some(e => e && e.team == team)) {
+            const neighbours = game.map.neighbours(building);
+            if (neighbours.some(e => e && e.team == team && e.powered)) {
                 building.team = team;
             }
         }

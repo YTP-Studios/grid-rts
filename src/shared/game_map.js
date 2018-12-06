@@ -29,8 +29,31 @@ export default class GameMap {
         this.buildings = buildings;
     }
 
+    allBuildings() {
+        return this.buildings.reduce((acc, cur) => acc.concat(cur), []);
+    }
+
+    neighbours(building) {
+        const { row, col } = building;
+        return [
+            this.getBuilding(row, col + 1),
+            this.getBuilding(row, col - 1),
+            this.getBuilding(row + 1, col),
+            this.getBuilding(row - 1, col),
+        ].filter(e => e !== null);
+    }
+
     update(delta) {
-        this.buildings.forEach(arr => arr.forEach(b => b && b.update(delta, this)));
+        const buildings = this.allBuildings().filter(b => b);
+        buildings.forEach(b => {
+            b.powered = false;
+        });
+        buildings.forEach(b => {
+            b.checkPowered(this);
+        })
+        buildings.forEach(b => {
+            b.update(delta, this);
+        })
     }
 
     getBuilding(row, col) {
