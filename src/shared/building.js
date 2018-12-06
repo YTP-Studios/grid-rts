@@ -18,7 +18,6 @@ export default class Building {
     this.powered = false;
     this.isSelected = false;
     this.health = this.team === NEUTRAL ? 1 : health;
-    this.delta = 0;
     this.shouldCapture = false;
     this.maxHealth = 0;
     this.newTeam = NEUTRAL;
