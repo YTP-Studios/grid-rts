@@ -1,4 +1,4 @@
-import { NEUTRAL, TEAM_COLOURS, NEUTRAL_COLOR } from "../shared/teams";
+import { NEUTRAL, TEAM_COLOURS, NEUTRAL_COLOR, DISABLED_TEAM_COLOURS } from "../shared/teams";
 import { GRID_SCALE } from "../shared/constants";
 
 export function createCenteredSprite(filePath, width, height = width) {
@@ -40,21 +40,23 @@ export function createBuildingSprite(edgePath, centerPath, team = NEUTRAL) {
 }
 
 export function checkBuildingColours(buildingSprite, map, team, row, col) {
+    const building = map.getBuilding(row, col);
+    const colours = building.powered ? TEAM_COLOURS : DISABLED_TEAM_COLOURS;
     const checkColour = (row, col, sprite) => {
         let building = map.getBuilding(row, col);
         if (building == null) {
             sprite.visible = false;
         } else if (building.team == team) {
             sprite.visible = true;
-            sprite.tint = TEAM_COLOURS[team];
+            sprite.tint = colours[team];
         } else {
             sprite.visible = true;
-            sprite.tint = NEUTRAL_COLOR;
+            sprite.tint = colours[NEUTRAL];
         }
     }
     checkColour(row - 1, col, buildingSprite.topSprite);
     checkColour(row + 1, col, buildingSprite.bottomSprite);
     checkColour(row, col - 1, buildingSprite.leftSprite);
     checkColour(row, col + 1, buildingSprite.rightSprite);
-    buildingSprite.centerSprite.tint = TEAM_COLOURS[team];
+    buildingSprite.centerSprite.tint = colours[team];
 }

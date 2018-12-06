@@ -18,7 +18,7 @@ export const CAMERA_SPEED = 4;
 export const SELECTOR_BOX_BORDER_WIDTH = 1.5;
 export const SELECTOR_BOX_OPACITY = 0.2;
 
-export const SELECTOR_CIRCLE_RADIUS = 30;
+export const SELECTOR_CIRCLE_RADIUS = 5;
 export const SELECTOR_CIRCLE_COLOR = 0xFFFFFF;
 
 export const POSITION_INDICATOR_DIAMETER = 20;
@@ -32,6 +32,20 @@ export const BASIC_UNIT_SIGHT_RANGE = 256;
 export const BASIC_UNIT_BODY_SIZE = 24;
 export const BASIC_UNIT_TURRET_LENGTH = 18;
 export const BASIC_UNIT_HEALTH = 100;
+export const BASIC_UNIT_MAX_TARGETS = 1;
+
+export const SIEGE_UNIT_SPEED = 1.0;
+export const SIEGE_UNIT_RANGE = 300;
+export const SIEGE_UNIT_SIGHT_RANGE = 512;
+export const SIEGE_UNIT_BODY_SIZE = 48;
+export const SIEGE_UNIT_TURRET_LENGTH = 18;
+export const SIEGE_UNIT_HEALTH = 420;
+export const SIEGE_UNIT_MAX_TARGETS = Infinity;
+export const SIEGE_UNIT_DAMAGE = 50;
+export const SIEGE_UNIT_EXPLOSION_RADIUS = 75;
+export const SIEGE_UNIT_COOLDOWN = 75;
+export const SIEGE_UNIT_AOE_OPACITY = 0.1;
+export const SIEGE_UNIT_ROTATION_RATE = 0.05;
 
 export const LASER_DAMAGE = 0.5;
 export const LASER_THICKNESS = 5;
@@ -41,6 +55,11 @@ export const BACKGROUND_COLOR = 0x202020;
 export const GRID_SCALE = 64;
 
 export const BUILDING_SIGHT_RANGE = 2 * GRID_SCALE;
+
+export const GENERATOR_INCOME = 0.1;
+export const GENERATOR_CAP = 500;
+
+export const CONDUIT_CAP = 20;
 
 export const VS_MAP = `\
 ...........
@@ -54,24 +73,3 @@ export const VS_MAP = `\
 ... ... ...
 . ..111.. .
 ...........`
-
-
-export const DEFAULT_MAP = `\
-.................................
-..1.............1................
-..1..............................
-22...............................
-.................................
-.................................
-.........0......0...0............
-.................................
-.................................
-.................................
-.................................
-............0...0......0.........
-.................................
-.................................
-.................................
-.................................
-................2................
-.................................`

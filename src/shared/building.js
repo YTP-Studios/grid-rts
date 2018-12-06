@@ -16,6 +16,7 @@ export default class Building {
         this.team = team;
         this.size = size;
         this.health = health;
+        this.powered = false;
     }
 
     update(delta, map) {
@@ -26,6 +27,22 @@ export default class Building {
 
     reset() {
         this.team = NEUTRAL;
+    }
+
+    checkPowered(map) {
+        if (this.powered) {
+            map.neighbours(this)
+                .filter(e => e.team == this.team)
+                .forEach(e => e.setPowered(map));
+        }
+    }
+
+    setPowered(map) {
+        if (this.powered) return;
+        this.powered = true;
+        map.neighbours(this)
+            .filter(e => e.team == this.team)
+            .forEach(e => e.setPowered(map));
     }
 
     getState() {

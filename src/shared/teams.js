@@ -9,6 +9,15 @@ export const TEAM_COLOURS = [
     BLUE_TEAM_COLOR,
 ];
 
+export const DISABLED_RED_TEAM_COLOR = 0x772020;
+export const DISABLED_BLUE_TEAM_COLOR = 0x1A4B77;
+
+export const DISABLED_TEAM_COLOURS = [
+    NEUTRAL_COLOR,
+    DISABLED_RED_TEAM_COLOR,
+    DISABLED_BLUE_TEAM_COLOR,
+];
+
 export const NEUTRAL = 0;
 export const RED_TEAM = 1;
 export const BLUE_TEAM = 2;

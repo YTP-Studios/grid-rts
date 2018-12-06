@@ -1,17 +1,22 @@
 import * as Vectors from '../shared/vectors'
 import * as Constants from '../shared/constants';
+import { NEUTRAL } from './teams';
 
 export default class Game {
     init(map, units) {
         this.map = map;
         this.units = units;
+        this.energy = [0, 0, 0];
+        this.income = [0, 0, 0];
+        this.energyCap = [0, 0, 0];
     }
 
     update(delta) {
         this.map.update(delta);
         this.units.forEach((unit) => unit.update(delta));
         this.resolveCollisions();
-        this.resolveAttacks();
+        this.resolveAttacks(delta);
+        this.updateIncome();
     }
 
     resolveCollisions() {
@@ -35,42 +40,39 @@ export default class Game {
         }
     }
 
-    resolveAttacks() {
+    resolveAttacks(delta) {
         for (let i = 0; i < this.units.length; i++) {
+            let foundEnemyInRange = false;
+            let enemies = []
             let a = this.units[i];
-            let minDist = Infinity;
-            let nearestEnemy;
             for (let j = 0; j < this.units.length; j++) {
                 if (i == j) continue;
                 let b = this.units[j];
-                const dist = Vectors.dist(a, b);
-                if (dist < minDist && a.canAttackUnit(b)) {
-                    minDist = dist;
-                    nearestEnemy = b;
-                }
+                if (a.canAttackUnit(b))
+                    foundEnemyInRange = true;
+                if (a.team != b.team&& b.team != NEUTRAL)
+                    enemies.push(b);
             }
-            if (minDist === Infinity) {
+            if (!foundEnemyInRange) {
                 for (let j = 0; j < this.map.buildings.length; j++) {
                     for (let k = 0; k < this.map.buildings[j].length; k++) {
                         let b = this.map.buildings[j][k];
                         if (!b) continue;
-                        const dist = Vectors.dist(a, b);
-                        if (dist < minDist && a.canAttackUnit(b)) {
-                            minDist = dist;
-                            nearestEnemy = b;
-                        }
+                        if (a.canAttackUnit(b))
+                            foundEnemyInRange = true;
+                        if (a.team != b.team && b.team != NEUTRAL)
+                            enemies.push(b);
                     }
                 }
             }
-            if (minDist === Infinity) {
-                a.stopAttacking()
+            if (!foundEnemyInRange) {
+                a.stopAttacking();
             } else {
                 a.isAttacking = true;
-                a.attack(nearestEnemy);
+                a.attack(enemies, delta);
             }
         }
         this.units = this.units.filter(unit => unit.enabled);
-       // this.map.buildings = this.map.buildings.filter(building => building.enabled);
     }
 
     getState() {
@@ -100,5 +102,24 @@ export default class Game {
 
         // Update map
         this.map.setState(map);
+    }
+
+    updateIncome() {
+        for (let i = 0; i < this.energy.length; i ++) {
+            this.income[i] = 0;
+            this.energyCap[i] = 0;
+            for (let j = 0; j < this.map.buildings.length; j ++) {
+                for (let k = 0; k < this.map.buildings[j].length; k ++) {
+                    const building = this.map.buildings[j][k];
+                    if (!building) continue;
+                    if (building.team == i) {
+                        this.income[i] += building.getIncome();
+                        this.energyCap[i] += building.getEnergyCap();
+                    }
+                }
+            }
+            this.energy[i] += this.income[i];
+            this.energy[i] = Math.min(this.energy[i], this.energyCap[i]);
+        }
     }
 }

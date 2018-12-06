@@ -1,12 +1,13 @@
 import { AdvancedBloomFilter, AdjustmentFilter, KawaseBlurFilter } from 'pixi-filters';
 import * as PIXI from 'pixi.js';
-import { Command, MoveCommand } from '../shared/commands';
+import { Command, MoveCommand, CaptureCommand } from '../shared/commands';
 import * as Constants from '../shared/constants';
 import Game from '../shared/game';
 import { COMMAND, GAME_STATE, RESET } from '../shared/game-events';
 import { BLUE_TEAM, TEAM_COLOURS } from '../shared/teams';
 import * as Vectors from '../shared/vectors';
 import { BasicClientUnit } from './basic_client_unit';
+import { SiegeClientUnit } from './siege_client_unit';
 import ClientMap from './client_map';
 import keyboard from './keyboard';
 
@@ -24,6 +25,8 @@ export default class ClientGame extends Game {
                 .add("assets/factory-edge.png")
                 .add("assets/factory-center.png")
                 .add("assets/factory-core.png")
+                .add("assets/siege-unit-body.png")
+                .add("assets/siege-unit-core.png")
                 .load(resolve));
 
     }
@@ -113,14 +116,32 @@ export default class ClientGame extends Game {
         this.posIndicator = new PIXI.Graphics();
         this.interfaceContainer.addChild(this.posIndicator);
 
+        const style = new PIXI.TextStyle({
+            fontFamily: "Arial Black", fontSize: 20, fontVariant: "small-caps", letterSpacing: 2,
+            fill: 0xffffff, lineJoin: "round", strokeThickness: 1
+        });
+
+        this.energyText = new PIXI.Text("", style);
+        this.energyText.x = 525;
+        this.energyText.y = 10;
+        this.app.stage.addChild(this.energyText);
+
         this.app.renderer.plugins.interaction.on('rightdown', () => {
             const mousePosition = this.app.renderer.plugins.interaction.mouse.global;
             const targetPos = this.world.toLocal(mousePosition)
             this.drawIndicator(targetPos);
             const unitIds = this.units.filter((unit) => unit.team === this.playerTeam && unit.isSelected).map(unit => unit.id);
-            const command = new MoveCommand({ targetPos, unitIds });
-            socket.emit(COMMAND, Command.toData(command));
-            command.exec(this);
+            if (unitIds.length > 0) {
+                const command = new MoveCommand({ targetPos, unitIds });
+                socket.emit(COMMAND, Command.toData(command));
+                command.exec(this);
+            } else {
+                const row = Math.round(targetPos.y / Constants.GRID_SCALE);
+                const col = Math.round(targetPos.x / Constants.GRID_SCALE);
+                const command = new CaptureCommand({ row, col, team: this.playerTeam });
+                socket.emit(COMMAND, Command.toData(command));
+                command.exec(this);
+            }
         })
 
         this.app.renderer.plugins.interaction.on('rightup', () => {
@@ -162,6 +183,8 @@ export default class ClientGame extends Game {
             const mousePosition = this.world.toLocal(this.app.renderer.plugins.interaction.mouse.global);
             this.drawUnitSelectionBox(mousePosition);
         }
+
+        this.drawEnergyText();
     }
 
     updateCamera(delta) {
@@ -178,6 +201,9 @@ export default class ClientGame extends Game {
             switch (data.type) {
                 case "unit:basic_unit":
                     unit = new BasicClientUnit(this, data.x, data.y, data.team);
+                    break;
+                case "unit:siege_unit":
+                    unit = new SiegeClientUnit(this, data.x, data.y, data.team);
                     break;
                 default:
                     throw new Error("Undefined unit type.");
@@ -223,5 +249,11 @@ export default class ClientGame extends Game {
             Constants.POSITION_INDICATOR_DIAMETER, Constants.POSITION_INDICATOR_DIAMETER / 2);
         this.posIndicator.drawCircle(mousePosition.x, mousePosition.y,
             Constants.POSITION_INDICATOR_INNER_RADIUS);
+    }
+
+    drawEnergyText() {
+        const energy = Math.floor(this.energy[this.playerTeam])
+        const energyCap = this.energyCap[this.playerTeam];
+        this.energyText.text = "Energy: " + energy + " / " + energyCap;
     }
 }
