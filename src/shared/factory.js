@@ -6,6 +6,14 @@ export default class Factory extends Building {
         super(row, col, team, Constants.FACTORY_SIZE, Constants.FACTORY_HEALTH);
     }
 
+    getIncome() {
+        return 0;
+    }
+
+    getEnergyCap() {
+        return 0;
+    }
+
     reset() {
         super.reset();
         this.health = Constants.FACTORY_HEALTH;
