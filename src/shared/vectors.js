@@ -15,4 +15,4 @@ export const scaleTo = (a, newLength) => scale(a, newLength / length(a));
 
 export const normalize = (a) => scaleTo(a, 1);
 
-export const copyTo = (from, to) => { to.x = from.x; to.y = from.y };
+export const copyTo = (from, to) => { to.x = from.x; to.y = from.y; };

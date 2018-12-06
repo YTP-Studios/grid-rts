@@ -7,27 +7,27 @@ import { GAME_STATE } from '../shared/game-events';
 import { DEFAULT_MAP } from '../shared/constants';
 
 export default class ServerGame extends Game {
-    constructor() {
-        super();
-        this.players = [];
-    }
+  constructor() {
+    super();
+    this.players = [];
+  }
 
-    init(map) {
-        super.init(map, [
-            new BasicUnit(0, 500, RED_TEAM),
-            new BasicUnit(0, 450, RED_TEAM),
-            new BasicUnit(0, 400, RED_TEAM),
-            new BasicUnit(0, 350, RED_TEAM),
-            new BasicUnit(50, 500, RED_TEAM),
-            new SiegeUnit(500, 0, BLUE_TEAM),
-            new SiegeUnit(550, 0, BLUE_TEAM),
-            new SiegeUnit(650, 0, BLUE_TEAM),
-            new BasicUnit(450, 0, BLUE_TEAM),
-            new BasicUnit(500, 50, BLUE_TEAM),
-        ]);
-    }
+  init(map) {
+    super.init(map, [
+      new BasicUnit(0, 500, RED_TEAM),
+      new BasicUnit(0, 450, RED_TEAM),
+      new BasicUnit(0, 400, RED_TEAM),
+      new BasicUnit(0, 350, RED_TEAM),
+      new BasicUnit(50, 500, RED_TEAM),
+      new SiegeUnit(500, 0, BLUE_TEAM),
+      new SiegeUnit(550, 0, BLUE_TEAM),
+      new SiegeUnit(650, 0, BLUE_TEAM),
+      new BasicUnit(450, 0, BLUE_TEAM),
+      new BasicUnit(500, 50, BLUE_TEAM),
+    ]);
+  }
 
-    update(delta) {
-        super.update(delta);
-    }
+  update(delta) {
+    super.update(delta);
+  }
 }

@@ -1,4 +1,9 @@
 {
   "extends": "strongloop",
-  "parser": "babel-eslint"
+  "parser": "babel-eslint",
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true
+  }
 }

@@ -13,9 +13,9 @@ var userSchema = new mongoose.Schema({
   password: String,
 });
 
-userSchema.methods.authenticate = function (pass) {
+userSchema.methods.authenticate = function(pass) {
   return pass === this.password;
-}
+};
 
 var user = mongoose.model('User', userSchema);
 
