@@ -1,3 +1,4 @@
+import { NEUTRAL } from "./teams";
 
 export const commands = new Map();
 
@@ -27,4 +28,25 @@ export class MoveCommand {
     }
 }
 
+
+export class CaptureCommand {
+    constructor({ row, col, team }) {
+        this.row = row;
+        this.col = col;
+        this.team = team;
+    }
+
+    exec(game) {
+        const { row, col, team } = this;
+        const building = game.map.getBuilding(row, col);
+        if (building && building.team == NEUTRAL) {
+            const neighbours = game.map.neighbours(building);
+            if (neighbours.some(e => e && e.team == team && e.powered)) {
+                building.team = team;
+            }
+        }
+    }
+}
+
 commands.set("MoveCommand", MoveCommand);
+commands.set("CaptureCommand", CaptureCommand);
