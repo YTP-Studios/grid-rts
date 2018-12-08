@@ -1,10 +1,7 @@
 import Game from '../shared/game';
-import GameMap from '../shared/game_map';
 import BasicUnit from '../shared/basic_unit';
 import SiegeUnit from '../shared/siege_unit';
-import { NEUTRAL, RED_TEAM, BLUE_TEAM } from '../shared/teams';
-import { GAME_STATE } from '../shared/game-events';
-import { DEFAULT_MAP } from '../shared/constants';
+import { BLUE_TEAM, RED_TEAM } from '../shared/teams';
 
 export default class ServerGame extends Game {
   constructor() {

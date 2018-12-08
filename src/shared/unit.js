@@ -1,6 +1,6 @@
 import * as Vectors from '../shared/vectors';
-import * as Constants from '../shared/constants';
-import { NEUTRAL, TEAMS } from './teams';
+import { NEUTRAL } from './teams';
+
 import * as uuid from 'uuid/v4';
 
 export default class Unit {

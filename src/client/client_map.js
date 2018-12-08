@@ -1,3 +1,5 @@
+import * as PIXI from 'pixi.js';
+
 import GameMap from '../shared/game_map';
 import ClientConduit from './client_conduit';
 import { RED_TEAM, BLUE_TEAM, NEUTRAL } from '../shared/teams';
