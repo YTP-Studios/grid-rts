@@ -10,6 +10,18 @@ module.exports = [{
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
   },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js'],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.jsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+    ],
+  },
 }, {
   mode: MODE,
   entry: './src/server/app.js',
@@ -17,6 +29,14 @@ module.exports = [{
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'server.js',
+  },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js'],
+  },
+  module: {
+    rules: [
+      { test: /\.jsx?$/, loader: 'ts-loader' },
+    ],
   },
   node: {
     __dirname: false,
