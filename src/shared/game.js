@@ -1,9 +1,11 @@
 import * as Vectors from '../shared/vectors';
 import * as Constants from '../shared/constants';
 import { NEUTRAL } from './teams';
+import GameMap from './game_map';
+import Unit from './unit';
 
 export default class Game {
-  init(map, units) {
+  init(map: GameMap, units: Unit[]) {
     this.map = map;
     this.units = units;
     this.energy = [0, 0, 0];

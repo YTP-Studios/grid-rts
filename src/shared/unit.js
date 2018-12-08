@@ -1,9 +1,15 @@
-import * as Vectors from '../shared/vectors';
+import { Vector, difference, scaleTo, copyTo, dist } from '../shared/vectors';
 import { NEUTRAL } from './teams';
+import { Entity } from './entity';
 
 import * as uuid from 'uuid/v4';
 
-export default class Unit {
+export default class Unit implements Entity {
+  targetPos: Vector;
+  nearestEnemy: Vector;
+  velocity: Vector;
+  range: number;
+  speed: number;
 
   constructor(x = 0, y = 0, team = NEUTRAL, size = 0, health, range, speed, maxTargets) {
     this.id = uuid();
@@ -24,13 +30,13 @@ export default class Unit {
 
   update(delta) {
     if (!this.atDestination()) {
-      const displacement = Vectors.difference(this.targetPos, this);
-      this.velocity = Vectors.scaleTo(displacement, this.speed);
+      const displacement = difference(this.targetPos, this);
+      this.velocity = scaleTo(displacement, this.speed);
 
       this.x += this.velocity.x * delta;
       this.y += this.velocity.y * delta;
     } else {
-      Vectors.copyTo(this, this.targetPos);
+      copyTo(this, this.targetPos);
     }
     if (this.health < 0) {
       this.enabled = false;
@@ -41,7 +47,7 @@ export default class Unit {
     let minDist = Infinity;
     let nearestEnemy;
     for (let i = 0; i < enemiesInRange.length; i++) {
-      const dist = Vectors.dist(this, enemiesInRange[i]);
+      const dist = dist(this, enemiesInRange[i]);
       if (dist < minDist) {
         nearestEnemy = enemiesInRange[i];
         minDist = dist;
@@ -51,7 +57,7 @@ export default class Unit {
   }
 
   atDestination() {
-    return Vectors.dist(this, this.targetPos) <= this.size;
+    return dist(this, this.targetPos) <= this.size;
   }
 
   stopAttacking() {

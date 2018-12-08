@@ -15,8 +15,9 @@ export class Command {
   }
 }
 
-export class MoveCommand {
+export class MoveCommand extends Command {
   constructor({ targetPos, unitIds }) {
+    super();
     this.targetPos = targetPos;
     this.unitIds = unitIds;
   }
@@ -29,8 +30,9 @@ export class MoveCommand {
 }
 
 
-export class CaptureCommand {
+export class CaptureCommand extends Command {
   constructor({ row, col, team }) {
+    super();
     this.row = row;
     this.col = col;
     this.team = team;

@@ -19,7 +19,7 @@ export const SELECTOR_BOX_BORDER_WIDTH = 1.5;
 export const SELECTOR_BOX_OPACITY = 0.2;
 
 export const SELECTOR_CIRCLE_RADIUS = 5;
-export const SELECTOR_CIRCLE_COLOR = 0xFFFFFF;
+export const SELECTOR_CIRCLE_COLOUR = 0xFFFFFF;
 
 export const POSITION_INDICATOR_DIAMETER = 20;
 export const POSITION_INDICATOR_LINE_WIDTH = 3;
@@ -50,7 +50,7 @@ export const SIEGE_UNIT_ROTATION_RATE = 0.05;
 export const LASER_DAMAGE = 0.5;
 export const LASER_THICKNESS = 5;
 
-export const BACKGROUND_COLOR = 0x202020;
+export const BACKGROUND_COLOUR = 0x202020;
 
 export const GRID_SCALE = 64;
 

@@ -41,7 +41,7 @@ export default class ClientGame extends Game {
       antialias: true,
       transparent: false,
       resolution: 1,
-      backgroundColor: 0x000000,
+      backgroundColoUr: 0x000000,
     });
 
     document.body.appendChild(this.app.view);

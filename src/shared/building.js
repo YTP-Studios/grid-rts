@@ -1,7 +1,15 @@
 import { GRID_SCALE } from './constants';
-import { NEUTRAL } from './teams';
+import { Team, NEUTRAL } from './teams';
+import GameMap from './game_map';
+import { Entity } from './entity';
+export default class Building implements Entity {
 
-export default class Building {
+  row: number;
+  col: number;
+  team: Team;
+  size: number;
+  health: number;
+  powered: boolean;
 
   get x() {
     return this.col * GRID_SCALE;
@@ -19,7 +27,7 @@ export default class Building {
     this.powered = false;
   }
 
-  update(delta, map) {
+  update(delta: number, map: GameMap) {
     if (this.health < 0) {
       this.reset();
     }
@@ -29,7 +37,7 @@ export default class Building {
     this.team = NEUTRAL;
   }
 
-  checkPowered(map) {
+  checkPowered(map: GameMap) {
     if (this.powered) {
       map.neighbours(this)
         .filter(e => e.team === this.team)
@@ -37,7 +45,7 @@ export default class Building {
     }
   }
 
-  setPowered(map) {
+  setPowered(map: GameMap) {
     if (this.powered) return;
     this.powered = true;
     map.neighbours(this)

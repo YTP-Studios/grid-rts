@@ -1,18 +1,23 @@
 
-export const length2 = ({ x, y }) => (x * x + y * y);
+export interface Vector {
+    x: number;
+    y: number;
+}
 
-export const length = (a) => Math.sqrt(length2(a));
+export const length2 = ({ x, y }: Vector) => (x * x + y * y);
 
-export const sum = (a, b) => ({ x: a.x + b.x, y: a.y + b.y });
+export const length = (a: Vector) => Math.sqrt(length2(a));
 
-export const difference = (a, b) => ({ x: a.x - b.x, y: a.y - b.y });
+export const sum = (a: Vector, b: Vector): Vector => ({ x: a.x + b.x, y: a.y + b.y });
 
-export const dist = (a, b) => length(difference(a, b));
+export const difference = (a: Vector, b: Vector): Vector => ({ x: a.x - b.x, y: a.y - b.y });
 
-export const scale = ({ x, y }, factor) => ({ x: x * factor, y: y * factor });
+export const dist = (a: Vector, b: Vector) => length(difference(a, b));
 
-export const scaleTo = (a, newLength) => scale(a, newLength / length(a));
+export const scale = ({ x, y }: Vector, factor: number): Vector => ({ x: x * factor, y: y * factor });
 
-export const normalize = (a) => scaleTo(a, 1);
+export const scaleTo = (a: Vector, newLength: number) => scale(a, newLength / length(a));
 
-export const copyTo = (from, to) => { to.x = from.x; to.y = from.y; };
+export const normalize = (a: Vector) => scaleTo(a, 1);
+
+export const copyTo = (from: Vector, to: Vector) => { to.x = from.x; to.y = from.y; };
