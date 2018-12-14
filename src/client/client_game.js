@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { AdvancedBloomFilter, AdjustmentFilter } from 'pixi-filters';
 
-import { Command, MoveCommand, CaptureCommand } from '../shared/commands';
+import { Command, MoveCommand, CaptureCommand, SpawnCommand } from '../shared/commands';
 import * as Constants from '../shared/constants';
 import Game from '../shared/game';
 import { COMMAND, GAME_STATE, RESET } from '../shared/game-events';
@@ -12,6 +12,7 @@ import { BasicClientUnit } from './basic_client_unit';
 import { SiegeClientUnit } from './siege_client_unit';
 import ClientMap from './client_map';
 import keyboard from './keyboard';
+import Factory from '../shared/factory';
 
 export default class ClientGame extends Game {
   static loadAssets() {
@@ -135,6 +136,19 @@ export default class ClientGame extends Game {
       const unitIds = this.units.filter((unit) => unit.team === this.playerTeam && unit.isSelected).map(unit => unit.id);
       if (unitIds.length > 0) {
         const command = new MoveCommand({ targetPos, unitIds });
+        socket.emit(COMMAND, Command.toData(command));
+        command.exec(this);
+      } else if (this.map.allBuildings().some(b => b instanceof Factory && b.team === this.playerTeam)) {
+        const { x, y } = targetPos;
+        const command = new SpawnCommand({
+          unit: {
+            type: 'unit:basic_unit',
+            x, y,
+            team: this.playerTeam,
+            health: Constants.BASIC_UNIT_HEALTH,
+            targetPos: { x, y },
+          },
+        });
         socket.emit(COMMAND, Command.toData(command));
         command.exec(this);
       } else {

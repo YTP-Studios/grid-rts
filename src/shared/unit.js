@@ -47,10 +47,10 @@ export default class Unit implements Entity {
     let minDist = Infinity;
     let nearestEnemy;
     for (let i = 0; i < enemiesInRange.length; i++) {
-      const dist = dist(this, enemiesInRange[i]);
-      if (dist < minDist) {
+      const curDist = dist(this, enemiesInRange[i]);
+      if (curDist < minDist) {
         nearestEnemy = enemiesInRange[i];
-        minDist = dist;
+        minDist = curDist;
       }
     }
     return nearestEnemy;
@@ -79,7 +79,7 @@ export default class Unit implements Entity {
     };
   }
 
-  setState({ x, y, team, health, enabled, targetPos }) {
+  setState({ x = this.x, y = this.y, team = this.team, health = this.health, enabled = this.enabled, targetPos = this.targetPos }) {
     this.x = Number(x);
     this.y = Number(y);
     this.team = Number(team);

@@ -13,6 +13,8 @@ export const GENERATOR_HEALTH = 420;
 export const FACTORY_SIZE = 20;
 export const FACTORY_HEALTH = 420;
 
+export const SPAWN_RADIUS = 200;
+
 export const CAMERA_SPEED = 4;
 
 export const SELECTOR_BOX_BORDER_WIDTH = 1.5;
@@ -26,6 +28,7 @@ export const POSITION_INDICATOR_LINE_WIDTH = 3;
 export const POSITION_INDICATOR_INNER_RADIUS = 1.5;
 export const POSITION_INDICATOR_OPACITY = 0.1;
 
+export const BASIC_UNIT_COST = 100;
 export const BASIC_UNIT_SPEED = 2.0;
 export const BASIC_UNIT_RANGE = 200;
 export const BASIC_UNIT_SIGHT_RANGE = 256;
