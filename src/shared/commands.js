@@ -48,7 +48,13 @@ export class CaptureCommand extends Command {
     if (building && building.team === NEUTRAL) {
       const neighbours = game.map.neighbours(building);
       if (neighbours.some(e => e && e.team === team && e.powered)) {
-        building.team = team;
+        if (game.energy[team] >= building.getMaxHealth() && !building.shouldCapture) {
+          building.captureTime = building.getCaptureTime();
+          building.maxHealth = building.getMaxHealth();
+          building.newTeam = team;
+          building.shouldCapture = true;
+          game.energy[team] -= building.getMaxHealth();
+        }
       }
     }
   }

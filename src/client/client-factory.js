@@ -1,9 +1,8 @@
 import * as PIXI from 'pixi.js';
-import { BUILDING_SIGHT_RANGE, GRID_SCALE, SPAWN_RADIUS, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_BOX_OPACITY } from '../shared/constants';
+import { GRID_SCALE, BUILDING_SIGHT_RANGE, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR, SELECTOR_BOX_OPACITY, SELECTOR_CIRCLE_RADIUS, FACTORY_SIZE, FACTORY_HEALTH } from '../shared/constants';
 import { checkBuildingColours, createBuildingSprite, createCenteredSprite } from './sprite-utils';
 import Factory from '../shared/factory';
 import { TEAM_COLOURS, NEUTRAL } from '../shared/teams';
-
 export default class ClientFactory extends Factory {
   constructor(game, row, col, team) {
     super(row, col, team);
@@ -47,6 +46,9 @@ export default class ClientFactory extends Factory {
     this.sightCircle.beginFill(0xFFFFFF);
     this.sightCircle.drawCircle(GRID_SCALE, GRID_SCALE, BUILDING_SIGHT_RANGE);
     this.sightCircle.endFill();
+
+    this.selectionCircle = new PIXI.Graphics;
+    this.game.buildingContainer.addChild(this.selectionCircle);
   }
 
   update(delta, map) {
@@ -61,5 +63,23 @@ export default class ClientFactory extends Factory {
     if (this.team === NEUTRAL) {
       this.spawnCircle.visible = false;
     }
+    this.scaleCore();
+    if (this.isSelected) {
+      this.drawSelectionCircle();
+    } else {
+      this.selectionCircle.clear();
+    }
+  }
+
+  drawSelectionCircle() {
+    this.selectionCircle.clear();
+    this.selectionCircle.lineStyle(SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR);
+    this.selectionCircle.beginFill(TEAM_COLOURS[this.team], SELECTOR_BOX_OPACITY);
+    this.selectionCircle.drawCircle(this.x, this.y, SELECTOR_CIRCLE_RADIUS + FACTORY_SIZE);
+  }
+
+  scaleCore() {
+    this.coreSprite.height = this.health / FACTORY_HEALTH * FACTORY_SIZE * 2.5;
+    this.coreSprite.width = this.health / FACTORY_HEALTH * FACTORY_SIZE * 2.5;
   }
 }

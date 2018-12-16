@@ -12,8 +12,12 @@ export default class Conduit extends Building {
   getEnergyCap() {
     return Constants.CONDUIT_CAP;
   }
-  reset() {
-    super.reset();
-    this.health = Constants.CONDUIT_HEALTH;
+
+  getMaxHealth() {
+    return Constants.CONDUIT_HEALTH;
+  }
+
+  getCaptureTime() {
+    return Constants.CONDUIT_CAPTURE_TIME;
   }
 }
