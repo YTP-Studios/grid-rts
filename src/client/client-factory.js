@@ -1,7 +1,8 @@
 import * as PIXI from 'pixi.js';
-import { BUILDING_SIGHT_RANGE, GRID_SCALE } from '../shared/constants';
+import { BUILDING_SIGHT_RANGE, GRID_SCALE, SPAWN_RADIUS, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_BOX_OPACITY } from '../shared/constants';
 import { checkBuildingColours, createBuildingSprite, createCenteredSprite } from './sprite-utils';
 import Factory from '../shared/factory';
+import { TEAM_COLOURS, NEUTRAL } from '../shared/teams';
 
 export default class ClientFactory extends Factory {
   constructor(game, row, col, team) {
@@ -30,6 +31,17 @@ export default class ClientFactory extends Factory {
     this.oldBuildingSprite.container.y = this.y;
     this.game.oldBuildingContainer.addChild(this.oldBuildingSprite.container);
 
+    this.spawnCircle = new PIXI.Graphics;
+    this.spawnCircle.clear();
+    this.spawnCircle.lineStyle(SELECTOR_BOX_BORDER_WIDTH, 0xFFFFFF);
+    this.spawnCircle.beginFill(0xFFFFFF, SELECTOR_BOX_OPACITY / 2);
+    this.spawnCircle.drawCircle(0, 0, SPAWN_RADIUS);
+    this.spawnCircle.endFill();
+    this.spawnCircle.visible = false;
+    this.spawnCircle.x = this.x;
+    this.spawnCircle.y = this.y;
+    this.game.interfaceContainer.addChild(this.spawnCircle);
+
     this.sightCircle = new PIXI.Graphics;
     this.sightCircle.clear();
     this.sightCircle.beginFill(0xFFFFFF);
@@ -41,9 +53,13 @@ export default class ClientFactory extends Factory {
     super.update(delta, map);
     const { team, row, col } = this;
     checkBuildingColours(this.buildingSprite, map, team, row, col);
+    this.spawnCircle.tint = TEAM_COLOURS[this.team];
     if (this.team === this.game.playerTeam) {
       this.sightCircle.position.copy(this);
       this.game.app.renderer.render(this.sightCircle, this.game.sightRangeTexture, false, null, false);
+    }
+    if (this.team === NEUTRAL) {
+      this.spawnCircle.visible = false;
     }
   }
 }

@@ -13,7 +13,7 @@ export const GENERATOR_HEALTH = 420;
 export const FACTORY_SIZE = 20;
 export const FACTORY_HEALTH = 420;
 
-export const SPAWN_RADIUS = 200;
+export const SPAWN_RADIUS = 100;
 
 export const CAMERA_SPEED = 4;
 
