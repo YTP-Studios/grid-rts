@@ -104,13 +104,13 @@ export default class ClientGame extends Game {
     let shiftKey = keyboard('Shift');
 
     upKey.press = () => { this.world.velocity.y += Constants.CAMERA_SPEED; };
-    upKey.release = () => { this.world.velocity.y -= Constants.CAMERA_SPEED; };
+    upKey.release = () => { this.world.velocity.y = 0; };
     downKey.press = () => { this.world.velocity.y -= Constants.CAMERA_SPEED; };
-    downKey.release = () => { this.world.velocity.y += Constants.CAMERA_SPEED; };
+    downKey.release = () => { this.world.velocity.y = 0; };
     leftKey.press = () => { this.world.velocity.x += Constants.CAMERA_SPEED; };
-    leftKey.release = () => { this.world.velocity.x -= Constants.CAMERA_SPEED; };
+    leftKey.release = () => { this.world.velocity.x = 0; };
     rightKey.press = () => { this.world.velocity.x -= Constants.CAMERA_SPEED; };
-    rightKey.release = () => { this.world.velocity.x += Constants.CAMERA_SPEED; };
+    rightKey.release = () => { this.world.velocity.x = 0; };
 
     let prevSelectedUnits;
     shiftKey.press = () => {
@@ -148,6 +148,13 @@ export default class ClientGame extends Game {
     this.energyText.x = 525;
     this.energyText.y = 10;
     this.app.stage.addChild(this.energyText);
+
+    this.zoomScale = 1;
+    document.addEventListener('wheel', (event: WheelEvent) => {
+      const delta = event.deltaY < 0 ? Constants.ZOOM_FACTOR : 1 / Constants.ZOOM_FACTOR;
+      this.zoomScale *= delta;
+      this.zoomScale = Math.max(Math.min(this.zoomScale, Constants.MAX_ZOOM), Constants.MIN_ZOOM);
+    });
 
     this.app.renderer.plugins.interaction.on('rightdown', (event) => {
       const mousePosition = this.app.renderer.plugins.interaction.mouse.global;
@@ -244,6 +251,14 @@ export default class ClientGame extends Game {
 
   updateCamera(delta) {
     Vectors.copyTo(Vectors.sum(this.world, Vectors.scale(this.world.velocity, delta)), this.world);
+
+    const oldPos = this.world.toLocal({ x: this.app.screen.width / 2, y: this.app.screen.height / 2 });
+    const newScale = Math.pow(this.zoomScale, 1 - Constants.ZOOM_SPEED) * Math.pow(this.world.scale.x, Constants.ZOOM_SPEED);
+    this.world.scale.x = newScale;
+    this.world.scale.y = newScale;
+    const newPos = this.world.toLocal({ x: this.app.screen.width / 2, y: this.app.screen.height / 2 });
+    const diff = Vectors.scale(Vectors.difference(newPos, oldPos), this.world.scale.x);
+    Vectors.copyTo(Vectors.sum(diff, this.world), this.world);
   }
 
   updateSightRanges() {
