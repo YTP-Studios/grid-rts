@@ -81,6 +81,7 @@ export default class Game {
     return {
       units: this.units.map(e => e.getState()),
       map: this.map.getState(),
+      energy: this.energy,
     };
   }
 
@@ -101,7 +102,7 @@ export default class Game {
     }
   }
 
-  setState({ units: unitsData, map }) {
+  setState({ units: unitsData, map, energy }) {
     // Remove missing units
     let toRemove = this.units.filter(unit => !unitsData.some(e => e.id === unit.id));
     toRemove.forEach(e => e.destroy());
@@ -119,6 +120,9 @@ export default class Game {
 
     // Update map
     this.map.setState(map);
+
+    // Update energy
+    this.energy = energy;
   }
 
   updateIncome() {
