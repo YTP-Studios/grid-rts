@@ -47,10 +47,10 @@ export default class Unit implements Entity {
     let minDist = Infinity;
     let nearestEnemy;
     for (let i = 0; i < enemiesInRange.length; i++) {
-      const dist = dist(this, enemiesInRange[i]);
-      if (dist < minDist) {
+      const curDist = dist(this, enemiesInRange[i]);
+      if (curDist < minDist) {
         nearestEnemy = enemiesInRange[i];
-        minDist = dist;
+        minDist = curDist;
       }
     }
     return nearestEnemy;
