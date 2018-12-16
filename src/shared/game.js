@@ -1,11 +1,9 @@
 import * as Vectors from '../shared/vectors';
 import * as Constants from '../shared/constants';
 import { NEUTRAL } from './teams';
-import GameMap from './game_map';
-import Unit from './unit';
 
 export default class Game {
-  init(map: GameMap, units: Unit[]) {
+  init(map, units) {
     this.map = map;
     this.units = units;
     this.energy = [0, 0, 0];
@@ -81,13 +79,12 @@ export default class Game {
     return {
       units: this.units.map(e => e.getState()),
       map: this.map.getState(),
-      energy: this.energy,
     };
   }
 
   instantiate(data) { }
 
-  setState({ units: unitsData, map, energy }) {
+  setState({ units: unitsData, map }) {
     // Remove missing units
     let toRemove = this.units.filter(unit => !unitsData.some(e => e.id === unit.id));
     toRemove.forEach(e => e.destroy());
@@ -105,8 +102,6 @@ export default class Game {
 
     // Update map
     this.map.setState(map);
-
-    this.energy = energy;
   }
 
   updateIncome() {

@@ -23,18 +23,28 @@ export default class Building implements Entity {
     this.col = col;
     this.team = team;
     this.size = size;
-    this.health = health;
     this.powered = false;
+    this.isSelected = false;
+    this.health = this.team === NEUTRAL ? 0 : health;
+    this.shouldCapture = false;
+    this.elapsedTime = 0;
+    this.captureTime = 0;
+    this.maxHealth = 0;
+    this.newTeam = NEUTRAL;
   }
 
   update(delta: number, map: GameMap) {
-    if (this.health < 0) {
+    if (this.health === 0 && this.team !== NEUTRAL) {
       this.reset();
+    }
+    if (this.shouldCapture) {
+      this.capture(delta);
     }
   }
 
   reset() {
     this.team = NEUTRAL;
+    this.health = 0;
   }
 
   checkPowered(map: GameMap) {
@@ -63,5 +73,16 @@ export default class Building implements Entity {
   setState({ team, health }) {
     this.team = team;
     this.health = health;
+  }
+
+  capture(delta) {
+    if (this.elapsedTime >= this.captureTime) {
+      this.elapsedTime = 0;
+      this.shouldCapture = false;
+      this.team = this.newTeam;
+    } else {
+      this.elapsedTime += delta;
+      this.health += delta * this.maxHealth / this.captureTime;
+    }
   }
 }

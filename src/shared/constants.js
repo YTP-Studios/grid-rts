@@ -6,12 +6,13 @@ export const COLLISION_LENIENCY = 0.3;
 
 export const CONDUIT_SIZE = 10;
 export const CONDUIT_HEALTH = 50;
+export const CONDUIT_CAPTURE_TIME = 20;
 
-export const GENERATOR_SIZE = 20;
-export const GENERATOR_HEALTH = 420;
+export const HEALTHBAR_WIDTH = 40;
 
-export const FACTORY_SIZE = 20;
+export const FACTORY_SIZE = 25;
 export const FACTORY_HEALTH = 420;
+export const FACTORY_CAPTURE_TIME = 750;
 
 export const CAMERA_SPEED = 4;
 
@@ -56,8 +57,11 @@ export const GRID_SCALE = 64;
 
 export const BUILDING_SIGHT_RANGE = 2 * GRID_SCALE;
 
+export const GENERATOR_SIZE = 20;
+export const GENERATOR_HEALTH = 300;
 export const GENERATOR_INCOME = 0.1;
 export const GENERATOR_CAP = 500;
+export const GENERATOR_CAPTURE_TIME = 500;
 
 export const CONDUIT_CAP = 20;
 

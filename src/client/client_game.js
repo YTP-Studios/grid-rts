@@ -155,6 +155,21 @@ export default class ClientGame extends Game {
       const mousePosition = this.world.toLocal(this.app.renderer.plugins.interaction.mouse.global);
       this.initialMousePos.x = mousePosition.x;
       this.initialMousePos.y = mousePosition.y;
+      const row = Math.round(mousePosition.y / Constants.GRID_SCALE);
+      const col = Math.round(mousePosition.x / Constants.GRID_SCALE);
+      for (let j = 0; j < this.map.buildings.length; j++) {
+        for (let k = 0; k < this.map.buildings[j].length; k++) {
+          let b = this.map.buildings[j][k];
+          if (!b) continue;
+          b.isSelected = false;
+        }
+      }
+      const building = this.map.getBuilding(row, col);
+      if (building) {
+        if (building.team === this.playerTeam) {
+          building.isSelected = true;
+        }
+      }
     });
 
     this.app.renderer.plugins.interaction.on('mouseup', () => {
