@@ -1,6 +1,8 @@
 import * as Vectors from '../shared/vectors';
 import * as Constants from '../shared/constants';
 import { NEUTRAL } from './teams';
+import BasicUnit from './basic_unit';
+import SiegeUnit from './siege_unit';
 
 export default class Game {
   init(map, units) {
@@ -82,13 +84,28 @@ export default class Game {
     };
   }
 
-  instantiate(data) { }
+  instantiate(data) {
+    if (data.type.startsWith('unit')) {
+      let unit;
+      switch (data.type) {
+        case 'unit:basic_unit':
+          unit = new BasicUnit(data.x, data.y, data.team);
+          break;
+        case 'unit:siege_unit':
+          unit = new SiegeUnit(data.x, data.y, data.team);
+          break;
+        default:
+          throw new Error('Undefined unit type.');
+      }
+      return unit;
+    }
+  }
 
   setState({ units: unitsData, map }) {
     // Remove missing units
     let toRemove = this.units.filter(unit => !unitsData.some(e => e.id === unit.id));
     toRemove.forEach(e => e.destroy());
-    this.units = this.units.filter(unit => unitsData.some(e => e.id === unit.id));
+    this.units = this.units.filter(u => !toRemove.includes(u));
     // Update existing units
     this.units.forEach((unit) => {
       const data = unitsData.find(e => (e.id === unit.id));

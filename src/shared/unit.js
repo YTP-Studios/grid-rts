@@ -79,7 +79,7 @@ export default class Unit implements Entity {
     };
   }
 
-  setState({ x, y, team, health, enabled, targetPos }) {
+  setState({ x = this.x, y = this.y, team = this.team, health = this.health, enabled = this.enabled, targetPos = this.targetPos }) {
     this.x = Number(x);
     this.y = Number(y);
     this.team = Number(team);

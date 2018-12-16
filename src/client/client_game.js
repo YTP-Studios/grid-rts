@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { AdvancedBloomFilter, AdjustmentFilter } from 'pixi-filters';
 
-import { Command, MoveCommand, CaptureCommand } from '../shared/commands';
+import { Command, MoveCommand, CaptureCommand, SpawnCommand } from '../shared/commands';
 import * as Constants from '../shared/constants';
 import Game from '../shared/game';
 import { COMMAND, GAME_STATE, RESET } from '../shared/game-events';
@@ -12,6 +12,7 @@ import { BasicClientUnit } from './basic_client_unit';
 import { SiegeClientUnit } from './siege_client_unit';
 import ClientMap from './client_map';
 import keyboard from './keyboard';
+import Factory from '../shared/factory';
 
 export default class ClientGame extends Game {
   static loadAssets() {
@@ -100,6 +101,7 @@ export default class ClientGame extends Game {
     let downKey = keyboard('ArrowDown');
     let leftKey = keyboard('ArrowLeft');
     let rightKey = keyboard('ArrowRight');
+    let shiftKey = keyboard('Shift');
 
     upKey.press = () => { this.world.velocity.y += Constants.CAMERA_SPEED; };
     upKey.release = () => { this.world.velocity.y -= Constants.CAMERA_SPEED; };
@@ -109,6 +111,25 @@ export default class ClientGame extends Game {
     leftKey.release = () => { this.world.velocity.x -= Constants.CAMERA_SPEED; };
     rightKey.press = () => { this.world.velocity.x -= Constants.CAMERA_SPEED; };
     rightKey.release = () => { this.world.velocity.x += Constants.CAMERA_SPEED; };
+
+    let prevSelectedUnits;
+    shiftKey.press = () => {
+      this.map.allBuildings()
+        .filter(b => b instanceof Factory)
+        .filter(b => b.team === this.playerTeam)
+        .forEach(b => { b.spawnCircle.visible = true; });
+      prevSelectedUnits = this.units
+        .filter(unit => unit.team === this.playerTeam)
+        .filter(unit => unit.isSelected);
+      prevSelectedUnits.forEach(unit => { unit.isSelected = false; });
+    };
+    shiftKey.release = () => {
+      this.map.allBuildings()
+        .filter(b => b instanceof Factory)
+        .forEach(b => { b.spawnCircle.visible = false; });
+      prevSelectedUnits.forEach(unit => { unit.isSelected = true; });
+      prevSelectedUnits = [];
+    };
 
     this.isMouseDown = false;
     this.initialMousePos = { x: 0, y: 0 };
@@ -128,16 +149,33 @@ export default class ClientGame extends Game {
     this.energyText.y = 10;
     this.app.stage.addChild(this.energyText);
 
-    this.app.renderer.plugins.interaction.on('rightdown', () => {
+    this.app.renderer.plugins.interaction.on('rightdown', (event) => {
       const mousePosition = this.app.renderer.plugins.interaction.mouse.global;
       const targetPos = this.world.toLocal(mousePosition);
       this.drawIndicator(targetPos);
-      const unitIds = this.units.filter((unit) => unit.team === this.playerTeam && unit.isSelected).map(unit => unit.id);
-      if (unitIds.length > 0) {
-        const command = new MoveCommand({ targetPos, unitIds });
-        socket.emit(COMMAND, Command.toData(command));
-        command.exec(this);
+
+      if (event.data.originalEvent.shiftKey) {
+        const hasFactory = this.map.allBuildings()
+          .filter(b => b instanceof Factory)
+          .some(b => b.team === this.playerTeam);
+        if (hasFactory) {
+          const { x, y } = targetPos;
+          const command = new SpawnCommand({
+            unit: { type: 'unit:basic_unit', x, y, team: this.playerTeam },
+          });
+          socket.emit(COMMAND, Command.toData(command));
+          command.exec(this);
+        }
       } else {
+        const selectedUnits = this.units
+          .filter(unit => unit.team === this.playerTeam)
+          .filter(unit => unit.isSelected);
+        if (selectedUnits.length > 0) {
+          const command = new MoveCommand({ targetPos, unitIds: selectedUnits.map(unit => unit.id) });
+          socket.emit(COMMAND, Command.toData(command));
+          command.exec(this);
+          return;
+        }
         const row = Math.round(targetPos.y / Constants.GRID_SCALE);
         const col = Math.round(targetPos.x / Constants.GRID_SCALE);
         const command = new CaptureCommand({ row, col, team: this.playerTeam });
