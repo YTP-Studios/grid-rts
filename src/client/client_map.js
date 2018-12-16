@@ -1,8 +1,10 @@
+import * as PIXI from 'pixi.js';
+
 import GameMap from '../shared/game_map';
 import ClientConduit from './client_conduit';
 import { RED_TEAM, BLUE_TEAM, NEUTRAL } from '../shared/teams';
 import ClientGenerator from './client-generator';
-import { BACKGROUND_COLOR, GRID_SCALE } from '../shared/constants';
+import { BACKGROUND_COLOUR, GRID_SCALE } from '../shared/constants';
 import { checkBuildingColours } from './sprite-utils';
 import ClientFactory from './client-factory';
 
@@ -35,7 +37,7 @@ export default class ClientMap extends GameMap {
     super(data);
     let background = new PIXI.Graphics;
     background.clear();
-    background.beginFill(BACKGROUND_COLOR);
+    background.beginFill(BACKGROUND_COLOUR);
     background.drawRect(-GRID_SCALE / 2, -GRID_SCALE / 2, this.buildings[0].length * GRID_SCALE, this.buildings.length * GRID_SCALE);
     background.endFill();
 

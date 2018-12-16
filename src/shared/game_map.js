@@ -2,8 +2,11 @@ import Conduit from './conduit';
 import Generator from './generator';
 import { RED_TEAM, BLUE_TEAM, NEUTRAL } from './teams';
 import Factory from './factory';
+import Building from './building';
 
 export default class GameMap {
+
+  buildings: Building[][]
 
   static fromString(s) {
     return new GameMap(s
@@ -30,7 +33,7 @@ export default class GameMap {
     }
   }
 
-  constructor(buildings) {
+  constructor(buildings: Building[][]) {
     this.buildings = buildings;
   }
 
@@ -38,7 +41,7 @@ export default class GameMap {
     return this.buildings.reduce((acc, cur) => acc.concat(cur), []);
   }
 
-  neighbours(building) {
+  neighbours(building: Building) {
     const { row, col } = building;
     return [
       this.getBuilding(row, col + 1),
@@ -48,7 +51,7 @@ export default class GameMap {
     ].filter(e => e !== null);
   }
 
-  update(delta) {
+  update(delta: number) {
     const buildings = this.allBuildings().filter(b => b);
     buildings.forEach(b => {
       b.powered = false;
@@ -61,7 +64,7 @@ export default class GameMap {
     });
   }
 
-  getBuilding(row, col) {
+  getBuilding(row: number, col: number) {
     if (row < 0 || row >= this.buildings.length) return null;
     if (col < 0 || col >= this.buildings[row].length) return null;
     return this.buildings[row][col];

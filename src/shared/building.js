@@ -1,7 +1,15 @@
 import { GRID_SCALE } from './constants';
-import { NEUTRAL } from './teams';
+import { Team, NEUTRAL } from './teams';
+import GameMap from './game_map';
+import { Entity } from './entity';
+export default class Building implements Entity {
 
-export default class Building {
+  row: number;
+  col: number;
+  team: Team;
+  size: number;
+  health: number;
+  powered: boolean;
 
   get x() {
     return this.col * GRID_SCALE;
@@ -17,15 +25,16 @@ export default class Building {
     this.size = size;
     this.powered = false;
     this.isSelected = false;
-    this.health = this.team === NEUTRAL ? 1 : health;
+    this.health = this.team === NEUTRAL ? 0 : health;
     this.shouldCapture = false;
+    this.elapsedTime = 0;
+    this.captureTime = 0;
     this.maxHealth = 0;
     this.newTeam = NEUTRAL;
   }
 
-  update(delta, map) {
-    this.delta = delta;
-    if (this.health < 0) {
+  update(delta: number, map: GameMap) {
+    if (this.health === 0 && this.team !== NEUTRAL) {
       this.reset();
     }
     if (this.shouldCapture) {
@@ -35,10 +44,10 @@ export default class Building {
 
   reset() {
     this.team = NEUTRAL;
-    this.health = 1;
+    this.health = 0;
   }
 
-  checkPowered(map) {
+  checkPowered(map: GameMap) {
     if (this.powered) {
       map.neighbours(this)
         .filter(e => e.team === this.team)
@@ -46,7 +55,7 @@ export default class Building {
     }
   }
 
-  setPowered(map) {
+  setPowered(map: GameMap) {
     if (this.powered) return;
     this.powered = true;
     map.neighbours(this)
@@ -67,12 +76,13 @@ export default class Building {
   }
 
   capture(delta) {
-    if (this.health >= this.maxHealth) {
-      this.health = this.maxHealth;
+    if (this.elapsedTime >= this.captureTime) {
+      this.elapsedTime = 0;
       this.shouldCapture = false;
       this.team = this.newTeam;
     } else {
-      this.health += delta * 2;
+      this.elapsedTime += delta;
+      this.health += delta * this.maxHealth / this.captureTime;
     }
   }
 }

@@ -1,6 +1,6 @@
 import {
   NEUTRAL, TEAM_COLOURS,
-  NEUTRAL_COLOR, DISABLED_TEAM_COLOURS,
+  NEUTRAL_COLOUR, DISABLED_TEAM_COLOURS,
 } from '../shared/teams';
 import * as PIXI from 'pixi.js';
 import { GRID_SCALE } from '../shared/constants';
@@ -22,7 +22,7 @@ export function createBuildingSprite(edgePath, centerPath, team = NEUTRAL) {
   const initEdgeSprite = (angle) => {
     let newSprite = createCenteredSprite(edgePath, GRID_SCALE);
     newSprite.rotation = angle;
-    newSprite.tint = NEUTRAL_COLOR;
+    newSprite.tint = NEUTRAL_COLOUR;
     return newSprite;
   };
 

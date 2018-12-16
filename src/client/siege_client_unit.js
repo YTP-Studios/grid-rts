@@ -80,21 +80,21 @@ export class SiegeClientUnit extends SiegeUnit {
 
   drawAoeField() {
     this.aoeField.lineStyle(1, TEAM_COLOURS[this.team]);
-    this.aoeField.beginFill(Constants.SELECTOR_CIRCLE_COLOR, Constants.SIEGE_UNIT_AOE_OPACITY);
+    this.aoeField.beginFill(Constants.SELECTOR_CIRCLE_COLOUR, Constants.SIEGE_UNIT_AOE_OPACITY);
     this.aoeField.drawCircle(this.nearestEnemy.x, this.nearestEnemy.y, Constants.SIEGE_UNIT_EXPLOSION_RADIUS);
     this.hasDrawnAoeField = true;
   }
 
   detonateAoeField() {
-    this.aoeField.beginFill(Constants.SELECTOR_CIRCLE_COLOR);
+    this.aoeField.beginFill(Constants.SELECTOR_CIRCLE_COLOUR);
     this.aoeField.drawCircle(this.aoePos.x, this.aoePos.y, Constants.SIEGE_UNIT_EXPLOSION_RADIUS);
   }
 
 
   drawSelectionCircle() {
     this.selectionCircle.clear();
-    this.selectionCircle.lineStyle(Constants.SELECTOR_BOX_BORDER_WIDTH, Constants.SELECTOR_CIRCLE_COLOR);
-    this.selectionCircle.beginFill(Constants.SELECTOR_CIRCLE_COLOR, Constants.SELECTOR_BOX_OPACITY);
+    this.selectionCircle.lineStyle(Constants.SELECTOR_BOX_BORDER_WIDTH, Constants.SELECTOR_CIRCLE_COLOUR);
+    this.selectionCircle.beginFill(Constants.SELECTOR_CIRCLE_COLOUR, Constants.SELECTOR_BOX_OPACITY);
     this.selectionCircle.drawCircle(this.x, this.y, Constants.SELECTOR_CIRCLE_RADIUS + Constants.SIEGE_UNIT_BODY_SIZE);
   }
 

@@ -16,4 +16,8 @@ export default class Factory extends Building {
   getMaxHealth() {
     return Constants.FACTORY_HEALTH;
   }
+
+  getCaptureTime() {
+    return Constants.FACTORY_CAPTURE_TIME;
+  }
 }

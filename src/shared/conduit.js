@@ -16,4 +16,8 @@ export default class Conduit extends Building {
   getMaxHealth() {
     return Constants.CONDUIT_HEALTH;
   }
+
+  getCaptureTime() {
+    return Constants.CONDUIT_CAPTURE_TIME;
+  }
 }

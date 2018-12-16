@@ -17,6 +17,5 @@ userSchema.methods.authenticate = function(pass) {
   return pass === this.password;
 };
 
+// eslint-disable-next-line no-unused-vars
 var user = mongoose.model('User', userSchema);
-
-

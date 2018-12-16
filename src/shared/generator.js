@@ -24,4 +24,8 @@ export default class Generator extends Building {
     return Constants.GENERATOR_HEALTH;
   }
 
+  getCaptureTime() {
+    return Constants.GENERATOR_CAPTURE_TIME;
+  }
+
 }

@@ -15,8 +15,9 @@ export class Command {
   }
 }
 
-export class MoveCommand {
+export class MoveCommand extends Command {
   constructor({ targetPos, unitIds }) {
+    super();
     this.targetPos = targetPos;
     this.unitIds = unitIds;
   }
@@ -29,8 +30,9 @@ export class MoveCommand {
 }
 
 
-export class CaptureCommand {
+export class CaptureCommand extends Command {
   constructor({ row, col, team }) {
+    super();
     this.row = row;
     this.col = col;
     this.team = team;
@@ -43,6 +45,7 @@ export class CaptureCommand {
       const neighbours = game.map.neighbours(building);
       if (neighbours.some(e => e && e.team === team && e.powered)) {
         if (game.energy[team] >= building.getMaxHealth()) {
+          building.captureTime = building.getCaptureTime();
           building.maxHealth = building.getMaxHealth();
           building.newTeam = team;
           building.shouldCapture = true;
