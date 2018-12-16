@@ -48,7 +48,7 @@ export default class ClientConduit extends Conduit {
       this.game.app.renderer.render(this.sightCircle, this.game.sightRangeTexture, false, null, false);
     }
 
-    if (this.health !== Constants.CONDUIT_HEALTH && this.health !== 1) {
+    if (this.health < Constants.CONDUIT_HEALTH && this.team >= 0) {
       this.drawHealthBar();
     } else {
       this.healthBar.clear();
