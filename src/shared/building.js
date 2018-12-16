@@ -30,11 +30,10 @@ export default class Building implements Entity {
     this.elapsedTime = 0;
     this.captureTime = 0;
     this.maxHealth = 0;
-    this.newTeam = NEUTRAL;
   }
 
   update(delta: number, map: GameMap) {
-    if (this.health === 0 && this.team !== NEUTRAL) {
+    if (this.health < 0 && this.team !== NEUTRAL) {
       this.reset();
     }
     if (this.shouldCapture) {
@@ -45,6 +44,7 @@ export default class Building implements Entity {
   reset() {
     this.team = NEUTRAL;
     this.health = 0;
+    this.powered = false;
   }
 
   checkPowered(map: GameMap) {
@@ -79,7 +79,7 @@ export default class Building implements Entity {
     if (this.elapsedTime >= this.captureTime) {
       this.elapsedTime = 0;
       this.shouldCapture = false;
-      this.team = this.newTeam;
+      this.powered = true;
     } else {
       this.elapsedTime += delta;
       this.health += delta * this.maxHealth / this.captureTime;

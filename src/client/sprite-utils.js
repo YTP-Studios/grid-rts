@@ -45,7 +45,7 @@ export function createBuildingSprite(edgePath, centerPath, team = NEUTRAL) {
 
 export function checkBuildingColours(buildingSprite, map, team, row, col) {
   const building = map.getBuilding(row, col);
-  const colours = building.powered ? TEAM_COLOURS : DISABLED_TEAM_COLOURS;
+  const colours = building.powered && !building.shouldCapture ? TEAM_COLOURS : DISABLED_TEAM_COLOURS;
   const checkColour = (row, col, sprite) => {
     let building = map.getBuilding(row, col);
     if (building === null) {
