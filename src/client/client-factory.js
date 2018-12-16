@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import { GRID_SCALE, BUILDING_SIGHT_RANGE, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR, SELECTOR_BOX_OPACITY, SELECTOR_CIRCLE_RADIUS, FACTORY_SIZE, FACTORY_HEALTH } from '../shared/constants';
+import { GRID_SCALE, BUILDING_SIGHT_RANGE, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR, SELECTOR_BOX_OPACITY, SELECTOR_CIRCLE_RADIUS, FACTORY_SIZE, FACTORY_HEALTH, SPAWN_RADIUS } from '../shared/constants';
 import { checkBuildingColours, createBuildingSprite, createCenteredSprite } from './sprite-utils';
 import Factory from '../shared/factory';
 import { TEAM_COLOURS, NEUTRAL } from '../shared/teams';
