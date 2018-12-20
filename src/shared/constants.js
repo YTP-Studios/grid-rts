@@ -4,6 +4,19 @@
  */
 export const COLLISION_LENIENCY = 0.3;
 
+/**
+ * The scale factor for one scroll position.
+ */
+export const ZOOM_FACTOR = 1.1;
+
+/**
+ * A number between 0 and 1 for the amount of zoom smoothing.
+ */
+export const ZOOM_SPEED = 0.8;
+
+export const MAX_ZOOM = 2;
+export const MIN_ZOOM = 1 / 4;
+
 export const CONDUIT_SIZE = 10;
 export const CONDUIT_HEALTH = 50;
 export const CONDUIT_CAPTURE_TIME = 20;
