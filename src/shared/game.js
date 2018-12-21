@@ -5,7 +5,7 @@ import BasicUnit from './basic_unit';
 import SiegeUnit from './siege_unit';
 
 export default class Game {
-  init(map, units) {
+  init(map, units = []) {
     this.map = map;
     this.units = units;
     this.energy = [0, 0, 0];
