@@ -73,6 +73,7 @@ export class SpawnCommand extends Command {
     const team = unit.team;
     if (game.map.allBuildings()
       .filter(b => b instanceof Factory)
+      .filter(b => b.team === team)
       .some(b => dist(b, unit) <= SPAWN_RADIUS) &&
       game.energy[team] >= BASIC_UNIT_COST) {
       const newUnit = game.instantiate(unit);

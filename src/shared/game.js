@@ -36,10 +36,12 @@ export default class Game {
         let a = this.units[i]; let b = this.units[j];
         const combinedSize = a.size + b.size;
         const distBetween = dist(a, b);
+        const displacement = difference(a, b);
+        if (dist(a, b) < 0.0001) displacement.x = 0.0001;
         if (distBetween < combinedSize) {
-          const offset = (combinedSize - distBetween) / 2 * COLLISION_LENIENCY;
-          positions[i] = sum(positions[i], scaleTo(difference(a, b), offset));
-          positions[j] = sum(positions[j], scaleTo(difference(b, a), offset));
+          let offset = (combinedSize - distBetween) / 2 * COLLISION_LENIENCY;
+          positions[i] = sum(positions[i], scaleTo(displacement, offset));
+          positions[j] = sum(positions[j], scaleTo(displacement, -offset));
         }
       }
     }

@@ -24,7 +24,7 @@ export const CONDUIT_CAPTURE_TIME = 20;
 export const HEALTHBAR_WIDTH = 40;
 
 export const FACTORY_SIZE = 25;
-export const FACTORY_HEALTH = 420;
+export const FACTORY_HEALTH = 250;
 export const FACTORY_CAPTURE_TIME = 750;
 
 export const SPAWN_RADIUS = 100;
