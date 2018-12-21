@@ -6,7 +6,7 @@ import * as Constants from '../shared/constants';
 import Game from '../shared/game';
 import { COMMAND, GAME_STATE, RESET } from '../shared/game-events';
 import { TEAM_COLOURS } from '../shared/teams';
-import * as Vectors from '../shared/vectors';
+import { scale, sum, zero, copyTo, difference } from '../shared/vectors';
 
 import { BasicClientUnit } from './basic_client_unit';
 import { SiegeClientUnit } from './siege_client_unit';
@@ -34,7 +34,7 @@ export default class ClientGame extends Game {
 
   }
 
-  init(socket, mapData) {
+  init(socket, mapData, team) {
     this.socket = socket;
     this.app = new PIXI.Application({
       width: 800,
@@ -89,6 +89,14 @@ export default class ClientGame extends Game {
     let map = ClientMap.fromString(this, mapData);
     super.init(map);
     this.map.allBuildings().forEach(b => b.oldBuildingSprite.update());
+    this.playerTeam = team;
+
+    const playerBuildings = this.map.allBuildings()
+      .filter(b => b.team === this.playerTeam);
+    const averagePos = scale(playerBuildings.reduce(sum, zero()), -1 / playerBuildings.length);
+    const centerPos = sum(averagePos, { x: this.app.screen.width / 2, y: this.app.screen.height / 2 });
+    copyTo(centerPos, this.world);
+
     this.app.view.oncontextmenu = () => false;
 
     let upKey = keyboard('ArrowUp');
@@ -244,15 +252,15 @@ export default class ClientGame extends Game {
   }
 
   updateCamera(delta) {
-    Vectors.copyTo(Vectors.sum(this.world, Vectors.scale(this.world.velocity, delta)), this.world);
+    copyTo(sum(this.world, scale(this.world.velocity, delta)), this.world);
 
-    const oldPos = this.world.toLocal({ x: this.app.screen.width / 2, y: this.app.screen.height / 2 });
+    const oldPos = this.world.toLocal(this.app.renderer.plugins.interaction.mouse.global);
     const newScale = Math.pow(this.zoomScale, 1 - Constants.ZOOM_SPEED) * Math.pow(this.world.scale.x, Constants.ZOOM_SPEED);
     this.world.scale.x = newScale;
     this.world.scale.y = newScale;
-    const newPos = this.world.toLocal({ x: this.app.screen.width / 2, y: this.app.screen.height / 2 });
-    const diff = Vectors.scale(Vectors.difference(newPos, oldPos), this.world.scale.x);
-    Vectors.copyTo(Vectors.sum(diff, this.world), this.world);
+    const newPos = this.world.toLocal(this.app.renderer.plugins.interaction.mouse.global);
+    const diff = scale(difference(newPos, oldPos), this.world.scale.x);
+    copyTo(sum(diff, this.world), this.world);
   }
 
   updateSightRanges() {

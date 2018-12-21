@@ -7,8 +7,7 @@ ClientGame.loadAssets().then(() => {
   let game = new ClientGame();
   socket.emit(READY);
   socket.on(START, (team, mapData) => {
-    game.init(socket, mapData);
-    game.playerTeam = team;
+    game.init(socket, mapData, team);
     game.start();
     window.game = game; // for debugging
   });

@@ -21,3 +21,5 @@ export const scaleTo = (a: Vector, newLength: number) => scale(a, newLength / le
 export const normalize = (a: Vector) => scaleTo(a, 1);
 
 export const copyTo = (from: Vector, to: Vector) => { to.x = from.x; to.y = from.y; };
+
+export const zero = () => ({ x: 0, y: 0 });
