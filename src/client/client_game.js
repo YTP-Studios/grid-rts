@@ -5,7 +5,7 @@ import { Command, MoveCommand, CaptureCommand, SpawnCommand } from '../shared/co
 import * as Constants from '../shared/constants';
 import Game from '../shared/game';
 import { COMMAND, GAME_STATE, RESET } from '../shared/game-events';
-import { BLUE_TEAM, TEAM_COLOURS } from '../shared/teams';
+import { TEAM_COLOURS } from '../shared/teams';
 import * as Vectors from '../shared/vectors';
 
 import { BasicClientUnit } from './basic_client_unit';
@@ -87,14 +87,8 @@ export default class ClientGame extends Game {
     this.unitContainer.mask = this.sightRangeSprite;
 
     let map = ClientMap.fromString(this, mapData);
-    let units = [
-      new BasicClientUnit(this, Math.random() * 500, Math.random() * 500, BLUE_TEAM),
-      new BasicClientUnit(this, Math.random() * 500, Math.random() * 500, BLUE_TEAM),
-      new BasicClientUnit(this, 50, 50),
-      new BasicClientUnit(this, 500, 500),
-    ];
-    super.init(map, units);
-
+    super.init(map);
+    this.map.allBuildings().forEach(b => b.oldBuildingSprite.update());
     this.app.view.oncontextmenu = () => false;
 
     let upKey = keyboard('ArrowUp');

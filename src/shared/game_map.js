@@ -38,7 +38,9 @@ export default class GameMap {
   }
 
   allBuildings() {
-    return this.buildings.reduce((acc, cur) => acc.concat(cur), []);
+    return this.buildings
+      .reduce((acc, cur) => acc.concat(cur), [])
+      .filter(b => b !== null);
   }
 
   neighbours(building: Building) {
@@ -52,7 +54,7 @@ export default class GameMap {
   }
 
   update(delta: number) {
-    const buildings = this.allBuildings().filter(b => b);
+    const buildings = this.allBuildings();
     buildings.forEach(b => {
       b.powered = false;
     });
