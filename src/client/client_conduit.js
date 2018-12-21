@@ -1,8 +1,10 @@
 import * as PIXI from 'pixi.js';
 import * as Constants from '../shared/constants';
-import { TEAM_COLOURS, NEUTRAL } from '../shared/teams';
+import { NEUTRAL } from '../shared/teams';
 import Conduit from '../shared/conduit';
 import { BuildingSprite } from './building-sprite';
+import { createCircleSprite } from './sprite-utils';
+import { sum } from '../shared/vectors';
 
 export default class ClientConduit extends Conduit {
   constructor(game, row, col, team) {
@@ -15,19 +17,8 @@ export default class ClientConduit extends Conduit {
     this.oldBuildingSprite = new BuildingSprite(game, this, 'assets/conduit-edge.png', 'assets/conduit-center.png');
     this.game.oldBuildingContainer.addChild(this.oldBuildingSprite.sprite);
 
-    this.sightCircle = new PIXI.Graphics;
-    this.sightCircle.clear();
-    this.sightCircle.beginFill(0xFFFFFF);
-    this.sightCircle.drawCircle(Constants.GRID_SCALE, Constants.GRID_SCALE, Constants.BUILDING_SIGHT_RANGE);
-    this.sightCircle.endFill();
-    this.sightCircle.cacheAsBitmap = true;
-
-    this.selectionCircle = new PIXI.Graphics;
-    this.selectionCircle.clear();
-    this.selectionCircle.lineStyle(Constants.SELECTOR_BOX_BORDER_WIDTH, Constants.SELECTOR_CIRCLE_COLOUR);
-    this.selectionCircle.beginFill(TEAM_COLOURS[this.team], Constants.SELECTOR_BOX_OPACITY);
-    this.selectionCircle.drawCircle(0, 0, Constants.SELECTOR_CIRCLE_RADIUS + Constants.CONDUIT_SIZE);
-    this.selectionCircle.cacheAsBitmap = true;
+    this.sightCircle = createCircleSprite(Constants.BUILDING_SIGHT_RANGE);
+    this.selectionCircle = createCircleSprite(Constants.SELECTOR_CIRCLE_RADIUS + Constants.CONDUIT_SIZE, Constants.SELECTOR_BOX_BORDER_WIDTH, Constants.SELECTOR_CIRCLE_COLOUR, Constants.SELECTOR_BOX_OPACITY);
     this.selectionCircle.x = this.x;
     this.selectionCircle.y = this.y;
     this.game.interfaceContainer.addChild(this.selectionCircle);
@@ -38,7 +29,6 @@ export default class ClientConduit extends Conduit {
     this.healthBar.drawRect(0, 0, Constants.HEALTHBAR_WIDTH, 5);
     this.healthBar.x = this.x - Constants.CONDUIT_SIZE / 2;
     this.healthBar.y = this.y - Constants.CONDUIT_SIZE / 2 - 10;
-    this.healthBar.cacheAsBitmap = true;
     this.healthBar.visible = false;
     this.game.interfaceContainer.addChild(this.healthBar);
   }
@@ -47,21 +37,11 @@ export default class ClientConduit extends Conduit {
     super.update(delta);
     this.buildingSprite.update();
     if (this.team === this.game.playerTeam) {
-      this.sightCircle.position.copy(this);
+      this.sightCircle.position.copy(sum(this, { x: Constants.GRID_SCALE, y: Constants.GRID_SCALE }));
       this.game.app.renderer.render(this.sightCircle, this.game.sightRangeTexture, false, null, false);
     }
-
-    if (this.health < Constants.CONDUIT_HEALTH && this.team !== NEUTRAL) {
-      this.healthBar.visible = true;
-      this.healthBar.scale.x = this.health / this.maxHealth;
-    } else {
-      this.healthBar.visible = false;
-    }
-
-    if (this.isSelected) {
-      this.selectionCircle.visible = true;
-    } else {
-      this.selectionCircle.visible = false;
-    }
+    this.healthBar.visible = this.health < Constants.CONDUIT_HEALTH && this.team !== NEUTRAL;
+    this.healthBar.scale.x = this.health / this.maxHealth;
+    this.selectionCircle.visible = this.isSelected;
   }
 }

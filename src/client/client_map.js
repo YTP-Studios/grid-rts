@@ -39,7 +39,6 @@ export default class ClientMap extends GameMap {
     background.beginFill(BACKGROUND_COLOUR);
     background.drawRect(-GRID_SCALE / 2, -GRID_SCALE / 2, this.buildings[0].length * GRID_SCALE, this.buildings.length * GRID_SCALE);
     background.endFill();
-    background.cacheAsBitmap = true;
 
     game.buildingContainer.addChildAt(background, 0);
   }

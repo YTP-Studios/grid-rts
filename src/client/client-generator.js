@@ -1,7 +1,8 @@
-import * as PIXI from 'pixi.js';
 import * as Constants from '../shared/constants';
 import Generator from '../shared/generator';
 import { BuildingSprite } from './building-sprite';
+import { createCircleSprite } from './sprite-utils';
+import { sum } from '../shared/vectors';
 
 export default class ClientGenerator extends Generator {
   constructor(game, row, col, team) {
@@ -20,19 +21,8 @@ export default class ClientGenerator extends Generator {
       'assets/generator-core.png');
     this.game.oldBuildingContainer.addChild(this.oldBuildingSprite.sprite);
 
-    this.sightCircle = new PIXI.Graphics;
-    this.sightCircle.clear();
-    this.sightCircle.beginFill(0xFFFFFF);
-    this.sightCircle.drawCircle(Constants.GRID_SCALE, Constants.GRID_SCALE, Constants.BUILDING_SIGHT_RANGE);
-    this.sightCircle.endFill();
-    this.sightCircle.cacheAsBitmap = true;
-
-    this.selectionCircle = new PIXI.Graphics;
-    this.selectionCircle.clear();
-    this.selectionCircle.lineStyle(Constants.SELECTOR_BOX_BORDER_WIDTH, Constants.SELECTOR_CIRCLE_COLOUR);
-    this.selectionCircle.beginFill(0xFFFFFF, Constants.SELECTOR_BOX_OPACITY);
-    this.selectionCircle.drawCircle(0, 0, Constants.SELECTOR_CIRCLE_RADIUS + Constants.GENERATOR_SIZE);
-    this.selectionCircle.cacheAsBitmap = true;
+    this.sightCircle = createCircleSprite(Constants.BUILDING_SIGHT_RANGE);
+    this.selectionCircle = createCircleSprite(Constants.SELECTOR_CIRCLE_RADIUS + Constants.GENERATOR_SIZE, Constants.SELECTOR_BOX_BORDER_WIDTH, Constants.SELECTOR_CIRCLE_COLOUR, Constants.SELECTOR_BOX_OPACITY);
     this.selectionCircle.x = this.x;
     this.selectionCircle.y = this.y;
     this.game.interfaceContainer.addChild(this.selectionCircle);
@@ -42,19 +32,15 @@ export default class ClientGenerator extends Generator {
     super.update(delta);
     this.buildingSprite.update();
     if (this.team === this.game.playerTeam) {
-      this.sightCircle.position.copy(this);
+      this.sightCircle.position.copy(sum(this, { x: Constants.GRID_SCALE, y: Constants.GRID_SCALE }));
       this.game.app.renderer.render(this.sightCircle, this.game.sightRangeTexture, false, null, false);
     }
     this.scaleCore();
-    if (this.isSelected) {
-      this.selectionCircle.visible = true;
-    } else {
-      this.selectionCircle.visible = false;
-    }
+    this.selectionCircle.visible = this.isSelected;
   }
 
   scaleCore() {
-    this.buildingSprite.coreSprite.height = this.health / Constants.GENERATOR_HEALTH * Constants.GENERATOR_SIZE * 3;
-    this.buildingSprite.coreSprite.width = this.health / Constants.GENERATOR_HEALTH * Constants.GENERATOR_SIZE * 3;
+    this.buildingSprite.coreSprite.scale.x = this.health / Constants.GENERATOR_HEALTH / 2;
+    this.buildingSprite.coreSprite.scale.y = this.health / Constants.GENERATOR_HEALTH / 2;
   }
 }
