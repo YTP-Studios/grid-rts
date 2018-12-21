@@ -1,10 +1,18 @@
-import * as Vectors from '../shared/vectors';
-import * as Constants from '../shared/constants';
+import { dist, sum, scaleTo, difference, copyTo } from '../shared/vectors';
+import { COLLISION_LENIENCY, GRID_SCALE } from '../shared/constants';
 import { NEUTRAL } from './teams';
 import BasicUnit from './basic_unit';
 import SiegeUnit from './siege_unit';
+import GameMap from './game_map';
+import Unit from './unit';
 
 export default class Game {
+  map: GameMap;
+  units: Unit[];
+  energy: number[];
+  income: number[];
+  energyCap: number[];
+
   init(map, units = []) {
     this.map = map;
     this.units = units;
@@ -27,19 +35,24 @@ export default class Game {
       for (let j = i + 1; j < this.units.length; j++) {
         let a = this.units[i]; let b = this.units[j];
         const combinedSize = a.size + b.size;
-        const dist = Vectors.dist(a, b);
-        if (dist < combinedSize) {
-          const offset = (combinedSize - dist) / 2 * Constants.COLLISION_LENIENCY;
-          positions[i] = Vectors.sum(positions[i], Vectors.scaleTo(
-            Vectors.difference(a, b), offset));
-          positions[j] = Vectors.sum(positions[j], Vectors.scaleTo(
-            Vectors.difference(b, a), offset));
+        const distBetween = dist(a, b);
+        if (distBetween < combinedSize) {
+          const offset = (combinedSize - distBetween) / 2 * COLLISION_LENIENCY;
+          positions[i] = sum(positions[i], scaleTo(difference(a, b), offset));
+          positions[j] = sum(positions[j], scaleTo(difference(b, a), offset));
         }
       }
     }
     for (let i in this.units) {
-      Vectors.copyTo(positions[i], this.units[i]);
+      copyTo(positions[i], this.units[i]);
     }
+    this.units.forEach(unit => {
+      const offset = -GRID_SCALE / 2;
+      unit.x = Math.max(unit.x, offset + unit.size);
+      unit.y = Math.max(unit.y, offset + unit.size);
+      unit.x = Math.min(unit.x, this.map.width + offset - unit.size);
+      unit.y = Math.min(unit.y, this.map.height + offset - unit.size);
+    });
   }
 
   resolveAttacks(delta) {

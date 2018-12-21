@@ -3,6 +3,7 @@ import Generator from './generator';
 import { RED_TEAM, BLUE_TEAM, NEUTRAL } from './teams';
 import Factory from './factory';
 import Building from './building';
+import { GRID_SCALE } from './constants';
 
 export default class GameMap {
 
@@ -31,6 +32,14 @@ export default class GameMap {
       default:
         return null;
     }
+  }
+
+  get width() {
+    return this.buildings[0].length * GRID_SCALE;
+  }
+
+  get height() {
+    return this.buildings.length * GRID_SCALE;
   }
 
   constructor(buildings: Building[][]) {
