@@ -16,7 +16,7 @@ module.exports = [{
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.[jt]sx?$/,
         use: 'ts-loader',
         exclude: /node_modules/,
       },
@@ -35,7 +35,7 @@ module.exports = [{
   },
   module: {
     rules: [
-      { test: /\.jsx?$/, loader: 'ts-loader' },
+      { test: /\.[jt]sx?$/, loader: 'ts-loader' },
     ],
   },
   node: {

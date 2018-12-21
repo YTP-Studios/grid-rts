@@ -5,7 +5,6 @@ import ClientConduit from './client_conduit';
 import { RED_TEAM, BLUE_TEAM, NEUTRAL } from '../shared/teams';
 import ClientGenerator from './client-generator';
 import { BACKGROUND_COLOUR, GRID_SCALE } from '../shared/constants';
-import { checkBuildingColours } from './sprite-utils';
 import ClientFactory from './client-factory';
 
 export default class ClientMap extends GameMap {
@@ -43,13 +42,6 @@ export default class ClientMap extends GameMap {
     background.cacheAsBitmap = true;
 
     game.buildingContainer.addChildAt(background, 0);
-
-    for (let row of data) {
-      for (let building of row) {
-        if (!building) continue;
-        checkBuildingColours(building.oldBuildingSprite, this, building.team, building.row, building.col);
-      }
-    }
   }
 
 }

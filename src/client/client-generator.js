@@ -1,34 +1,24 @@
 import * as PIXI from 'pixi.js';
 import * as Constants from '../shared/constants';
 import Generator from '../shared/generator';
-import { checkBuildingColours, createBuildingSprite, createCenteredSprite } from './sprite-utils';
+import { BuildingSprite } from './building-sprite';
 
 export default class ClientGenerator extends Generator {
   constructor(game, row, col, team) {
     super(row, col, team);
     this.game = game;
 
-    this.buildingSprite = createBuildingSprite('assets/generator-edge.png', 'assets/generator-center.png', team);
-    this.centerSprite = this.buildingSprite.centerSprite;
-    this.topSprite = this.buildingSprite.topSprite;
-    this.bottomSprite = this.buildingSprite.bottomSprite;
-    this.leftSprite = this.buildingSprite.leftSprite;
-    this.rightSprite = this.buildingSprite.rightSprite;
+    this.buildingSprite = new BuildingSprite(game, this,
+      'assets/generator-edge.png',
+      'assets/generator-center.png',
+      'assets/generator-core.png');
+    this.game.buildingContainer.addChild(this.buildingSprite.sprite);
 
-    this.coreSprite = createCenteredSprite('assets/generator-core.png', Constants.GRID_SCALE);
-
-    this.buildingSprite.container.addChild(this.coreSprite);
-
-    this.sprite = this.buildingSprite.container;
-    this.sprite.x = this.x;
-    this.sprite.y = this.y;
-    this.game.buildingContainer.addChild(this.sprite);
-
-    this.oldBuildingSprite = createBuildingSprite('assets/generator-edge.png', 'assets/generator-center.png', team);
-    this.oldBuildingSprite.container.addChild(createCenteredSprite('assets/generator-core.png', Constants.GRID_SCALE));
-    this.oldBuildingSprite.container.x = this.x;
-    this.oldBuildingSprite.container.y = this.y;
-    this.game.oldBuildingContainer.addChild(this.oldBuildingSprite.container);
+    this.oldBuildingSprite = new BuildingSprite(game, this,
+      'assets/generator-edge.png',
+      'assets/generator-center.png',
+      'assets/generator-core.png');
+    this.game.oldBuildingContainer.addChild(this.oldBuildingSprite.sprite);
 
     this.sightCircle = new PIXI.Graphics;
     this.sightCircle.clear();
@@ -48,10 +38,9 @@ export default class ClientGenerator extends Generator {
     this.game.interfaceContainer.addChild(this.selectionCircle);
   }
 
-  update(delta, map) {
-    super.update(delta, map);
-    const { team, row, col } = this;
-    checkBuildingColours(this.buildingSprite, map, team, row, col);
+  update(delta) {
+    super.update(delta);
+    this.buildingSprite.update();
     if (this.team === this.game.playerTeam) {
       this.sightCircle.position.copy(this);
       this.game.app.renderer.render(this.sightCircle, this.game.sightRangeTexture, false, null, false);
@@ -65,7 +54,7 @@ export default class ClientGenerator extends Generator {
   }
 
   scaleCore() {
-    this.coreSprite.height = this.health / Constants.GENERATOR_HEALTH * Constants.GENERATOR_SIZE * 3;
-    this.coreSprite.width = this.health / Constants.GENERATOR_HEALTH * Constants.GENERATOR_SIZE * 3;
+    this.buildingSprite.coreSprite.height = this.health / Constants.GENERATOR_HEALTH * Constants.GENERATOR_SIZE * 3;
+    this.buildingSprite.coreSprite.width = this.health / Constants.GENERATOR_HEALTH * Constants.GENERATOR_SIZE * 3;
   }
 }

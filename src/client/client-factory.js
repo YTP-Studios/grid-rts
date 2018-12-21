@@ -1,34 +1,24 @@
 import * as PIXI from 'pixi.js';
 import { GRID_SCALE, BUILDING_SIGHT_RANGE, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR, SELECTOR_BOX_OPACITY, SELECTOR_CIRCLE_RADIUS, FACTORY_SIZE, FACTORY_HEALTH, SPAWN_RADIUS } from '../shared/constants';
-import { checkBuildingColours, createBuildingSprite, createCenteredSprite } from './sprite-utils';
 import Factory from '../shared/factory';
 import { TEAM_COLOURS, NEUTRAL } from '../shared/teams';
+import { BuildingSprite } from './building-sprite';
 export default class ClientFactory extends Factory {
   constructor(game, row, col, team) {
     super(row, col, team);
     this.game = game;
 
-    this.buildingSprite = createBuildingSprite('assets/factory-edge.png', 'assets/factory-center.png', team);
-    this.centerSprite = this.buildingSprite.centerSprite;
-    this.topSprite = this.buildingSprite.topSprite;
-    this.bottomSprite = this.buildingSprite.bottomSprite;
-    this.leftSprite = this.buildingSprite.leftSprite;
-    this.rightSprite = this.buildingSprite.rightSprite;
+    this.buildingSprite = new BuildingSprite(game, this,
+      'assets/factory-edge.png',
+      'assets/factory-center.png',
+      'assets/factory-core.png');
+    this.game.buildingContainer.addChild(this.buildingSprite.sprite);
 
-    this.coreSprite = createCenteredSprite('assets/factory-core.png', GRID_SCALE);
-
-    this.buildingSprite.container.addChild(this.coreSprite);
-
-    this.sprite = this.buildingSprite.container;
-    this.sprite.x = this.x;
-    this.sprite.y = this.y;
-    this.game.buildingContainer.addChild(this.sprite);
-
-    this.oldBuildingSprite = createBuildingSprite('assets/factory-edge.png', 'assets/factory-center.png', team);
-    this.oldBuildingSprite.container.addChild(createCenteredSprite('assets/factory-core.png', GRID_SCALE));
-    this.oldBuildingSprite.container.x = this.x;
-    this.oldBuildingSprite.container.y = this.y;
-    this.game.oldBuildingContainer.addChild(this.oldBuildingSprite.container);
+    this.oldBuildingSprite = new BuildingSprite(game, this,
+      'assets/factory-edge.png',
+      'assets/factory-center.png',
+      'assets/factory-core.png');
+    this.game.oldBuildingContainer.addChild(this.oldBuildingSprite.sprite);
 
     this.spawnCircle = new PIXI.Graphics;
     this.spawnCircle.clear();
@@ -60,10 +50,9 @@ export default class ClientFactory extends Factory {
     this.game.buildingContainer.addChild(this.selectionCircle);
   }
 
-  update(delta, map) {
-    super.update(delta, map);
-    const { team, row, col } = this;
-    checkBuildingColours(this.buildingSprite, map, team, row, col);
+  update(delta) {
+    super.update(delta);
+    this.buildingSprite.update();
     this.spawnCircle.tint = TEAM_COLOURS[this.team];
     if (this.team === this.game.playerTeam) {
       this.sightCircle.position.copy(this);
@@ -81,7 +70,7 @@ export default class ClientFactory extends Factory {
   }
 
   scaleCore() {
-    this.coreSprite.height = this.health / FACTORY_HEALTH * FACTORY_SIZE * 2.5;
-    this.coreSprite.width = this.health / FACTORY_HEALTH * FACTORY_SIZE * 2.5;
+    this.buildingSprite.coreSprite.height = this.health / FACTORY_HEALTH * FACTORY_SIZE * 2.5;
+    this.buildingSprite.coreSprite.width = this.health / FACTORY_HEALTH * FACTORY_SIZE * 2.5;
   }
 }

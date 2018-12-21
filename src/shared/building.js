@@ -32,7 +32,7 @@ export default class Building implements Entity {
     this.maxHealth = 0;
   }
 
-  update(delta: number, map: GameMap) {
+  update(delta: number) {
     if (this.health < 0 && this.team !== NEUTRAL) {
       this.reset();
     }
