@@ -2,7 +2,6 @@ import * as PIXI from 'pixi.js';
 import * as Constants from '../shared/constants';
 import Generator from '../shared/generator';
 import { checkBuildingColours, createBuildingSprite, createCenteredSprite } from './sprite-utils';
-import { TEAM_COLOURS } from '../shared/teams';
 
 export default class ClientGenerator extends Generator {
   constructor(game, row, col, team) {
@@ -36,9 +35,17 @@ export default class ClientGenerator extends Generator {
     this.sightCircle.beginFill(0xFFFFFF);
     this.sightCircle.drawCircle(Constants.GRID_SCALE, Constants.GRID_SCALE, Constants.BUILDING_SIGHT_RANGE);
     this.sightCircle.endFill();
+    this.sightCircle.cacheAsBitmap = true;
 
     this.selectionCircle = new PIXI.Graphics;
-    this.game.buildingContainer.addChild(this.selectionCircle);
+    this.selectionCircle.clear();
+    this.selectionCircle.lineStyle(Constants.SELECTOR_BOX_BORDER_WIDTH, Constants.SELECTOR_CIRCLE_COLOUR);
+    this.selectionCircle.beginFill(0xFFFFFF, Constants.SELECTOR_BOX_OPACITY);
+    this.selectionCircle.drawCircle(0, 0, Constants.SELECTOR_CIRCLE_RADIUS + Constants.GENERATOR_SIZE);
+    this.selectionCircle.cacheAsBitmap = true;
+    this.selectionCircle.x = this.x;
+    this.selectionCircle.y = this.y;
+    this.game.interfaceContainer.addChild(this.selectionCircle);
   }
 
   update(delta, map) {
@@ -51,17 +58,10 @@ export default class ClientGenerator extends Generator {
     }
     this.scaleCore();
     if (this.isSelected) {
-      this.drawSelectionCircle();
+      this.selectionCircle.visible = true;
     } else {
-      this.selectionCircle.clear();
+      this.selectionCircle.visible = false;
     }
-  }
-
-  drawSelectionCircle() {
-    this.selectionCircle.clear();
-    this.selectionCircle.lineStyle(Constants.SELECTOR_BOX_BORDER_WIDTH, Constants.SELECTOR_CIRCLE_COLOUR);
-    this.selectionCircle.beginFill(TEAM_COLOURS[this.team], Constants.SELECTOR_BOX_OPACITY);
-    this.selectionCircle.drawCircle(this.x, this.y, Constants.SELECTOR_CIRCLE_RADIUS + Constants.GENERATOR_SIZE);
   }
 
   scaleCore() {

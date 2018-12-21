@@ -39,6 +39,7 @@ export default class ClientFactory extends Factory {
     this.spawnCircle.visible = false;
     this.spawnCircle.x = this.x;
     this.spawnCircle.y = this.y;
+    this.spawnCircle.cacheAsBitmap = true;
     this.game.interfaceContainer.addChild(this.spawnCircle);
 
     this.sightCircle = new PIXI.Graphics;
@@ -46,8 +47,16 @@ export default class ClientFactory extends Factory {
     this.sightCircle.beginFill(0xFFFFFF);
     this.sightCircle.drawCircle(GRID_SCALE, GRID_SCALE, BUILDING_SIGHT_RANGE);
     this.sightCircle.endFill();
+    this.sightCircle.cacheAsBitmap = true;
 
     this.selectionCircle = new PIXI.Graphics;
+    this.selectionCircle.clear();
+    this.selectionCircle.lineStyle(SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR);
+    this.selectionCircle.beginFill(0xFFFFFF, SELECTOR_BOX_OPACITY);
+    this.selectionCircle.drawCircle(0, 0, SELECTOR_CIRCLE_RADIUS + FACTORY_SIZE);
+    this.selectionCircle.cacheAsBitmap = true;
+    this.selectionCircle.x = this.x;
+    this.selectionCircle.y = this.y;
     this.game.buildingContainer.addChild(this.selectionCircle);
   }
 
@@ -65,17 +74,10 @@ export default class ClientFactory extends Factory {
     }
     this.scaleCore();
     if (this.isSelected) {
-      this.drawSelectionCircle();
+      this.selectionCircle.visible = true;
     } else {
-      this.selectionCircle.clear();
+      this.selectionCircle.visible = false;
     }
-  }
-
-  drawSelectionCircle() {
-    this.selectionCircle.clear();
-    this.selectionCircle.lineStyle(SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR);
-    this.selectionCircle.beginFill(TEAM_COLOURS[this.team], SELECTOR_BOX_OPACITY);
-    this.selectionCircle.drawCircle(this.x, this.y, SELECTOR_CIRCLE_RADIUS + FACTORY_SIZE);
   }
 
   scaleCore() {

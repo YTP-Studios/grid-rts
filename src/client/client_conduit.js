@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import * as Constants from '../shared/constants';
 import { checkBuildingColours, createBuildingSprite } from './sprite-utils';
-import { TEAM_COLOURS } from '../shared/teams';
+import { TEAM_COLOURS, NEUTRAL } from '../shared/teams';
 import Conduit from '../shared/conduit';
 
 export default class ClientConduit extends Conduit {
@@ -31,12 +31,27 @@ export default class ClientConduit extends Conduit {
     this.sightCircle.beginFill(0xFFFFFF);
     this.sightCircle.drawCircle(Constants.GRID_SCALE, Constants.GRID_SCALE, Constants.BUILDING_SIGHT_RANGE);
     this.sightCircle.endFill();
+    this.sightCircle.cacheAsBitmap = true;
 
     this.selectionCircle = new PIXI.Graphics;
-    this.game.buildingContainer.addChild(this.selectionCircle);
+    this.selectionCircle.clear();
+    this.selectionCircle.lineStyle(Constants.SELECTOR_BOX_BORDER_WIDTH, Constants.SELECTOR_CIRCLE_COLOUR);
+    this.selectionCircle.beginFill(TEAM_COLOURS[this.team], Constants.SELECTOR_BOX_OPACITY);
+    this.selectionCircle.drawCircle(0, 0, Constants.SELECTOR_CIRCLE_RADIUS + Constants.CONDUIT_SIZE);
+    this.selectionCircle.cacheAsBitmap = true;
+    this.selectionCircle.x = this.x;
+    this.selectionCircle.y = this.y;
+    this.game.interfaceContainer.addChild(this.selectionCircle);
 
     this.healthBar = new PIXI.Graphics;
-    this.game.world.addChild(this.healthBar);
+    this.healthBar.clear();
+    this.healthBar.beginFill(0x00FF00);
+    this.healthBar.drawRect(0, 0, Constants.HEALTHBAR_WIDTH, 5);
+    this.healthBar.x = this.x - Constants.CONDUIT_SIZE / 2;
+    this.healthBar.y = this.y - Constants.CONDUIT_SIZE / 2 - 10;
+    this.healthBar.cacheAsBitmap = true;
+    this.healthBar.visible = false;
+    this.game.interfaceContainer.addChild(this.healthBar);
   }
 
   update(delta, map) {
@@ -48,30 +63,17 @@ export default class ClientConduit extends Conduit {
       this.game.app.renderer.render(this.sightCircle, this.game.sightRangeTexture, false, null, false);
     }
 
-    if (this.health < Constants.CONDUIT_HEALTH && this.team >= 0) {
-      this.drawHealthBar();
+    if (this.health < Constants.CONDUIT_HEALTH && this.team !== NEUTRAL) {
+      this.healthBar.visible = true;
+      this.healthBar.scale.x = this.health / this.maxHealth;
     } else {
-      this.healthBar.clear();
+      this.healthBar.visible = false;
     }
 
     if (this.isSelected) {
-      this.drawSelectionCircle();
+      this.selectionCircle.visible = true;
     } else {
-      this.selectionCircle.clear();
+      this.selectionCircle.visible = false;
     }
-  }
-
-  drawSelectionCircle() {
-    this.selectionCircle.clear();
-    this.selectionCircle.lineStyle(Constants.SELECTOR_BOX_BORDER_WIDTH, Constants.SELECTOR_CIRCLE_COLOUR);
-    this.selectionCircle.beginFill(TEAM_COLOURS[this.team], Constants.SELECTOR_BOX_OPACITY);
-    this.selectionCircle.drawCircle(this.x, this.y, Constants.SELECTOR_CIRCLE_RADIUS + Constants.CONDUIT_SIZE);
-  }
-
-  drawHealthBar() {
-    this.healthBar.clear();
-    this.healthBar.beginFill(0x00FF00);
-    this.healthBar.drawRect(this.x - Constants.CONDUIT_SIZE / 2, this.y - Constants.CONDUIT_SIZE / 2 - 10,
-      this.health / Constants.CONDUIT_HEALTH * Constants.HEALTHBAR_WIDTH, 5);
   }
 }
