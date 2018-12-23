@@ -42,6 +42,14 @@ export default class GameMap {
     return this.buildings.length * GRID_SCALE;
   }
 
+  get topLeft() {
+    return { x: -GRID_SCALE / 2, y: -GRID_SCALE / 2 };
+  }
+
+  get bottomRight() {
+    return { x: this.width - GRID_SCALE / 2, y: this.height - GRID_SCALE / 2 };
+  }
+
   constructor(buildings: Building[][]) {
     this.buildings = buildings;
   }

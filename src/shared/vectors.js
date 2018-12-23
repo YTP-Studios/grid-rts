@@ -23,3 +23,10 @@ export const normalize = (a: Vector) => scaleTo(a, 1);
 export const copyTo = (from: Vector, to: Vector) => { to.x = from.x; to.y = from.y; };
 
 export const zero = () => ({ x: 0, y: 0 });
+
+export const neg = ({ x, y }: Vector) => ({ x: -x, y: -y });
+
+export const limit = (v: Vector, min: Vector, max: Vector) => {
+  v.x = Math.max(min.x, Math.min(max.x, v.x));
+  v.y = Math.max(min.y, Math.min(max.y, v.y));
+};

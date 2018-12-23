@@ -6,7 +6,7 @@ import * as Constants from '../shared/constants';
 import Game from '../shared/game';
 import { COMMAND, GAME_STATE, RESET } from '../shared/game-events';
 import { TEAM_COLOURS } from '../shared/teams';
-import { scale, sum, zero, copyTo, difference } from '../shared/vectors';
+import { scale, sum, zero, copyTo, difference, limit } from '../shared/vectors';
 
 import { BasicClientUnit } from './basic-client-unit';
 import { SiegeClientUnit } from './siege-client-unit';
@@ -18,6 +18,7 @@ export default class ClientGame extends Game {
   static loadAssets() {
     return new Promise(resolve =>
       PIXI.loader
+        .add('assets/cursor.png')
         .add('assets/basic-unit-body.png')
         .add('assets/basic-unit-core.png')
         .add('assets/conduit-edge.png')
@@ -46,11 +47,10 @@ export default class ClientGame extends Game {
     });
 
     document.body.appendChild(this.app.view);
-
+    document.body.style.cursor = 'none';
 
     this.world = new PIXI.Container();
     this.world.velocity = { x: 0, y: 0 };
-    this.app.stage.addChild(this.world);
 
     this.oldBuildingContainer = new PIXI.Container();
     this.buildingContainer = new PIXI.Container();
@@ -60,6 +60,10 @@ export default class ClientGame extends Game {
     this.world.addChild(this.buildingContainer);
     this.world.addChild(this.unitContainer);
     this.world.addChild(this.interfaceContainer);
+
+    this.overlayContainer = new PIXI.Container();
+    this.app.stage.addChild(this.world);
+    this.app.stage.addChild(this.overlayContainer);
 
     let bloomFilter = new AdvancedBloomFilter({
       quality: 8,
@@ -97,7 +101,38 @@ export default class ClientGame extends Game {
     const centerPos = sum(averagePos, { x: this.app.screen.width / 2, y: this.app.screen.height / 2 });
     copyTo(centerPos, this.world);
 
+    this.cursor = new PIXI.Sprite(PIXI.loader.resources['assets/cursor.png'].texture);
+    this.cursor.width = 16;
+    this.cursor.height = 16;
+    this.overlayContainer.addChild(this.cursor);
+
+    this.app.view.addEventListener('click', () => {
+      this.app.view.requestPointerLock();
+      console.log(this.app.view);
+    });
     this.app.view.oncontextmenu = () => false;
+    this.app.view.addEventListener('mousemove', (e) => {
+      const sensitivity = 0.5;
+      const offsetX = e.movementX * sensitivity;
+      const offsetY = e.movementY * sensitivity;
+      if (document.pointerLockElement === this.app.view) {
+        this.cursor.x += offsetX;
+        this.cursor.y += offsetY;
+      } else {
+        this.cursor.x = e.offsetX;
+        this.cursor.y = e.offsetY;
+      }
+      if (this.cursor.x <= 0 || this.cursor.x >= this.app.screen.width ||
+        this.cursor.y <= 0 || this.cursor.y >= this.app.screen.height) {
+        this.world.x -= offsetX * this.world.scale.x;
+        this.world.y -= offsetY * this.world.scale.y;
+        this.cursor.x = Math.max(this.cursor.x, 0);
+        this.cursor.x = Math.min(this.cursor.x, this.app.screen.width);
+        this.cursor.y = Math.max(this.cursor.y, 0);
+        this.cursor.y = Math.min(this.cursor.y, this.app.screen.height);
+      }
+    }, false);
+
 
     let upKey = keyboard('ArrowUp');
     let downKey = keyboard('ArrowDown');
@@ -159,7 +194,7 @@ export default class ClientGame extends Game {
     });
 
     this.app.renderer.plugins.interaction.on('rightdown', (event) => {
-      const mousePosition = this.app.renderer.plugins.interaction.mouse.global;
+      const mousePosition = this.cursor.position;
       const targetPos = this.world.toLocal(mousePosition);
       this.drawIndicator(targetPos);
 
@@ -199,7 +234,7 @@ export default class ClientGame extends Game {
 
     this.app.renderer.plugins.interaction.on('mousedown', () => {
       this.isMouseDown = true;
-      const mousePosition = this.world.toLocal(this.app.renderer.plugins.interaction.mouse.global);
+      const mousePosition = this.world.toLocal(this.cursor.position);
       this.initialMousePos.x = mousePosition.x;
       this.initialMousePos.y = mousePosition.y;
       const row = Math.round(mousePosition.y / Constants.GRID_SCALE);
@@ -244,7 +279,7 @@ export default class ClientGame extends Game {
     super.update(delta);
     this.updateCamera(delta);
     if (this.isMouseDown) {
-      const mousePosition = this.world.toLocal(this.app.renderer.plugins.interaction.mouse.global);
+      const mousePosition = this.world.toLocal(this.cursor.position);
       this.drawUnitSelectionBox(mousePosition);
     }
 
@@ -252,15 +287,22 @@ export default class ClientGame extends Game {
   }
 
   updateCamera(delta) {
+    // Key camera scrolling
     copyTo(sum(this.world, scale(this.world.velocity, delta)), this.world);
-
-    const oldPos = this.world.toLocal(this.app.renderer.plugins.interaction.mouse.global);
+    // Mouse zoom update
+    const oldPos = this.world.toLocal(this.cursor.position);
     const newScale = Math.pow(this.zoomScale, 1 - Constants.ZOOM_SPEED) * Math.pow(this.world.scale.x, Constants.ZOOM_SPEED);
     this.world.scale.x = newScale;
     this.world.scale.y = newScale;
-    const newPos = this.world.toLocal(this.app.renderer.plugins.interaction.mouse.global);
+    const newPos = this.world.toLocal(this.cursor.position);
     const diff = scale(difference(newPos, oldPos), this.world.scale.x);
     copyTo(sum(diff, this.world), this.world);
+
+    // Limit camera position to map
+    const screenCenter = { x: this.app.screen.width / 2, y: this.app.screen.height / 2 };
+    const lowerLimit = difference(screenCenter, scale(this.map.bottomRight, this.world.scale.x));
+    const upperLimit = sum(screenCenter, scale(this.map.topLeft, this.world.scale.y));
+    limit(this.world, lowerLimit, upperLimit);
   }
 
   updateSightRanges() {
