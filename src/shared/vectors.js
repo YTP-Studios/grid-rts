@@ -1,18 +1,18 @@
 
 export interface Vector {
-    x: number;
-    y: number;
+  x: number;
+  y: number;
 }
 
 export const length2 = ({ x, y }: Vector) => (x * x + y * y);
 
 export const length = (a: Vector) => Math.sqrt(length2(a));
 
-export const sum = (a: Vector, b: Vector): Vector => ({ x: a.x + b.x, y: a.y + b.y });
+export const add = (a: Vector, b: Vector): Vector => ({ x: a.x + b.x, y: a.y + b.y });
 
-export const difference = (a: Vector, b: Vector): Vector => ({ x: a.x - b.x, y: a.y - b.y });
+export const sub = (a: Vector, b: Vector): Vector => ({ x: a.x - b.x, y: a.y - b.y });
 
-export const dist = (a: Vector, b: Vector) => length(difference(a, b));
+export const dist = (a: Vector, b: Vector) => length(sub(a, b));
 
 export const scale = ({ x, y }: Vector, factor: number): Vector => ({ x: x * factor, y: y * factor });
 

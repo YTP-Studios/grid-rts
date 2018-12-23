@@ -1,8 +1,8 @@
-import { GRID_SCALE, BUILDING_SIGHT_RANGE, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR, SELECTOR_BOX_OPACITY, SELECTOR_CIRCLE_RADIUS, FACTORY_SIZE, FACTORY_HEALTH, SPAWN_RADIUS } from '../shared/constants';
 import Factory from '../shared/factory';
+import { GRID_SCALE, BUILDING_SIGHT_RANGE, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR, SELECTOR_BOX_OPACITY, SELECTOR_CIRCLE_RADIUS, FACTORY_SIZE, FACTORY_HEALTH, SPAWN_RADIUS } from '../shared/constants';
 import { TEAM_COLOURS, NEUTRAL } from '../shared/teams';
 import { BuildingSprite } from './building-sprite';
-import { sum } from '../shared/vectors';
+import { add } from '../shared/vectors';
 import { createCircleSprite } from './sprite-utils';
 export default class ClientFactory extends Factory {
   constructor(game, row, col, team) {
@@ -40,7 +40,7 @@ export default class ClientFactory extends Factory {
     this.buildingSprite.update();
     this.spawnCircle.tint = TEAM_COLOURS[this.team];
     if (this.team === this.game.playerTeam) {
-      this.sightCircle.position.copy(sum(this, { x: GRID_SCALE, y: GRID_SCALE }));
+      this.sightCircle.position.copy(add(this, { x: GRID_SCALE, y: GRID_SCALE }));
       this.game.app.renderer.render(this.sightCircle, this.game.sightRangeTexture, false, null, false);
     }
     if (this.team === NEUTRAL) this.spawnCircle.visible = false;

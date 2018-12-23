@@ -1,8 +1,8 @@
-import * as Constants from '../shared/constants';
+import { BUILDING_SIGHT_RANGE, SELECTOR_CIRCLE_RADIUS, GENERATOR_SIZE, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR, SELECTOR_BOX_OPACITY, GRID_SCALE, GENERATOR_HEALTH } from '../shared/constants';
 import Generator from '../shared/generator';
 import { BuildingSprite } from './building-sprite';
 import { createCircleSprite } from './sprite-utils';
-import { sum } from '../shared/vectors';
+import { add } from '../shared/vectors';
 
 export default class ClientGenerator extends Generator {
   constructor(game, row, col, team) {
@@ -21,8 +21,8 @@ export default class ClientGenerator extends Generator {
       'assets/generator-core.png');
     this.game.oldBuildingContainer.addChild(this.oldBuildingSprite.sprite);
 
-    this.sightCircle = createCircleSprite(Constants.BUILDING_SIGHT_RANGE);
-    this.selectionCircle = createCircleSprite(Constants.SELECTOR_CIRCLE_RADIUS + Constants.GENERATOR_SIZE, Constants.SELECTOR_BOX_BORDER_WIDTH, Constants.SELECTOR_CIRCLE_COLOUR, Constants.SELECTOR_BOX_OPACITY);
+    this.sightCircle = createCircleSprite(BUILDING_SIGHT_RANGE);
+    this.selectionCircle = createCircleSprite(SELECTOR_CIRCLE_RADIUS + GENERATOR_SIZE, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR, SELECTOR_BOX_OPACITY);
     this.selectionCircle.x = this.x;
     this.selectionCircle.y = this.y;
     this.game.interfaceContainer.addChild(this.selectionCircle);
@@ -32,7 +32,7 @@ export default class ClientGenerator extends Generator {
     super.update(delta);
     this.buildingSprite.update();
     if (this.team === this.game.playerTeam) {
-      this.sightCircle.position.copy(sum(this, { x: Constants.GRID_SCALE, y: Constants.GRID_SCALE }));
+      this.sightCircle.position.copy(add(this, { x: GRID_SCALE, y: GRID_SCALE }));
       this.game.app.renderer.render(this.sightCircle, this.game.sightRangeTexture, false, null, false);
     }
     this.scaleCore();
@@ -40,7 +40,7 @@ export default class ClientGenerator extends Generator {
   }
 
   scaleCore() {
-    this.buildingSprite.coreSprite.scale.x = this.health / Constants.GENERATOR_HEALTH / 2;
-    this.buildingSprite.coreSprite.scale.y = this.health / Constants.GENERATOR_HEALTH / 2;
+    this.buildingSprite.coreSprite.scale.x = this.health / GENERATOR_HEALTH / 2;
+    this.buildingSprite.coreSprite.scale.y = this.health / GENERATOR_HEALTH / 2;
   }
 }

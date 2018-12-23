@@ -1,4 +1,4 @@
-import { Vector, difference, scaleTo, copyTo, dist } from '../shared/vectors';
+import { Vector, sub, scaleTo, copyTo, dist } from '../shared/vectors';
 import { NEUTRAL } from './teams';
 import { Entity } from './entity';
 
@@ -30,7 +30,7 @@ export default class Unit implements Entity {
 
   update(delta) {
     if (!this.atDestination()) {
-      const displacement = difference(this.targetPos, this);
+      const displacement = sub(this.targetPos, this);
       this.velocity = scaleTo(displacement, this.speed);
 
       this.x += this.velocity.x * delta;

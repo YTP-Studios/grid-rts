@@ -1,4 +1,4 @@
-import { dist, sum, scaleTo, difference, copyTo } from '../shared/vectors';
+import { dist, add, scaleTo, sub, copyTo } from '../shared/vectors';
 import { COLLISION_LENIENCY, GRID_SCALE } from '../shared/constants';
 import { NEUTRAL } from './teams';
 import BasicUnit from './basic-unit';
@@ -36,12 +36,12 @@ export default class Game {
         let a = this.units[i]; let b = this.units[j];
         const combinedSize = a.size + b.size;
         const distBetween = dist(a, b);
-        const displacement = difference(a, b);
+        const displacement = sub(a, b);
         if (dist(a, b) < 0.0001) displacement.x = 0.0001;
         if (distBetween < combinedSize) {
           let offset = (combinedSize - distBetween) / 2 * COLLISION_LENIENCY;
-          positions[i] = sum(positions[i], scaleTo(displacement, offset));
-          positions[j] = sum(positions[j], scaleTo(displacement, -offset));
+          positions[i] = add(positions[i], scaleTo(displacement, offset));
+          positions[j] = add(positions[j], scaleTo(displacement, -offset));
         }
       }
     }

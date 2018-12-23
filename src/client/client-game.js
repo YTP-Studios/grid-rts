@@ -2,11 +2,11 @@ import * as PIXI from 'pixi.js';
 import { AdvancedBloomFilter, AdjustmentFilter } from 'pixi-filters';
 
 import { Command, MoveCommand, CaptureCommand, SpawnCommand } from '../shared/commands';
-import * as Constants from '../shared/constants';
+import { GRID_SCALE, CAMERA_SPEED, ZOOM_FACTOR, MAX_ZOOM, MIN_ZOOM, ZOOM_SPEED, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_BOX_OPACITY, BASIC_UNIT_BODY_SIZE, POSITION_INDICATOR_LINE_WIDTH, POSITION_INDICATOR_OPACITY, POSITION_INDICATOR_DIAMETER, POSITION_INDICATOR_INNER_RADIUS } from '../shared/constants';
 import Game from '../shared/game';
 import { COMMAND, GAME_STATE, RESET } from '../shared/game-events';
 import { TEAM_COLOURS } from '../shared/teams';
-import { scale, sum, zero, copyTo, difference, limit } from '../shared/vectors';
+import { scale, add, zero, copyTo, sub, limit } from '../shared/vectors';
 
 import { BasicClientUnit } from './basic-client-unit';
 import { SiegeClientUnit } from './siege-client-unit';
@@ -81,10 +81,10 @@ export default class ClientGame extends Game {
     this.sightRangeTexture = PIXI.RenderTexture.create(10000, 10000);
     this.sightRangeRect = new PIXI.Graphics();
     this.sightRangeRect.beginFill(0x000000);
-    this.sightRangeRect.drawRect(-Constants.GRID_SCALE, -Constants.GRID_SCALE, 10000, 10000);
+    this.sightRangeRect.drawRect(-GRID_SCALE, -GRID_SCALE, 10000, 10000);
     this.sightRangeRect.endFill();
     this.sightRangeSprite = new PIXI.Sprite(this.sightRangeTexture);
-    this.sightRangeSprite.position.set(-Constants.GRID_SCALE, -Constants.GRID_SCALE);
+    this.sightRangeSprite.position.set(-GRID_SCALE, -GRID_SCALE);
 
     this.world.addChild(this.sightRangeSprite);
     this.buildingContainer.mask = this.sightRangeSprite;
@@ -97,8 +97,8 @@ export default class ClientGame extends Game {
 
     const playerBuildings = this.map.allBuildings()
       .filter(b => b.team === this.playerTeam);
-    const averagePos = scale(playerBuildings.reduce(sum, zero()), -1 / playerBuildings.length);
-    const centerPos = sum(averagePos, { x: this.app.screen.width / 2, y: this.app.screen.height / 2 });
+    const averagePos = scale(playerBuildings.reduce(add, zero()), -1 / playerBuildings.length);
+    const centerPos = add(averagePos, { x: this.app.screen.width / 2, y: this.app.screen.height / 2 });
     copyTo(centerPos, this.world);
 
     this.cursor = new PIXI.Sprite(PIXI.loader.resources['assets/cursor.png'].texture);
@@ -140,13 +140,13 @@ export default class ClientGame extends Game {
     let rightKey = keyboard('ArrowRight');
     let shiftKey = keyboard('Shift');
 
-    upKey.press = () => { this.world.velocity.y += Constants.CAMERA_SPEED; };
+    upKey.press = () => { this.world.velocity.y += CAMERA_SPEED; };
     upKey.release = () => { this.world.velocity.y = 0; };
-    downKey.press = () => { this.world.velocity.y -= Constants.CAMERA_SPEED; };
+    downKey.press = () => { this.world.velocity.y -= CAMERA_SPEED; };
     downKey.release = () => { this.world.velocity.y = 0; };
-    leftKey.press = () => { this.world.velocity.x += Constants.CAMERA_SPEED; };
+    leftKey.press = () => { this.world.velocity.x += CAMERA_SPEED; };
     leftKey.release = () => { this.world.velocity.x = 0; };
-    rightKey.press = () => { this.world.velocity.x -= Constants.CAMERA_SPEED; };
+    rightKey.press = () => { this.world.velocity.x -= CAMERA_SPEED; };
     rightKey.release = () => { this.world.velocity.x = 0; };
 
     let prevSelectedUnits;
@@ -188,9 +188,9 @@ export default class ClientGame extends Game {
 
     this.zoomScale = 1;
     document.addEventListener('wheel', (event: WheelEvent) => {
-      const delta = event.deltaY < 0 ? Constants.ZOOM_FACTOR : 1 / Constants.ZOOM_FACTOR;
+      const delta = event.deltaY < 0 ? ZOOM_FACTOR : 1 / ZOOM_FACTOR;
       this.zoomScale *= delta;
-      this.zoomScale = Math.max(Math.min(this.zoomScale, Constants.MAX_ZOOM), Constants.MIN_ZOOM);
+      this.zoomScale = Math.max(Math.min(this.zoomScale, MAX_ZOOM), MIN_ZOOM);
     });
 
     this.app.renderer.plugins.interaction.on('rightdown', (event) => {
@@ -220,8 +220,8 @@ export default class ClientGame extends Game {
           command.exec(this);
           return;
         }
-        const row = Math.round(targetPos.y / Constants.GRID_SCALE);
-        const col = Math.round(targetPos.x / Constants.GRID_SCALE);
+        const row = Math.round(targetPos.y / GRID_SCALE);
+        const col = Math.round(targetPos.x / GRID_SCALE);
         const command = new CaptureCommand({ row, col, team: this.playerTeam });
         socket.emit(COMMAND, Command.toData(command));
         command.exec(this);
@@ -237,8 +237,8 @@ export default class ClientGame extends Game {
       const mousePosition = this.world.toLocal(this.cursor.position);
       this.initialMousePos.x = mousePosition.x;
       this.initialMousePos.y = mousePosition.y;
-      const row = Math.round(mousePosition.y / Constants.GRID_SCALE);
-      const col = Math.round(mousePosition.x / Constants.GRID_SCALE);
+      const row = Math.round(mousePosition.y / GRID_SCALE);
+      const col = Math.round(mousePosition.x / GRID_SCALE);
       for (let j = 0; j < this.map.buildings.length; j++) {
         for (let k = 0; k < this.map.buildings[j].length; k++) {
           let b = this.map.buildings[j][k];
@@ -288,20 +288,20 @@ export default class ClientGame extends Game {
 
   updateCamera(delta) {
     // Key camera scrolling
-    copyTo(sum(this.world, scale(this.world.velocity, delta)), this.world);
+    copyTo(add(this.world, scale(this.world.velocity, delta)), this.world);
     // Mouse zoom update
     const oldPos = this.world.toLocal(this.cursor.position);
-    const newScale = Math.pow(this.zoomScale, 1 - Constants.ZOOM_SPEED) * Math.pow(this.world.scale.x, Constants.ZOOM_SPEED);
+    const newScale = Math.pow(this.zoomScale, 1 - ZOOM_SPEED) * Math.pow(this.world.scale.x, ZOOM_SPEED);
     this.world.scale.x = newScale;
     this.world.scale.y = newScale;
     const newPos = this.world.toLocal(this.cursor.position);
-    const diff = scale(difference(newPos, oldPos), this.world.scale.x);
-    copyTo(sum(diff, this.world), this.world);
+    const diff = scale(sub(newPos, oldPos), this.world.scale.x);
+    copyTo(add(diff, this.world), this.world);
 
     // Limit camera position to map
     const screenCenter = { x: this.app.screen.width / 2, y: this.app.screen.height / 2 };
-    const lowerLimit = difference(screenCenter, scale(this.map.bottomRight, this.world.scale.x));
-    const upperLimit = sum(screenCenter, scale(this.map.topLeft, this.world.scale.y));
+    const lowerLimit = sub(screenCenter, scale(this.map.bottomRight, this.world.scale.x));
+    const upperLimit = add(screenCenter, scale(this.map.topLeft, this.world.scale.y));
     limit(this.world, lowerLimit, upperLimit);
   }
 
@@ -330,8 +330,8 @@ export default class ClientGame extends Game {
 
   drawUnitSelectionBox(mousePosition) {
     this.unitSelectorBox.clear();
-    this.unitSelectorBox.lineStyle(Constants.SELECTOR_BOX_BORDER_WIDTH, TEAM_COLOURS[this.playerTeam]);
-    this.unitSelectorBox.beginFill(TEAM_COLOURS[this.playerTeam], Constants.SELECTOR_BOX_OPACITY);
+    this.unitSelectorBox.lineStyle(SELECTOR_BOX_BORDER_WIDTH, TEAM_COLOURS[this.playerTeam]);
+    this.unitSelectorBox.beginFill(TEAM_COLOURS[this.playerTeam], SELECTOR_BOX_OPACITY);
     const width = -this.initialMousePos.x + mousePosition.x;
     const height = -this.initialMousePos.y + mousePosition.y;
     this.unitSelectorBox.drawRect(this.initialMousePos.x,
@@ -350,19 +350,19 @@ export default class ClientGame extends Game {
 
   isUnitInSelectionBox(unit) {
     const bounds = this.unitSelectorBox.getLocalBounds();
-    const width = Constants.BASIC_UNIT_BODY_SIZE;
+    const width = BASIC_UNIT_BODY_SIZE;
     return unit.x >= bounds.x - width && unit.x <= bounds.x + bounds.width + width
       && unit.y >= bounds.y - width && unit.y <= bounds.y + bounds.height + width;
   }
 
   drawIndicator(mousePosition) {
-    this.posIndicator.lineStyle(Constants.POSITION_INDICATOR_LINE_WIDTH, TEAM_COLOURS[this.playerTeam]);
-    this.posIndicator.beginFill(TEAM_COLOURS[this.playerTeam], Constants.POSITION_INDICATOR_OPACITY);
-    this.posIndicator.drawRoundedRect(mousePosition.x - Constants.POSITION_INDICATOR_DIAMETER / 2,
-      mousePosition.y - Constants.POSITION_INDICATOR_DIAMETER / 2, Constants.POSITION_INDICATOR_DIAMETER,
-      Constants.POSITION_INDICATOR_DIAMETER, Constants.POSITION_INDICATOR_DIAMETER / 2);
+    this.posIndicator.lineStyle(POSITION_INDICATOR_LINE_WIDTH, TEAM_COLOURS[this.playerTeam]);
+    this.posIndicator.beginFill(TEAM_COLOURS[this.playerTeam], POSITION_INDICATOR_OPACITY);
+    this.posIndicator.drawRoundedRect(mousePosition.x - POSITION_INDICATOR_DIAMETER / 2,
+      mousePosition.y - POSITION_INDICATOR_DIAMETER / 2, POSITION_INDICATOR_DIAMETER,
+      POSITION_INDICATOR_DIAMETER, POSITION_INDICATOR_DIAMETER / 2);
     this.posIndicator.drawCircle(mousePosition.x, mousePosition.y,
-      Constants.POSITION_INDICATOR_INNER_RADIUS);
+      POSITION_INDICATOR_INNER_RADIUS);
   }
 
   drawEnergyText() {
