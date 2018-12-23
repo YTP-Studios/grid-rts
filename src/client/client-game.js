@@ -8,9 +8,9 @@ import { COMMAND, GAME_STATE, RESET } from '../shared/game-events';
 import { TEAM_COLOURS } from '../shared/teams';
 import { scale, sum, zero, copyTo, difference } from '../shared/vectors';
 
-import { BasicClientUnit } from './basic_client_unit';
-import { SiegeClientUnit } from './siege_client_unit';
-import ClientMap from './client_map';
+import { BasicClientUnit } from './basic-client-unit';
+import { SiegeClientUnit } from './siege-client-unit';
+import ClientMap from './client-map';
 import keyboard from './keyboard';
 import Factory from '../shared/factory';
 

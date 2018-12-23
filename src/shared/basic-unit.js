@@ -1,5 +1,5 @@
-import * as Vectors from '../shared/vectors';
-import * as Constants from '../shared/constants';
+import * as Vectors from './vectors';
+import * as Constants from './constants';
 import { NEUTRAL } from './teams';
 import Unit from './unit';
 

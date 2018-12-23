@@ -1,9 +1,9 @@
 import { dist, sum, scaleTo, difference, copyTo } from '../shared/vectors';
 import { COLLISION_LENIENCY, GRID_SCALE } from '../shared/constants';
 import { NEUTRAL } from './teams';
-import BasicUnit from './basic_unit';
-import SiegeUnit from './siege_unit';
-import GameMap from './game_map';
+import BasicUnit from './basic-unit';
+import SiegeUnit from './siege-unit';
+import GameMap from './game-map';
 import Unit from './unit';
 
 export default class Game {

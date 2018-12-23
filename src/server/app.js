@@ -7,7 +7,7 @@ import { Command } from '../shared/commands';
 import { TEAMS } from '../shared/teams';
 import { READY, START, COMMAND, GAME_STATE, RESET } from '../shared/game-events';
 import { VS_MAP } from '../shared/constants';
-import GameMap from '../shared/game_map';
+import GameMap from '../shared/game-map';
 import Game from '../shared/game';
 
 const port = 8000;

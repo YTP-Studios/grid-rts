@@ -1,6 +1,6 @@
 import { GRID_SCALE } from './constants';
 import { Team, NEUTRAL } from './teams';
-import GameMap from './game_map';
+import GameMap from './game-map';
 import { Entity } from './entity';
 export default class Building implements Entity {
 

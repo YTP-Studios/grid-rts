@@ -3,7 +3,7 @@ import * as Constants from '../shared/constants';
 import * as Vectors from '../shared/vectors';
 import { TEAM_COLOURS, NEUTRAL } from '../shared/teams';
 import { createCenteredSprite } from './sprite-utils';
-import BasicUnit from '../shared/basic_unit';
+import BasicUnit from '../shared/basic-unit';
 
 export class BasicClientUnit extends BasicUnit {
 

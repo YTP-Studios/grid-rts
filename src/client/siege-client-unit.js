@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js';
 import * as Constants from '../shared/constants';
 import { TEAM_COLOURS, NEUTRAL } from '../shared/teams';
 import { createCenteredSprite } from './sprite-utils';
-import SiegeUnit from '../shared/siege_unit';
+import SiegeUnit from '../shared/siege-unit';
 
 export class SiegeClientUnit extends SiegeUnit {
 
