@@ -30,13 +30,15 @@ export default class Building implements Entity {
     this.elapsedTime = 0;
     this.captureTime = 0;
     this.maxHealth = 0;
+    this.income = 0;
+    this.energyCap = 0;
   }
 
   update(delta: number) {
     if (this.health < 0 && this.team !== NEUTRAL) {
       this.reset();
     }
-    if (this.shouldCapture) {
+    if (this.shouldCapture && this.powered) {
       this.capture(delta);
     }
   }
@@ -48,7 +50,7 @@ export default class Building implements Entity {
   }
 
   checkPowered(map: GameMap) {
-    if (this.powered) {
+    if (this.powered && !this.shouldCapture) {
       map.neighbours(this)
         .filter(e => e.team === this.team)
         .forEach(e => e.setPowered(map));
@@ -58,28 +60,33 @@ export default class Building implements Entity {
   setPowered(map: GameMap) {
     if (this.powered) return;
     this.powered = true;
-    map.neighbours(this)
-      .filter(e => e.team === this.team)
-      .forEach(e => e.setPowered(map));
+    if (!this.shouldCapture) {
+      map.neighbours(this)
+        .filter(e => e.team === this.team)
+        .forEach(e => e.setPowered(map));
+    }
   }
 
   getState() {
     return {
       team: this.team,
       health: this.health,
+      shouldCapture: this.shouldCapture,
+      captureTime: this.captureTime,
     };
   }
 
-  setState({ team, health }) {
+  setState({ team, health, shouldCapture, captureTime }) {
     this.team = team;
     this.health = health;
+    this.shouldCapture = shouldCapture;
+    this.captureTime = captureTime;
   }
 
   capture(delta) {
     if (this.elapsedTime >= this.captureTime) {
       this.elapsedTime = 0;
       this.shouldCapture = false;
-      this.powered = true;
     } else {
       this.elapsedTime += delta;
       this.health += delta * this.maxHealth / this.captureTime;

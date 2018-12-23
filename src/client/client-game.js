@@ -108,7 +108,6 @@ export default class ClientGame extends Game {
 
     this.app.view.addEventListener('click', () => {
       this.app.view.requestPointerLock();
-      console.log(this.app.view);
     });
     this.app.view.oncontextmenu = () => false;
     this.app.view.addEventListener('mousemove', (e) => {
@@ -174,7 +173,14 @@ export default class ClientGame extends Game {
     this.unitSelectorBox = new PIXI.Graphics();
     this.interfaceContainer.addChild(this.unitSelectorBox);
     this.posIndicator = new PIXI.Graphics();
+    this.posIndicator.lineStyle(POSITION_INDICATOR_LINE_WIDTH, TEAM_COLOURS[this.playerTeam]);
+    this.posIndicator.beginFill(TEAM_COLOURS[this.playerTeam], POSITION_INDICATOR_OPACITY);
+    this.posIndicator.drawRoundedRect(-POSITION_INDICATOR_DIAMETER / 2,
+      -POSITION_INDICATOR_DIAMETER / 2, POSITION_INDICATOR_DIAMETER,
+      POSITION_INDICATOR_DIAMETER, POSITION_INDICATOR_DIAMETER / 2);
+    this.posIndicator.drawCircle(0, 0, POSITION_INDICATOR_INNER_RADIUS);
     this.interfaceContainer.addChild(this.posIndicator);
+
 
     const style = new PIXI.TextStyle({
       fontFamily: 'Arial Black', fontSize: 20, fontVariant: 'small-caps', letterSpacing: 2,
@@ -207,8 +213,10 @@ export default class ClientGame extends Game {
           const command = new SpawnCommand({
             unit: { type: 'unit:basic_unit', x, y, team: this.playerTeam },
           });
-          socket.emit(COMMAND, Command.toData(command));
-          command.exec(this);
+          if (command.validate(this, this.playerTeam)) {
+            socket.emit(COMMAND, Command.toData(command));
+            command.exec(this);
+          }
         }
       } else {
         const selectedUnits = this.units
@@ -216,20 +224,20 @@ export default class ClientGame extends Game {
           .filter(unit => unit.isSelected);
         if (selectedUnits.length > 0) {
           const command = new MoveCommand({ targetPos, unitIds: selectedUnits.map(unit => unit.id) });
-          socket.emit(COMMAND, Command.toData(command));
-          command.exec(this);
+          if (command.validate(this, this.playerTeam)) {
+            socket.emit(COMMAND, Command.toData(command));
+            command.exec(this);
+          }
           return;
         }
-        const row = Math.round(targetPos.y / GRID_SCALE);
-        const col = Math.round(targetPos.x / GRID_SCALE);
-        const command = new CaptureCommand({ row, col, team: this.playerTeam });
-        socket.emit(COMMAND, Command.toData(command));
-        command.exec(this);
+
+        this.capturing = true;
       }
     });
 
     this.app.renderer.plugins.interaction.on('rightup', () => {
-      this.posIndicator.clear();
+      this.posIndicator.visible = false;
+      this.capturing = false;
     });
 
     this.app.renderer.plugins.interaction.on('mousedown', () => {
@@ -278,12 +286,21 @@ export default class ClientGame extends Game {
     this.updateSightRanges();
     super.update(delta);
     this.updateCamera(delta);
-    if (this.isMouseDown) {
-      const mousePosition = this.world.toLocal(this.cursor.position);
-      this.drawUnitSelectionBox(mousePosition);
-    }
-
+    if (this.isMouseDown) this.drawUnitSelectionBox();
+    if (this.capturing) this.updateCapture();
     this.drawEnergyText();
+  }
+
+  updateCapture() {
+    const targetPos = this.world.toLocal(this.cursor.position);
+    const row = Math.round(targetPos.y / GRID_SCALE);
+    const col = Math.round(targetPos.x / GRID_SCALE);
+    const command = new CaptureCommand({ row, col, team: this.playerTeam });
+    if (command.validate(this, this.playerTeam)) {
+      this.socket.emit(COMMAND, Command.toData(command));
+      command.exec(this);
+    }
+    this.drawIndicator(targetPos);
   }
 
   updateCamera(delta) {
@@ -328,7 +345,8 @@ export default class ClientGame extends Game {
     }
   }
 
-  drawUnitSelectionBox(mousePosition) {
+  drawUnitSelectionBox() {
+    const mousePosition = this.world.toLocal(this.cursor.position);
     this.unitSelectorBox.clear();
     this.unitSelectorBox.lineStyle(SELECTOR_BOX_BORDER_WIDTH, TEAM_COLOURS[this.playerTeam]);
     this.unitSelectorBox.beginFill(TEAM_COLOURS[this.playerTeam], SELECTOR_BOX_OPACITY);
@@ -356,13 +374,8 @@ export default class ClientGame extends Game {
   }
 
   drawIndicator(mousePosition) {
-    this.posIndicator.lineStyle(POSITION_INDICATOR_LINE_WIDTH, TEAM_COLOURS[this.playerTeam]);
-    this.posIndicator.beginFill(TEAM_COLOURS[this.playerTeam], POSITION_INDICATOR_OPACITY);
-    this.posIndicator.drawRoundedRect(mousePosition.x - POSITION_INDICATOR_DIAMETER / 2,
-      mousePosition.y - POSITION_INDICATOR_DIAMETER / 2, POSITION_INDICATOR_DIAMETER,
-      POSITION_INDICATOR_DIAMETER, POSITION_INDICATOR_DIAMETER / 2);
-    this.posIndicator.drawCircle(mousePosition.x, mousePosition.y,
-      POSITION_INDICATOR_INNER_RADIUS);
+    this.posIndicator.visible = true;
+    this.posIndicator.position.copy(mousePosition);
   }
 
   drawEnergyText() {

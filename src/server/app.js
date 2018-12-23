@@ -36,12 +36,15 @@ io.on('connection', (socket) => {
   });
 
   socket.on(READY, () => {
-    socket.emit(START, (game.players.length % (TEAMS.length - 1)) + 1, VS_MAP);
+    const team = (game.players.length % (TEAMS.length - 1)) + 1;
+    socket.team = team;
+    socket.emit(START, team, VS_MAP);
   });
 
   socket.on(COMMAND, (data) => {
     const command = Command.fromData(data);
-    command.exec(game);
+    if (command.validate(game, socket.team))
+      command.exec(game);
   });
 
   socket.on(RESET, () => {

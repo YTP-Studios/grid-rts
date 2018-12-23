@@ -16,7 +16,7 @@ export default class Game {
   init(map, units = []) {
     this.map = map;
     this.units = units;
-    this.energy = [0, 0, 0];
+    this.energy = [1000, 1000, 1000];
     this.income = [0, 0, 0];
     this.energyCap = [0, 0, 0];
   }
@@ -149,8 +149,8 @@ export default class Game {
           const building = this.map.buildings[j][k];
           if (!building) continue;
           if (building.team === i) {
-            this.income[i] += building.getIncome();
-            this.energyCap[i] += building.getEnergyCap();
+            this.income[i] += building.income;
+            this.energyCap[i] += building.energyCap;
           }
         }
       }
