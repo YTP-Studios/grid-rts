@@ -1,4 +1,5 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 
 const MODE = 'development';
@@ -20,8 +21,17 @@ module.exports = [{
         use: 'ts-loader',
         exclude: /node_modules/,
       },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
     ],
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: 'index.html',
+    }),
+  ],
 }, {
   mode: MODE,
   entry: './src/server/app.js',

@@ -3,6 +3,8 @@ import ClientGame from '../../game/client-game';
 import * as io from 'socket.io-client';
 import { READY, START } from '../../../shared/game-events';
 
+import './Game.css';
+
 export default class Game extends React.Component {
     private containerRef: any;
     state = {
@@ -29,9 +31,11 @@ export default class Game extends React.Component {
         }
     }
     render() {
-        return <div ref={this.containerRef}>
+        return (<div className='game-container'>
+            <div ref={this.containerRef}>
 
-        </div>
+            </div>
+        </div>)
     }
 
 }
