@@ -5,7 +5,7 @@ const MODE = 'development';
 
 module.exports = [{
   mode: MODE,
-  entry: './src/client/app.js',
+  entry: './src/client/app.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',

@@ -35,8 +35,8 @@ export default class ClientGame extends Game {
 
   }
 
-  init(socket, mapData, team) {
-    this.socket = socket;
+  constructor(parent: Element) {
+    super();
     this.app = new PIXI.Application({
       width: 800,
       height: 600,
@@ -46,8 +46,13 @@ export default class ClientGame extends Game {
       backgroundColor: 0x000000,
     });
 
-    document.body.appendChild(this.app.view);
-    document.body.style.cursor = 'none';
+    parent.appendChild(this.app.view);
+    parent.style.cursor = 'none';
+  }
+
+  init(socket, mapData, team) {
+    this.socket = socket;
+
 
     this.world = new PIXI.Container();
     this.world.velocity = { x: 0, y: 0 };
@@ -193,10 +198,13 @@ export default class ClientGame extends Game {
     this.app.stage.addChild(this.energyText);
 
     this.zoomScale = 1;
-    document.addEventListener('wheel', (event: WheelEvent) => {
+    this.app.view.addEventListener('wheel', (event: WheelEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
       const delta = event.deltaY < 0 ? ZOOM_FACTOR : 1 / ZOOM_FACTOR;
       this.zoomScale *= delta;
       this.zoomScale = Math.max(Math.min(this.zoomScale, MAX_ZOOM), MIN_ZOOM);
+      return false;
     });
 
     this.app.renderer.plugins.interaction.on('rightdown', (event) => {
