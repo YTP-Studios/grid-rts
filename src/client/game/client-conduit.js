@@ -1,10 +1,10 @@
 import * as PIXI from 'pixi.js';
-import { BUILDING_SIGHT_RANGE, SELECTOR_CIRCLE_RADIUS, CONDUIT_SIZE, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR, SELECTOR_BOX_OPACITY, HEALTHBAR_WIDTH, GRID_SCALE, CONDUIT_HEALTH } from '../shared/constants';
-import { NEUTRAL } from '../shared/teams';
-import Conduit from '../shared/conduit';
+import { BUILDING_SIGHT_RANGE, SELECTOR_CIRCLE_RADIUS, CONDUIT_SIZE, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR, SELECTOR_BOX_OPACITY, HEALTHBAR_WIDTH, GRID_SCALE, CONDUIT_HEALTH } from '../../shared/constants';
+import { NEUTRAL } from '../../shared/teams';
+import Conduit from '../../shared/conduit';
 import { BuildingSprite } from './building-sprite';
 import { createCircleSprite } from './sprite-utils';
-import { add } from '../shared/vectors';
+import { add } from '../../shared/vectors';
 
 export default class ClientConduit extends Conduit {
   constructor(game, row, col, team) {

@@ -1,4 +1,4 @@
-import ClientGame from './client-game';
+import ClientGame from './game/client-game';
 import io from 'socket.io-client';
 import { READY, START } from '../shared/game-events';
 const socket = io();

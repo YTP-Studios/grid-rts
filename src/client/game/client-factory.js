@@ -1,8 +1,8 @@
-import Factory from '../shared/factory';
-import { GRID_SCALE, BUILDING_SIGHT_RANGE, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR, SELECTOR_BOX_OPACITY, SELECTOR_CIRCLE_RADIUS, FACTORY_SIZE, FACTORY_HEALTH, SPAWN_RADIUS } from '../shared/constants';
-import { TEAM_COLOURS, NEUTRAL } from '../shared/teams';
+import Factory from '../../shared/factory';
+import { GRID_SCALE, BUILDING_SIGHT_RANGE, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR, SELECTOR_BOX_OPACITY, SELECTOR_CIRCLE_RADIUS, FACTORY_SIZE, FACTORY_HEALTH, SPAWN_RADIUS } from '../../shared/constants';
+import { TEAM_COLOURS, NEUTRAL } from '../../shared/teams';
 import { BuildingSprite } from './building-sprite';
-import { add } from '../shared/vectors';
+import { add } from '../../shared/vectors';
 import { createCircleSprite } from './sprite-utils';
 export default class ClientFactory extends Factory {
   constructor(game, row, col, team) {

@@ -1,9 +1,9 @@
 import { createCenteredSprite } from './sprite-utils';
-import { TEAM_COLOURS, NEUTRAL_COLOUR, DISABLED_TEAM_COLOURS, NEUTRAL } from '../shared/teams';
-import { GRID_SCALE } from '../shared/constants';
+import { TEAM_COLOURS, NEUTRAL_COLOUR, DISABLED_TEAM_COLOURS, NEUTRAL } from '../../shared/teams';
+import { GRID_SCALE } from '../../shared/constants';
 import * as PIXI from 'pixi.js';
-import Game from '../shared/game';
-import Building from '../shared/building';
+import Game from '../../shared/game';
+import Building from '../../shared/building';
 
 export class BuildingSprite {
     private game: Game;

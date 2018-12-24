@@ -1,18 +1,18 @@
 import * as PIXI from 'pixi.js';
 import { AdvancedBloomFilter, AdjustmentFilter } from 'pixi-filters';
 
-import { Command, MoveCommand, CaptureCommand, SpawnCommand } from '../shared/commands';
-import { GRID_SCALE, CAMERA_SPEED, ZOOM_FACTOR, MAX_ZOOM, MIN_ZOOM, ZOOM_SPEED, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_BOX_OPACITY, BASIC_UNIT_BODY_SIZE, POSITION_INDICATOR_LINE_WIDTH, POSITION_INDICATOR_OPACITY, POSITION_INDICATOR_DIAMETER, POSITION_INDICATOR_INNER_RADIUS } from '../shared/constants';
-import Game from '../shared/game';
-import { COMMAND, GAME_STATE, RESET } from '../shared/game-events';
-import { TEAM_COLOURS } from '../shared/teams';
-import { scale, add, zero, copyTo, sub, limit } from '../shared/vectors';
+import { Command, MoveCommand, CaptureCommand, SpawnCommand } from '../../shared/commands';
+import { GRID_SCALE, CAMERA_SPEED, ZOOM_FACTOR, MAX_ZOOM, MIN_ZOOM, ZOOM_SPEED, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_BOX_OPACITY, BASIC_UNIT_BODY_SIZE, POSITION_INDICATOR_LINE_WIDTH, POSITION_INDICATOR_OPACITY, POSITION_INDICATOR_DIAMETER, POSITION_INDICATOR_INNER_RADIUS } from '../../shared/constants';
+import Game from '../../shared/game';
+import { COMMAND, GAME_STATE, RESET } from '../../shared/game-events';
+import { TEAM_COLOURS } from '../../shared/teams';
+import { scale, add, zero, copyTo, sub, limit } from '../../shared/vectors';
 
 import { BasicClientUnit } from './basic-client-unit';
 import { SiegeClientUnit } from './siege-client-unit';
 import ClientMap from './client-map';
 import keyboard from './keyboard';
-import Factory from '../shared/factory';
+import Factory from '../../shared/factory';
 
 export default class ClientGame extends Game {
   static loadAssets() {

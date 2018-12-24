@@ -1,9 +1,9 @@
 import * as PIXI from 'pixi.js';
-import { BASIC_UNIT_BODY_SIZE, GRID_SCALE, BASIC_UNIT_SIGHT_RANGE, LASER_THICKNESS, BASIC_UNIT_TURRET_LENGTH, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR, SELECTOR_BOX_OPACITY, SELECTOR_CIRCLE_RADIUS, BASIC_UNIT_HEALTH } from '../shared/constants';
-import { sub, scaleTo, add } from '../shared/vectors';
-import { TEAM_COLOURS, NEUTRAL } from '../shared/teams';
+import { BASIC_UNIT_BODY_SIZE, GRID_SCALE, BASIC_UNIT_SIGHT_RANGE, LASER_THICKNESS, BASIC_UNIT_TURRET_LENGTH, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR, SELECTOR_BOX_OPACITY, SELECTOR_CIRCLE_RADIUS, BASIC_UNIT_HEALTH } from '../../shared/constants';
+import { sub, scaleTo, add } from '../../shared/vectors';
+import { TEAM_COLOURS, NEUTRAL } from '../../shared/teams';
 import { createCenteredSprite } from './sprite-utils';
-import BasicUnit from '../shared/basic-unit';
+import BasicUnit from '../../shared/basic-unit';
 
 export class BasicClientUnit extends BasicUnit {
 

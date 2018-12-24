@@ -1,8 +1,8 @@
-import { BUILDING_SIGHT_RANGE, SELECTOR_CIRCLE_RADIUS, GENERATOR_SIZE, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR, SELECTOR_BOX_OPACITY, GRID_SCALE, GENERATOR_HEALTH } from '../shared/constants';
-import Generator from '../shared/generator';
+import { BUILDING_SIGHT_RANGE, SELECTOR_CIRCLE_RADIUS, GENERATOR_SIZE, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR, SELECTOR_BOX_OPACITY, GRID_SCALE, GENERATOR_HEALTH } from '../../shared/constants';
+import Generator from '../../shared/generator';
 import { BuildingSprite } from './building-sprite';
 import { createCircleSprite } from './sprite-utils';
-import { add } from '../shared/vectors';
+import { add } from '../../shared/vectors';
 
 export default class ClientGenerator extends Generator {
   constructor(game, row, col, team) {
