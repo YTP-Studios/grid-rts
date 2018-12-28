@@ -38,7 +38,7 @@ export default class Navbar extends React.Component {
             <NavLink disabled>Matchmaking</NavLink>
           </NavItem>
           <NavItem>
-            <NavLink disabled>Custom</NavLink>
+            <NavLink tag={Link} to="/lobbies">Lobbies</NavLink>
           </NavItem>
           <NavItem>
             <NavLink disabled>Editor</NavLink>

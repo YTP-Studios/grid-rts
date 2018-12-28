@@ -22,7 +22,7 @@ export default class HomeScreen extends React.Component {
                 <CardBody>
                   <CardTitle>Play Now</CardTitle>
                   <CardText>Lorem ipsum dolor sit amet consectetur adipisicing elit. </CardText>
-                  <Button className="pull-right">Play</Button>
+                  <Button className="float-right">Play</Button>
                 </CardBody>
               </Card>
               <Card className="my-2">
@@ -30,7 +30,7 @@ export default class HomeScreen extends React.Component {
                 <CardBody>
                   <CardTitle>News Item</CardTitle>
                   <CardText>Lorem ipsum dolor sit amet consectetur adipisicing elit. </CardText>
-                  <Button className="pull-right">Learn More</Button>
+                  <Button className="float-right">Learn More</Button>
                 </CardBody>
               </Card>
             </div>
