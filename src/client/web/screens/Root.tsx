@@ -1,8 +1,8 @@
 import * as React from 'react';
-import Game from './Game';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import HomeScreen from './Home';
 export const Root = () => (<div>
-    <Game></Game>
+    <HomeScreen />
 </div>)
 
 export default Root;

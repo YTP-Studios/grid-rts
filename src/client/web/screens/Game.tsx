@@ -5,7 +5,7 @@ import { READY, START } from '../../../shared/game-events';
 
 import './Game.css';
 
-export default class Game extends React.Component {
+export default class GameScreen extends React.Component {
     private containerRef: any;
     state = {
         loading: true,
