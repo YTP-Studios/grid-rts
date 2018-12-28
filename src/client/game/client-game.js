@@ -15,7 +15,10 @@ import keyboard from './keyboard';
 import Factory from '../../shared/factory';
 
 export default class ClientGame extends Game {
+  static assetsLoaded: boolean;
   static loadAssets() {
+    if (ClientGame.assetsLoaded) return Promise.resolve();
+    ClientGame.assetsLoaded = true;
     return new Promise(resolve =>
       PIXI.loader
         .add('assets/cursor.png')
@@ -288,6 +291,10 @@ export default class ClientGame extends Game {
 
   start() {
     this.app.ticker.add(delta => this.update(delta));
+  }
+
+  destroy() {
+    // TODO: cleanup app
   }
 
   update(delta) {

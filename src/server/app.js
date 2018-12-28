@@ -15,8 +15,12 @@ const port = 8000;
 app.use('/static', express.static('dist'));
 app.use('/assets', express.static('assets'));
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../', 'index.html'));
+app.get('/index.js', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.js'));
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 let game = new Game();

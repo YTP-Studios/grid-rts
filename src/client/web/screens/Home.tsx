@@ -1,16 +1,5 @@
 import * as React from 'react';
 import {
-  Collapse,
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem,
-  NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
   Button,
   Card,
   CardImg,
@@ -18,65 +7,11 @@ import {
   CardTitle,
   CardText
 } from 'reactstrap';
-
+import Navbar from '../components/Navbar';
 export default class HomeScreen extends React.Component {
-  state: {
-    isOpen;
-  }
-  constructor(props) {
-    super(props);
-    this.state = {
-      isOpen: false,
-    }
-  }
-
-  toggle = () => {
-    this.setState({ isOpen: !this.state.isOpen });
-  }
-
   render() {
     return (
       <div>
-        <Navbar color="dark" dark expand="md" sticky="top">
-          <NavbarBrand href="/">GRID-RTS</NavbarBrand>
-          <NavbarToggler onClick={this.toggle} />
-          <Collapse isOpen={this.state.isOpen} navbar>
-            <Nav navbar>
-              <NavItem>
-                <NavLink href="#">Matchmaking</NavLink>
-              </NavItem>
-            </Nav>
-            <Nav navbar>
-              <NavItem>
-                <NavLink href="#">Custom</NavLink>
-              </NavItem>
-            </Nav>
-            <Nav navbar>
-              <NavItem>
-                <NavLink href="#">Editor</NavLink>
-              </NavItem>
-            </Nav>
-            <Nav className="ml-auto" navbar>
-              <UncontrolledDropdown nav inNavbar color="dark">
-                <DropdownToggle nav caret>
-                  Welcome, Player
-                </DropdownToggle>
-                <DropdownMenu right>
-                  <DropdownItem disabled>
-                    Settings
-                  </DropdownItem>
-                  <DropdownItem disabled>
-                    Profile
-                  </DropdownItem>
-                  <DropdownItem divider />
-                  <DropdownItem disabled>
-                    Log Out
-                  </DropdownItem>
-                </DropdownMenu>
-              </UncontrolledDropdown>
-            </Nav>
-          </Collapse>
-        </Navbar>
         <div className="container pt-3">
           <h1 className="display-4">Home</h1>
           <div className="row">
