@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { READY, START } from '../../../shared/game-events';
+import { READY, START, GAME_STATE } from '../../../shared/game-events';
 import ClientGame from '../../game/client-game';
 import { withSocket } from './Socket';
 
@@ -25,6 +25,7 @@ class Game extends React.Component<any, any> {
   componentWillUnmount() {
     const { socket } = this.props;
     this.game.destroy();
+    socket.off(GAME_STATE);
     socket.off(START);
   }
 

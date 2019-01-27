@@ -16,9 +16,9 @@ export default class Lobby {
   gameInterval?: NodeJS.Timeout;
   started: boolean;
 
-  onStartGame: () => void;
-  onUpdateGame: () => void;
-  onStopGame: () => void;
+  onStartGame?: () => void;
+  onUpdateGame?: () => void;
+  onStopGame?: () => void;
 
   constructor(map: GameMap) {
     this.id = (Lobby.count++).toString();
@@ -38,12 +38,14 @@ export default class Lobby {
       name,
       map,
       players,
+      started
     } = this;
     return {
       id,
       name,
       map,
       players,
+      started,
       maxPlayers: 4
     }
   }
@@ -63,18 +65,18 @@ export default class Lobby {
   }
 
   startGame() {
-    this.onStartGame();
+    this.onStartGame && this.onStartGame();
+    this.started = true;
     this.gameInterval = setInterval(() => {
       this.game.update(1);
-      this.onUpdateGame();
+      this.onUpdateGame && this.onUpdateGame();
     }, 1000 / 60);
-    this.started = true;
   }
 
   stopGame() {
     clearInterval(this.gameInterval);
     delete this.gameInterval;
     this.started = false;
-    this.onStopGame();
+    this.onStopGame && this.onStopGame();
   }
 }

@@ -76,7 +76,7 @@ class LobbyScreen extends React.Component<any, any> {
   render() {
     const { lobby } = this.state;
     return (<div className="container pt-3">
-      <h1>{lobby.name}</h1>
+      <h1>{lobby.name}{lobby.started && " (In Progress)"}</h1>
 
       <div className="row">
         <div className="col-8">
@@ -109,7 +109,7 @@ class LobbyScreen extends React.Component<any, any> {
               <CardText>
                 Details
               </CardText>
-              <Button size="lg" block onClick={this.startGame}>Start Game</Button>
+              <Button size="lg" block onClick={this.startGame}>{lobby.started ? "Reconnect" : "Start Game"}</Button>
             </CardBody>
           </Card>
         </div>

@@ -25,7 +25,11 @@ app.get('/index.js', (req, res) => {
 });
 
 let lobbies: Lobby[] = [];
-let clearEmpty = () => { lobbies = lobbies.filter(e => e.players.length !== 0); };
+let clearEmpty = () => {
+  let empty = lobbies.filter(e => e.players.length === 0);
+  empty.forEach(e => e.stopGame());
+  lobbies = lobbies.filter(e => e.players.length !== 0);
+};
 
 app.get('/api/lobbies', (req, res) => {
   res.send(lobbies.map(({ id, name, map, players }) => ({
@@ -65,6 +69,7 @@ io.on('connection', (socket) => {
 
   socket.on(JOIN_LOBBY, (id) => {
     if (lobby) {
+      if (lobby.id === id) return;
       lobby.removePlayer(player);
       socket.leave(lobby.id);
       io.to(lobby.id).emit(LOBBY_STATE, lobby);
@@ -90,7 +95,6 @@ io.on('connection', (socket) => {
 
   socket.on(START_GAME, () => {
     if (!lobby) return console.error('no lobby');
-    lobby.started = true;
     io.to(lobby.id).emit(START_GAME, lobby.id);
   });
 
@@ -102,10 +106,12 @@ io.on('connection', (socket) => {
   });
 
   socket.on(READY, (cb) => {
-    if (!lobby || !lobby.started) return;
+    if (!lobby) return;
     player.ready = true;
     cb(lobby.map.toString(), player.team);
-    if (lobby.players.every(e => e.ready)) {
+    if (lobby.started) {
+      socket.emit(START);
+    } else if (lobby.players.every(e => e.ready)) {
       lobby.startGame();
     }
   });
