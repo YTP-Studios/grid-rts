@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { Card, CardImg, CardBody, CardTitle, CardText, Button, Table, Input } from 'reactstrap';
+import { VS_MAP } from '../../../shared/constants';
+import { withRouter } from 'react-router';
 
-export default class LobbiesScreen extends React.Component {
+class LobbiesScreen extends React.Component<any, any> {
   state: {
     lobbies: any[],
   };
@@ -9,27 +11,26 @@ export default class LobbiesScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      lobbies: [
-        {
-          name: "Lobby 1",
-          mapName: "Map name",
-          players: ["Player 1", "Player 2"],
-          maxPlayers: 4,
-        },
-        {
-          name: "Lobby 2",
-          mapName: "Map name",
-          players: ["Player 3", "Player 4"],
-          maxPlayers: 2,
-        },
-        {
-          name: "Lobby 3",
-          mapName: "Map name",
-          players: ["Player 5", "Player 6", "Player 7"],
-          maxPlayers: 4,
-        },
-      ],
+      lobbies: [],
     }
+  }
+
+  componentWillMount() {
+    this.getLobbies();
+  }
+
+  async getLobbies() {
+    const response = await fetch("/api/lobbies");
+    this.setState({ lobbies: await response.json() });
+  }
+
+  createLobby = async () => {
+    const request = {
+      method: 'POST',
+      body: JSON.stringify({ map: VS_MAP }),
+    }
+    const response = await fetch('/api/lobbies', request);
+    this.props.history.push(`/lobbies/lobby/${(await response.json()).id}`)
   }
 
   render() {
@@ -43,7 +44,7 @@ export default class LobbiesScreen extends React.Component {
               <Input placeholder="Search Lobbies..."></Input>
             </div>
             <div className="col-4">
-              <Button block>Create</Button>
+              <Button block onClick={this.createLobby}>Create</Button>
             </div>
           </div>
           <Card className="mt-3">
@@ -62,7 +63,7 @@ export default class LobbiesScreen extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {this.state.lobbies.map(lobby => <tr style={{ cursor: 'pointer' }}>
+                {this.state.lobbies.map((lobby, i) => <tr key={i} style={{ cursor: 'pointer' }}>
                   <td>
                     {lobby.name}
                   </td>
@@ -82,13 +83,11 @@ export default class LobbiesScreen extends React.Component {
             <CardImg top width="100%" src="https://placeholdit.imgix.net/~text?txtsize=33&txt=Preview&w=320&h=240" alt="Play now" />
             <CardBody>
               <CardTitle>Lobby Name</CardTitle>
-              <CardText>
-                Players:
+              Players:
                 <ul style={{ listStyle: 'none' }}>
-                  <li>Player 1</li>
-                  <li>Player 2</li>
-                </ul>
-              </CardText>
+                <li>Player 1</li>
+                <li>Player 2</li>
+              </ul>
               <Button className="float-right">Join</Button>
             </CardBody>
           </Card>
@@ -97,3 +96,5 @@ export default class LobbiesScreen extends React.Component {
     </div>)
   }
 }
+
+export default withRouter(LobbiesScreen)

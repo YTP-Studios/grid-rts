@@ -90,9 +90,7 @@ export default class LobbyScreen extends React.Component {
             <CardBody>
               <CardTitle>{this.state.lobby.map.name}</CardTitle>
               <CardText>
-                <p>
-                  Details
-                </p>
+                Details
               </CardText>
               <Button size="lg" block>Start Game</Button>
             </CardBody>

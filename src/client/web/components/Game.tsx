@@ -3,7 +3,7 @@ import * as io from 'socket.io-client';
 import { READY, START } from '../../../shared/game-events';
 import ClientGame from '../../game/client-game';
 
-export default class Game extends React.Component {
+export default class Game extends React.Component<any, any> {
   private containerRef: any;
   private game: ClientGame;
   constructor(props) {
@@ -11,9 +11,8 @@ export default class Game extends React.Component {
     this.containerRef = React.createRef();
   }
   componentDidMount = () => {
-    const socket = io();
     this.game = new ClientGame(this.containerRef.current);
-    socket.emit(READY);
+    const socket = io(this.props.id);
     socket.on(START, (team, mapData) => {
       this.game.init(socket, mapData, team);
       this.game.start();
