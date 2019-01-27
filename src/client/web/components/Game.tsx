@@ -1,9 +1,9 @@
 import * as React from 'react';
-import * as io from 'socket.io-client';
 import { READY, START } from '../../../shared/game-events';
 import ClientGame from '../../game/client-game';
+import { withSocket } from './Socket';
 
-export default class Game extends React.Component<any, any> {
+class Game extends React.Component<any, any> {
   private containerRef: any;
   private game: ClientGame;
   constructor(props) {
@@ -11,10 +11,12 @@ export default class Game extends React.Component<any, any> {
     this.containerRef = React.createRef();
   }
   componentDidMount = () => {
+    const { socket } = this.props;
     this.game = new ClientGame(this.containerRef.current);
-    const socket = io(this.props.id);
-    socket.on(START, (team, mapData) => {
+    socket.emit(READY, (mapData, team) => {
       this.game.init(socket, mapData, team);
+    });
+    socket.on(START, () => {
       this.game.start();
       (window as any).game = this.game; // for debugging
     });
@@ -27,6 +29,10 @@ export default class Game extends React.Component<any, any> {
     </div>)
   }
   componentWillUnmount() {
+    const { socket } = this.props;
     this.game.destroy();
+    socket.off(START);
   }
 }
+
+export default withSocket(Game)

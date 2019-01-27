@@ -43,9 +43,6 @@ export default class Navbar extends React.Component {
           <NavItem>
             <NavLink disabled>Editor</NavLink>
           </NavItem>
-          <NavItem>
-            <NavLink tag={Link} to="/test">Test</NavLink>
-          </NavItem>
         </Nav>
         <Nav className="ml-auto" navbar>
           <UncontrolledDropdown nav inNavbar color="dark">

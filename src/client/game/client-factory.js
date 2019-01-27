@@ -10,15 +10,15 @@ export default class ClientFactory extends Factory {
     this.game = game;
 
     this.buildingSprite = new BuildingSprite(game, this,
-      'assets/factory-edge.png',
-      'assets/factory-center.png',
-      'assets/factory-core.png');
+      '/assets/factory-edge.png',
+      '/assets/factory-center.png',
+      '/assets/factory-core.png');
     this.game.buildingContainer.addChild(this.buildingSprite.sprite);
 
     this.oldBuildingSprite = new BuildingSprite(game, this,
-      'assets/factory-edge.png',
-      'assets/factory-center.png',
-      'assets/factory-core.png');
+      '/assets/factory-edge.png',
+      '/assets/factory-center.png',
+      '/assets/factory-core.png');
     this.game.oldBuildingContainer.addChild(this.oldBuildingSprite.sprite);
 
     this.spawnCircle = createCircleSprite(SPAWN_RADIUS, SELECTOR_BOX_BORDER_WIDTH, 0xFFFFFF, SELECTOR_BOX_OPACITY / 2);

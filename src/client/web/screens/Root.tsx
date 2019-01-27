@@ -17,7 +17,7 @@ export const Root = () => (<div>
         <Route exact path="/" component={HomeScreen} />
         <Route exact path="/lobbies" component={LobbiesScreen} />
         <Route path="/lobbies/lobby/:id" component={LobbyScreen} />
-        <Route path="/test" component={GameScreen} />
+        <Route path="/game/:id" component={GameScreen} />
         <Route component={Error404Screen} />
       </Switch>
     </div>

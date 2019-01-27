@@ -6,7 +6,8 @@ import Game from "../shared/game";
 export default class Lobby {
   public static count: number = 0;
 
-  id: number;
+  id: string;
+  name: string;
 
   map: GameMap;
   players: Player[];
@@ -20,7 +21,8 @@ export default class Lobby {
   onStopGame: () => void;
 
   constructor(map: GameMap) {
-    this.id = Lobby.count++;
+    this.id = (Lobby.count++).toString();
+    this.name = "";
 
     this.map = map;
     this.game = new Game();
@@ -30,13 +32,30 @@ export default class Lobby {
     this.players = [];
   }
 
+  toJSON() {
+    const {
+      id,
+      name,
+      map,
+      players,
+    } = this;
+    return {
+      id,
+      name,
+      map,
+      players,
+      maxPlayers: 4
+    }
+  }
+
   addPlayer(player: Player, team: number = 1) {
     this.players.push(player);
+    if (this.name === "") this.name = `${player.id}'s game`;
     player.team = team;
   }
 
   removePlayer({ id }: Player) {
-    this.players = this.players.filter(player => player.id != id);
+    this.players = this.players.filter(player => player.id !== id);
   }
 
   setPlayerTeam({ id }: Player, team: number) {
@@ -50,7 +69,6 @@ export default class Lobby {
       this.onUpdateGame();
     }, 1000 / 60);
     this.started = true;
-    this.onStartGame();
   }
 
   stopGame() {

@@ -21,19 +21,19 @@ export default class ClientGame extends Game {
     ClientGame.assetsLoaded = true;
     return new Promise(resolve =>
       PIXI.loader
-        .add('assets/cursor.png')
-        .add('assets/basic-unit-body.png')
-        .add('assets/basic-unit-core.png')
-        .add('assets/conduit-edge.png')
-        .add('assets/conduit-center.png')
-        .add('assets/generator-edge.png')
-        .add('assets/generator-center.png')
-        .add('assets/generator-core.png')
-        .add('assets/factory-edge.png')
-        .add('assets/factory-center.png')
-        .add('assets/factory-core.png')
-        .add('assets/siege-unit-body.png')
-        .add('assets/siege-unit-core.png')
+        .add('/assets/cursor.png')
+        .add('/assets/basic-unit-body.png')
+        .add('/assets/basic-unit-core.png')
+        .add('/assets/conduit-edge.png')
+        .add('/assets/conduit-center.png')
+        .add('/assets/generator-edge.png')
+        .add('/assets/generator-center.png')
+        .add('/assets/generator-core.png')
+        .add('/assets/factory-edge.png')
+        .add('/assets/factory-center.png')
+        .add('/assets/factory-core.png')
+        .add('/assets/siege-unit-body.png')
+        .add('/assets/siege-unit-core.png')
         .load(resolve));
 
   }
@@ -109,7 +109,7 @@ export default class ClientGame extends Game {
     const centerPos = add(averagePos, { x: this.app.screen.width / 2, y: this.app.screen.height / 2 });
     copyTo(centerPos, this.world);
 
-    this.cursor = new PIXI.Sprite(PIXI.loader.resources['assets/cursor.png'].texture);
+    this.cursor = new PIXI.Sprite(PIXI.loader.resources['/assets/cursor.png'].texture);
     this.cursor.width = 16;
     this.cursor.height = 16;
     this.overlayContainer.addChild(this.cursor);

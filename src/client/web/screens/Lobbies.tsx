@@ -6,6 +6,7 @@ import { withRouter } from 'react-router';
 class LobbiesScreen extends React.Component<any, any> {
   state: {
     lobbies: any[],
+    selectedLobby?: any;
   };
 
   constructor(props) {
@@ -26,6 +27,10 @@ class LobbiesScreen extends React.Component<any, any> {
 
   createLobby = async () => {
     const request = {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
       method: 'POST',
       body: JSON.stringify({ map: VS_MAP }),
     }
@@ -33,7 +38,12 @@ class LobbiesScreen extends React.Component<any, any> {
     this.props.history.push(`/lobbies/lobby/${(await response.json()).id}`)
   }
 
+  joinLobby = ({ id }) => {
+    this.props.history.push(`/lobbies/lobby/${id}`)
+  }
+
   render() {
+    const { lobbies, selectedLobby } = this.state;
     return (<div className="container pt-3">
       <h1>Lobbies</h1>
 
@@ -63,34 +73,35 @@ class LobbiesScreen extends React.Component<any, any> {
                 </tr>
               </thead>
               <tbody>
-                {this.state.lobbies.map((lobby, i) => <tr key={i} style={{ cursor: 'pointer' }}>
-                  <td>
-                    {lobby.name}
-                  </td>
-                  <td>
-                    {lobby.mapName}
-                  </td>
-                  <td>
-                    {lobby.players.length}/{lobby.maxPlayers}
-                  </td>
-                </tr>)}
+                {lobbies.map((lobby, i) =>
+                  <tr key={i} style={{ cursor: 'pointer' }} onClick={() => this.setState({ selectedLobby: lobby })}>
+                    <td>
+                      {lobby.name}
+                    </td>
+                    <td>
+                      {lobby.mapName}
+                    </td>
+                    <td>
+                      {lobby.players.length}/{lobby.maxPlayers}
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </Table>
           </Card>
         </div>
         <div className="col-4">
-          <Card>
+          {selectedLobby && <Card>
             <CardImg top width="100%" src="https://placeholdit.imgix.net/~text?txtsize=33&txt=Preview&w=320&h=240" alt="Play now" />
             <CardBody>
-              <CardTitle>Lobby Name</CardTitle>
+              <CardTitle>{selectedLobby.name}</CardTitle>
               Players:
                 <ul style={{ listStyle: 'none' }}>
-                <li>Player 1</li>
-                <li>Player 2</li>
+                {selectedLobby.players.map((player, i) => <li key={i}>{player.id}</li>)}
               </ul>
-              <Button className="float-right">Join</Button>
+              <Button className="float-right" onClick={() => this.joinLobby(selectedLobby)}>Join</Button>
             </CardBody>
-          </Card>
+          </Card>}
         </div>
       </div>
     </div>)
