@@ -56,7 +56,6 @@ export default class ClientGame extends Game {
   init(socket, mapData, team) {
     this.socket = socket;
 
-
     this.world = new PIXI.Container();
     this.world.velocity = { x: 0, y: 0 };
 
@@ -294,7 +293,8 @@ export default class ClientGame extends Game {
   }
 
   destroy() {
-    // TODO: cleanup app
+    this.app.ticker.stop();
+    this.app.destroy();
   }
 
   update(delta) {

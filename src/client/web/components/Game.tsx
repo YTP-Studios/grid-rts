@@ -21,17 +21,19 @@ class Game extends React.Component<any, any> {
       (window as any).game = this.game; // for debugging
     });
   }
+
+  componentWillUnmount() {
+    const { socket } = this.props;
+    this.game.destroy();
+    socket.off(START);
+  }
+
   render() {
     return (<div className='game-container'>
       <div ref={this.containerRef}>
 
       </div>
     </div>)
-  }
-  componentWillUnmount() {
-    const { socket } = this.props;
-    this.game.destroy();
-    socket.off(START);
   }
 }
 

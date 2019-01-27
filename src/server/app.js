@@ -7,6 +7,7 @@ import { START, COMMAND, GAME_STATE, RESET, JOIN_LOBBY, LEAVE_LOBBY, LOBBY_STATE
 import { VS_MAP } from '../shared/constants';
 import GameMap from '../shared/game-map';
 import Lobby from './lobby';
+import { TEAMS } from '../shared/teams';
 
 let app = express();
 let http = require('http').Server(app);
@@ -46,7 +47,7 @@ app.post('/api/lobbies', (req, res) => {
 
 app.get('/api/lobbies/:id', (req, res) => {
   const lobby = lobbies.find(lobby => lobby.id === req.params.id);
-  if (!lobby) res.status(404).send();
+  if (!lobby) return res.status(404).send();
   res.send(lobby.toJSON());
 });
 
@@ -71,7 +72,7 @@ io.on('connection', (socket) => {
     }
     lobby = lobbies.find(lobby => lobby.id === id);
     if (lobby) {
-      lobby.addPlayer(player);
+      lobby.addPlayer(player, (lobby.players.length % (TEAMS.length - 1)) + 1);
       socket.join(lobby.id);
       io.to(lobby.id).emit(LOBBY_STATE, lobby);
     }
@@ -88,6 +89,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on(START_GAME, () => {
+    if (!lobby) return console.error('no lobby');
     lobby.started = true;
     io.to(lobby.id).emit(START_GAME, lobby.id);
   });
@@ -102,7 +104,6 @@ io.on('connection', (socket) => {
   socket.on(READY, (cb) => {
     if (!lobby || !lobby.started) return;
     player.ready = true;
-    player.team = 1;
     cb(lobby.map.toString(), player.team);
     if (lobby.players.every(e => e.ready)) {
       lobby.startGame();
