@@ -2,6 +2,9 @@ language: node_js
 node_js:
   - "8"
 dist: trusty
+addons:
+  ssh_known_hosts:
+    - dannykong12.ddns.net
 before_install:
   - npm i -g npm@latest
 install:
@@ -13,6 +16,13 @@ after_success:
   - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
   - chmod +x send.sh
   - ./send.sh success $WEBHOOK_URL
+  - eval "$(ssh-agent -s)"
+  - openssl aes-256-cbc -K $encrypted_653afe8d9b01_key -iv $encrypted_653afe8d9b01_iv -in .deploy.enc -out .deploy -d
+  - chmod 600 .deploy
+  - cat .deploy
+  - ssh-add .deploy
+  - git remote add deploy $REPO_URI
+  - git push deploy master
 after_failure:
   - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
   - chmod +x send.sh
