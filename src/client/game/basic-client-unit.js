@@ -19,11 +19,11 @@ export class BasicClientUnit extends BasicUnit {
     this.sprite = spriteContainer;
     this.parentContainer.addChild(this.sprite);
 
-    this.basicUnitSprite = createCenteredSprite('assets/basic-unit-body.png', BASIC_UNIT_BODY_SIZE * 4);
+    this.basicUnitSprite = createCenteredSprite('/assets/basic-unit-body.png', BASIC_UNIT_BODY_SIZE * 4);
     this.basicUnitSprite.tint = TEAM_COLOURS[this.team];
     this.sprite.addChild(this.basicUnitSprite);
 
-    this.basicUnitCoreSprite = createCenteredSprite('assets/basic-unit-core.png', BASIC_UNIT_BODY_SIZE * 4);
+    this.basicUnitCoreSprite = createCenteredSprite('/assets/basic-unit-core.png', BASIC_UNIT_BODY_SIZE * 4);
     this.sprite.addChild(this.basicUnitCoreSprite);
 
     this.isSelected = false;

@@ -15,28 +15,31 @@ import keyboard from './keyboard';
 import Factory from '../../shared/factory';
 
 export default class ClientGame extends Game {
+  static assetsLoaded: boolean;
   static loadAssets() {
+    if (ClientGame.assetsLoaded) return Promise.resolve();
+    ClientGame.assetsLoaded = true;
     return new Promise(resolve =>
       PIXI.loader
-        .add('assets/cursor.png')
-        .add('assets/basic-unit-body.png')
-        .add('assets/basic-unit-core.png')
-        .add('assets/conduit-edge.png')
-        .add('assets/conduit-center.png')
-        .add('assets/generator-edge.png')
-        .add('assets/generator-center.png')
-        .add('assets/generator-core.png')
-        .add('assets/factory-edge.png')
-        .add('assets/factory-center.png')
-        .add('assets/factory-core.png')
-        .add('assets/siege-unit-body.png')
-        .add('assets/siege-unit-core.png')
+        .add('/assets/cursor.png')
+        .add('/assets/basic-unit-body.png')
+        .add('/assets/basic-unit-core.png')
+        .add('/assets/conduit-edge.png')
+        .add('/assets/conduit-center.png')
+        .add('/assets/generator-edge.png')
+        .add('/assets/generator-center.png')
+        .add('/assets/generator-core.png')
+        .add('/assets/factory-edge.png')
+        .add('/assets/factory-center.png')
+        .add('/assets/factory-core.png')
+        .add('/assets/siege-unit-body.png')
+        .add('/assets/siege-unit-core.png')
         .load(resolve));
 
   }
 
-  init(socket, mapData, team) {
-    this.socket = socket;
+  constructor(parent: Element) {
+    super();
     this.app = new PIXI.Application({
       width: 800,
       height: 600,
@@ -46,8 +49,12 @@ export default class ClientGame extends Game {
       backgroundColor: 0x000000,
     });
 
-    document.body.appendChild(this.app.view);
-    document.body.style.cursor = 'none';
+    parent.appendChild(this.app.view);
+    parent.style.cursor = 'none';
+  }
+
+  init(socket, mapData, team) {
+    this.socket = socket;
 
     this.world = new PIXI.Container();
     this.world.velocity = { x: 0, y: 0 };
@@ -101,7 +108,7 @@ export default class ClientGame extends Game {
     const centerPos = add(averagePos, { x: this.app.screen.width / 2, y: this.app.screen.height / 2 });
     copyTo(centerPos, this.world);
 
-    this.cursor = new PIXI.Sprite(PIXI.loader.resources['assets/cursor.png'].texture);
+    this.cursor = new PIXI.Sprite(PIXI.loader.resources['/assets/cursor.png'].texture);
     this.cursor.width = 16;
     this.cursor.height = 16;
     this.overlayContainer.addChild(this.cursor);
@@ -193,10 +200,13 @@ export default class ClientGame extends Game {
     this.app.stage.addChild(this.energyText);
 
     this.zoomScale = 1;
-    document.addEventListener('wheel', (event: WheelEvent) => {
+    this.app.view.addEventListener('wheel', (event: WheelEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
       const delta = event.deltaY < 0 ? ZOOM_FACTOR : 1 / ZOOM_FACTOR;
       this.zoomScale *= delta;
       this.zoomScale = Math.max(Math.min(this.zoomScale, MAX_ZOOM), MIN_ZOOM);
+      return false;
     });
 
     this.app.renderer.plugins.interaction.on('rightdown', (event) => {
@@ -280,6 +290,11 @@ export default class ClientGame extends Game {
 
   start() {
     this.app.ticker.add(delta => this.update(delta));
+  }
+
+  destroy() {
+    this.app.ticker.stop();
+    this.app.destroy();
   }
 
   update(delta) {

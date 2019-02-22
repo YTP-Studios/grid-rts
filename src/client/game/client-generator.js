@@ -10,15 +10,15 @@ export default class ClientGenerator extends Generator {
     this.game = game;
 
     this.buildingSprite = new BuildingSprite(game, this,
-      'assets/generator-edge.png',
-      'assets/generator-center.png',
-      'assets/generator-core.png');
+      '/assets/generator-edge.png',
+      '/assets/generator-center.png',
+      '/assets/generator-core.png');
     this.game.buildingContainer.addChild(this.buildingSprite.sprite);
 
     this.oldBuildingSprite = new BuildingSprite(game, this,
-      'assets/generator-edge.png',
-      'assets/generator-center.png',
-      'assets/generator-core.png');
+      '/assets/generator-edge.png',
+      '/assets/generator-center.png',
+      '/assets/generator-core.png');
     this.game.oldBuildingContainer.addChild(this.oldBuildingSprite.sprite);
 
     this.sightCircle = createCircleSprite(BUILDING_SIGHT_RANGE);

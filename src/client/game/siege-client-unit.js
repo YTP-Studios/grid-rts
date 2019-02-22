@@ -17,11 +17,11 @@ export class SiegeClientUnit extends SiegeUnit {
     this.sprite = spriteContainer;
     this.parentContainer.addChild(this.sprite);
 
-    this.siegeUnitSprite = createCenteredSprite('assets/siege-unit-body.png', Constants.SIEGE_UNIT_BODY_SIZE * 2);
+    this.siegeUnitSprite = createCenteredSprite('/assets/siege-unit-body.png', Constants.SIEGE_UNIT_BODY_SIZE * 2);
     this.siegeUnitSprite.tint = TEAM_COLOURS[this.team];
     this.sprite.addChild(this.siegeUnitSprite);
 
-    this.siegeUnitCoreSprite = createCenteredSprite('assets/siege-unit-core.png', Constants.SIEGE_UNIT_BODY_SIZE * 2);
+    this.siegeUnitCoreSprite = createCenteredSprite('/assets/siege-unit-core.png', Constants.SIEGE_UNIT_BODY_SIZE * 2);
     this.sprite.addChild(this.siegeUnitCoreSprite);
 
     this.isSelected = false;

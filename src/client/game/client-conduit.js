@@ -11,10 +11,10 @@ export default class ClientConduit extends Conduit {
     super(row, col, team);
     this.game = game;
 
-    this.buildingSprite = new BuildingSprite(game, this, 'assets/conduit-edge.png', 'assets/conduit-center.png');
+    this.buildingSprite = new BuildingSprite(game, this, '/assets/conduit-edge.png', '/assets/conduit-center.png');
     this.game.buildingContainer.addChild(this.buildingSprite.sprite);
 
-    this.oldBuildingSprite = new BuildingSprite(game, this, 'assets/conduit-edge.png', 'assets/conduit-center.png');
+    this.oldBuildingSprite = new BuildingSprite(game, this, '/assets/conduit-edge.png', '/assets/conduit-center.png');
     this.game.oldBuildingContainer.addChild(this.oldBuildingSprite.sprite);
 
     this.sightCircle = createCircleSprite(BUILDING_SIGHT_RANGE);

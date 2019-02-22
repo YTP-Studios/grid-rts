@@ -54,6 +54,20 @@ export default class GameMap {
     this.buildings = buildings;
   }
 
+  toString() {
+    return this.buildings.map(row => row.map(b => {
+      if (b instanceof Generator) {
+        return b.team.toString();
+      } else if (b instanceof Factory) {
+        return 'F';
+      } else if (b instanceof Conduit) {
+        return '.';
+      } else {
+        return ' ';
+      }
+    }).join('')).join('\n');
+  }
+
   allBuildings() {
     return this.buildings
       .reduce((acc, cur) => acc.concat(cur), [])
