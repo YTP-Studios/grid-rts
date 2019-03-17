@@ -1,6 +1,5 @@
 import * as PIXI from 'pixi.js';
-import { BUILDING_SIGHT_RANGE, SELECTOR_CIRCLE_RADIUS, CONDUIT_SIZE, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR, SELECTOR_BOX_OPACITY, HEALTHBAR_WIDTH, GRID_SCALE, CONDUIT_HEALTH } from '../../shared/constants';
-import { NEUTRAL } from '../../shared/teams';
+import { BUILDING_SIGHT_RANGE, SELECTOR_CIRCLE_RADIUS, CONDUIT_SIZE, SELECTOR_BOX_BORDER_WIDTH, SELECTOR_CIRCLE_COLOUR, SELECTOR_BOX_OPACITY, GRID_SCALE, CONDUIT_HEALTH } from '../../shared/constants';
 import Conduit from '../../shared/conduit';
 import { BuildingSprite } from './building-sprite';
 import { createCircleSprite } from './sprite-utils';
@@ -24,12 +23,9 @@ export default class ClientConduit extends Conduit {
     this.game.interfaceContainer.addChild(this.selectionCircle);
 
     this.healthBar = new PIXI.Graphics;
-    this.healthBar.clear();
-    this.healthBar.beginFill(0x00FF00);
-    this.healthBar.drawRect(0, 0, HEALTHBAR_WIDTH, 5);
-    this.healthBar.x = this.x - CONDUIT_SIZE / 2;
-    this.healthBar.y = this.y - CONDUIT_SIZE / 2 - 10;
     this.healthBar.visible = false;
+    this.healthBar.x = this.x;
+    this.healthBar.y = this.y;
     this.game.interfaceContainer.addChild(this.healthBar);
   }
 
@@ -40,8 +36,21 @@ export default class ClientConduit extends Conduit {
       this.sightCircle.position.copy(add(this, { x: GRID_SCALE, y: GRID_SCALE }));
       this.game.app.renderer.render(this.sightCircle, this.game.sightRangeTexture, false, null, false);
     }
-    this.healthBar.visible = this.health < CONDUIT_HEALTH && this.team !== NEUTRAL;
-    this.healthBar.scale.x = this.health / this.maxHealth;
+    this.healthBar.visible = this.health < CONDUIT_HEALTH && this.team === this.game.playerTeam;
+    this.healthBar.clear();
+    this.healthBar.lineStyle(2, 0x00FF00);
+    this.healthBar.arc(0, 0, GRID_SCALE * 3 / 8, 0, Math.PI * this.health / this.maxHealth);
+    this.healthBar.moveTo(-GRID_SCALE * 3 / 8, 0);
+    this.healthBar.arc(0, 0, GRID_SCALE * 3 / 8, Math.PI, Math.PI + Math.PI * this.health / this.maxHealth);
     this.selectionCircle.visible = this.isSelected;
+  }
+
+  capture(delta) {
+    if (this.elapsedTime >= this.captureTime) {
+      this.elapsedTime = this.captureTime;
+    } else {
+      this.elapsedTime += delta;
+      this.health += delta * this.maxHealth / this.captureTime;
+    }
   }
 }
